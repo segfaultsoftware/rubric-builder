@@ -5,8 +5,6 @@ import {useNavigate} from "react-router-dom";
 import {selectLoggedInAs} from "../profile/profileSlice";
 import RubricForm from "./RubricForm";
 
-let incrementor = new Date().getTime()
-
 const RubricNew = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -14,7 +12,7 @@ const RubricNew = () => {
   const author = useAppSelector(selectLoggedInAs)
 
   const [rubric, setRubric] = useState<Rubric>({name: '', weights: [{
-      id: incrementor++,
+      id: 0,
       name: '',
       description: '',
       _new: true,
