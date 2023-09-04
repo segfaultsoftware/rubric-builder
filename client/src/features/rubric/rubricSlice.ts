@@ -72,6 +72,15 @@ export const updateRubric = createAsyncThunk(
   }
 )
 
+export const deleteRubric = createAsyncThunk(
+  'rubric/deleteRubric',
+  async (rubric: Rubric) => {
+    await fetchWrapper.delete(`/api/v1/rubrics/${rubric.id}.json`)
+    const rubrics = await fetchWrapper.get('/api/v1/rubrics.json')
+    return rubrics.map((rubric: any) => camelCaseKeys(rubric)) as Rubric[]
+  }
+)
+
 const rubricSlice = createSlice({
   name: 'rubric',
   initialState,
@@ -86,6 +95,9 @@ const rubricSlice = createSlice({
       })
       .addCase(updateRubric.fulfilled, (state, action) => {
         state.rubric = action.payload
+      })
+      .addCase(deleteRubric.fulfilled, (state, action) => {
+        state.rubrics = action.payload
       })
   }
 })

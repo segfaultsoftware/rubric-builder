@@ -24,6 +24,12 @@ module Api
         render json: serialize(rubric)
       end
 
+      def destroy
+        rubric = Rubric.find(params[:id])
+        rubric.delete
+        render json: {}
+      end
+
       private
 
       def rubric_params

@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect} from 'react'
 import {Link} from "react-router-dom";
-import {fetchRubrics, Rubric, selectRubrics} from "./rubricSlice";
+import {deleteRubric, fetchRubrics, Rubric, selectRubrics} from "./rubricSlice";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 
 const RubricIndex = () => {
@@ -11,12 +11,17 @@ const RubricIndex = () => {
     dispatch(fetchRubrics())
   }, [])
 
+  const handleDelete = (rubric: Rubric) => {
+    dispatch(deleteRubric(rubric))
+  }
+
   const rubricList = () => {
     return rubrics.map((rubric) => {
       return (
         <li key={rubric.id}>
           {rubric.name} &nbsp;
-          <Link to={`/rubrics/edit/${rubric.id}`}>Edit</Link>
+          <Link to={`/rubrics/edit/${rubric.id}`}>Edit</Link> &nbsp;
+          <button type='button' onClick={() => handleDelete(rubric)}>Delete</button>
         </li>
       )
     })
