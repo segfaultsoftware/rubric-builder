@@ -2,10 +2,18 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {camelCaseKeys, fetchWrapper, snakeCaseKeys} from "../../api/FetchWrapper";
 import {RootState} from "../../app/store";
 
+export interface Weight {
+  id?: number;
+  name: string;
+  description: string;
+  _destroy?: boolean;
+  _new?: boolean;
+}
 export interface Rubric {
   id?: number | null;
   name: string;
   authorId?: number | null;
+  weights: Weight[],
 }
 
 export interface RubricState {
@@ -16,6 +24,16 @@ export interface RubricState {
 const initialState: RubricState = {
   rubrics: [],
   rubric: null,
+}
+
+const prepareForServer = (rubric: Rubric) => {
+  const railsReady = {
+    ...snakeCaseKeys(rubric),
+    weights_attributes: rubric.weights.map((weight) => {
+      return snakeCaseKeys(weight)
+    })
+  }
+  return railsReady
 }
 
 export const fetchRubrics = createAsyncThunk(
@@ -38,7 +56,7 @@ export const createRubric = createAsyncThunk(
   'rubric/createRubric',
   async (rubric: Rubric) => {
     const response = await fetchWrapper.post('/api/v1/rubrics.json', {
-      body: snakeCaseKeys(rubric)
+      body: prepareForServer(rubric)
     })
     return camelCaseKeys(response) as Rubric
   }
@@ -48,7 +66,7 @@ export const updateRubric = createAsyncThunk(
   'rubric/updateRubric',
   async (rubric: Rubric) => {
     const response = await fetchWrapper.put(`/api/v1/rubrics/${rubric.id}.json`, {
-      body: rubric
+      body: prepareForServer(rubric)
     })
     return camelCaseKeys(response) as Rubric
   }
