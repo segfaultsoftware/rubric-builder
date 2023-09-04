@@ -3,6 +3,8 @@ import Select from "react-select";
 import {fetchProfiles, Profile, selectAllProfiles, selectLoggedInAs, setProfile} from "./profileSlice";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 
+import styles from './ProfileBadge.module.css';
+
 const ProfileBadge = () => {
   const dispatch = useAppDispatch()
   const allProfiles = useAppSelector(selectAllProfiles)
@@ -11,7 +13,7 @@ const ProfileBadge = () => {
   const handleLoginSelect = (profile: Profile | null) => {
     dispatch(setProfile(profile))
   }
-  
+
   useEffect(() => {
     dispatch(fetchProfiles())
   }, [])
@@ -19,7 +21,7 @@ const ProfileBadge = () => {
   return loggedInAs ? (
     <div>Logged In As {loggedInAs.displayName}</div>
   ) : (
-    <div>
+    <div className={styles.selector}>
       <span>Log In As:</span>
       <Select
         value={loggedInAs}

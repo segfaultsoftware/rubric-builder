@@ -10,7 +10,13 @@ module Api::V1
     end
 
     def show
-      rubric = Rubric.find!(params[:id])
+      rubric = Rubric.find(params[:id])
+      render json: rubric
+    end
+
+    def update
+      rubric = Rubric.find(params[:id])
+      rubric.update(rubric_params)
       render json: rubric
     end
 

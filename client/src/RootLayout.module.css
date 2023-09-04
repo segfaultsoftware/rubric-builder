@@ -1,0 +1,12 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.links {
+    list-style-type: none;
+}
+
+.links li {
+    float: left;
+}
