@@ -1,0 +1,14 @@
+{
+  "name": "rubric-builder",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:utricularian/rubric-builder.git",
+  "author": "Sam Serrano <samuel.j.serrano@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "create-react-app": "^5.0.1"
+  },
+  "scripts": {
+    "start": "heroku local -f Procfile.dev"
+  }
+}
