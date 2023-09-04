@@ -1,5 +1,9 @@
 module Api::V1
   class ProfilesController < ApplicationController
+    def index
+      render json: Profile.all
+    end
+
     def create
       render json: Profile.create!(profile_params)
     end

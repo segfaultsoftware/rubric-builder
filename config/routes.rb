@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :profiles, only: [:create]
+      resources :profiles, only: [:index, :create]
       resources :rubrics, only: [:index, :create, :show]
     end
   end
