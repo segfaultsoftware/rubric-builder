@@ -27,7 +27,14 @@ export const camelCaseKeys = (obj: {[key: string]: any}) => {
   const returnObj: {[key: string]: any} = {}
 
   for(let snake in obj) {
-    returnObj[snakeToCamelCase(snake)] = obj[snake]
+    const value = obj[snake]
+    if (value instanceof Array) {
+      returnObj[snakeToCamelCase(snake)] = value.map((v) => camelCaseKeys(v))
+    } else if (value instanceof Object) {
+      returnObj[snakeToCamelCase(snake)] = camelCaseKeys(value)
+    } else {
+      returnObj[snakeToCamelCase(snake)] = value
+    }
   }
 
   return returnObj
@@ -35,7 +42,7 @@ export const camelCaseKeys = (obj: {[key: string]: any}) => {
 
 async function handleResponse(response: Response) {
   const text = await response.text()
-  const json = text.length ? JSON.parse(text) : {}
+  const json = text.trim().length ? JSON.parse(text) : {}
   if (!response.ok) {
     throw new FetchNotOkError(response.statusText, {message: text});
   }

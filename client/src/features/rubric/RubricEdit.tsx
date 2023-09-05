@@ -4,13 +4,17 @@ import {fetchRubric, Rubric, selectRubric, updateRubric, Weight} from "./rubricS
 import {useParams} from "react-router-dom";
 import RubricForm from "./RubricForm";
 import {selectLoggedInAs} from "../profile/profileSlice";
+import RubricMembers from "./RubricMembers";
 
 const RubricEdit = () => {
   const dispatch = useAppDispatch()
   const fetchedRubric = useAppSelector(selectRubric)
+  console.log('fetchedRubric', fetchedRubric)
   const author = useAppSelector(selectLoggedInAs)
   const { rubricId } = useParams()
-  const [rubric, setRubric] = useState<Rubric>({name: '', weights: []})
+  const [rubric, setRubric] = useState<Rubric>({
+    name: '', weights: [], members: []
+  })
 
   useEffect(() => {
     if (rubricId) {
@@ -37,6 +41,7 @@ const RubricEdit = () => {
         onRubricChange={setRubric}
         onSubmit={handleSubmit}
       />
+      <RubricMembers />
     </>
   ) : (
     <div>

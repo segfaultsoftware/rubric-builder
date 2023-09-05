@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {camelCaseKeys, fetchWrapper, snakeCaseKeys} from "../../api/FetchWrapper";
 import {RootState} from "../../app/store";
+import {Profile} from "../profile/profileSlice";
 
 export interface Weight {
   id?: number;
@@ -14,6 +15,7 @@ export interface Rubric {
   name: string;
   authorId?: number | null;
   weights: Weight[],
+  members: Profile[],
 }
 
 export interface RubricState {
@@ -35,6 +37,34 @@ const prepareForServer = (rubric: Rubric) => {
   }
   return railsReady
 }
+
+type memberRubricProperties = {
+  profile: Profile,
+  rubric: Rubric,
+}
+
+export const addMemberToRubric = createAsyncThunk(
+  'rubric/addMemberToRubric',
+  async ({ profile, rubric }: memberRubricProperties) => {
+    await fetchWrapper.post('/api/v1/rubric_profiles.json', {
+      body: {
+        profile_id: profile.id,
+        rubric_id: rubric.id,
+      }
+    })
+    const response = await fetchWrapper.get(`/api/v1/rubrics/${rubric.id}.json`)
+    return camelCaseKeys(response) as Rubric
+  }
+)
+
+export const removeMemberFromRubric = createAsyncThunk(
+  'rubric/removeMemberFromRubric',
+  async ({ profile, rubric }: memberRubricProperties) => {
+    await fetchWrapper.delete(`/api/v1/rubrics/${rubric.id}/profiles/${profile.id}`)
+    const response = await fetchWrapper.get(`/api/v1/rubrics/${rubric.id}.json`)
+    return camelCaseKeys(response) as Rubric
+  }
+)
 
 export const fetchRubrics = createAsyncThunk(
   'rubric/fetchRubrics',
@@ -98,6 +128,12 @@ const rubricSlice = createSlice({
       })
       .addCase(deleteRubric.fulfilled, (state, action) => {
         state.rubrics = action.payload
+      })
+      .addCase(addMemberToRubric.fulfilled, (state, action) => {
+        state.rubric = action.payload
+      })
+      .addCase(removeMemberFromRubric.fulfilled, (state, action) => {
+        state.rubric = action.payload
       })
   }
 })

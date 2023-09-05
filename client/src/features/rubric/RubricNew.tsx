@@ -11,12 +11,16 @@ const RubricNew = () => {
 
   const author = useAppSelector(selectLoggedInAs)
 
-  const [rubric, setRubric] = useState<Rubric>({name: '', weights: [{
+  const [rubric, setRubric] = useState<Rubric>({
+    name: '',
+    weights: [{
       id: 0,
       name: '',
       description: '',
       _new: true,
-    }]})
+    }],
+    members: []
+  })
 
   const handleSubmit = async (newRubric: Rubric) => {
     const response = await dispatch(createRubric(newRubric))
