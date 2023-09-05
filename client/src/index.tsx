@@ -1,16 +1,18 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { store } from './app/store';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './index.css';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
+
+import { store } from './app/store';
+import reportWebVitals from './reportWebVitals';
 import RootLayout from "./RootLayout";
 import RubricIndex from "./features/rubric/RubricIndex";
 import HomePage from "./HomePage";
 import RubricNew from "./features/rubric/RubricNew";
 import RubricEdit from "./features/rubric/RubricEdit";
+import CalibrationsEdit from "./features/calibrations/CalibrationsEdit";
+
+import './index.css';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -22,6 +24,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />
+      },
+      {
+        path: 'calibrations/edit/:rubricId',
+        element: <CalibrationsEdit />
       },
       {
         path: 'rubrics',

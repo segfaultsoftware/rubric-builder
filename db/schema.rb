@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_05_135106) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_05_140210) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "profile_weights", force: :cascade do |t|
+    t.bigint "weight_id"
+    t.bigint "profile_id"
+    t.float "value", default: 1.0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id"], name: "index_profile_weights_on_profile_id"
+    t.index ["weight_id", "profile_id"], name: "index_profile_weights_on_weight_id_and_profile_id", unique: true
+    t.index ["weight_id"], name: "index_profile_weights_on_weight_id"
+  end
 
   create_table "profiles", force: :cascade do |t|
     t.string "display_name"

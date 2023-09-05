@@ -6,6 +6,7 @@ module Api
           profile_id: params[:profile_id],
           rubric_id: params[:rubric_id]
         )
+        Rubric.find(params[:rubric_id]).initialize_profile_weights!
         render head: :created
       end
 

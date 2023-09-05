@@ -8,4 +8,13 @@ class Rubric < ApplicationRecord
   has_many :profiles, through: :rubric_profiles
 
   validates :name, presence: true, uniqueness: true
+
+  # for every member of the rubric, for every weight of the rubric, create a profile_weight
+  def initialize_profile_weights!
+    profiles.each do |profile|
+      weights.each do |weight|
+        ProfileWeight.find_or_create_by(profile:, weight:)
+      end
+    end
+  end
 end

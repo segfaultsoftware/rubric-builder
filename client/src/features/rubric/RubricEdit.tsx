@@ -9,7 +9,6 @@ import RubricMembers from "./RubricMembers";
 const RubricEdit = () => {
   const dispatch = useAppDispatch()
   const fetchedRubric = useAppSelector(selectRubric)
-  console.log('fetchedRubric', fetchedRubric)
   const author = useAppSelector(selectLoggedInAs)
   const { rubricId } = useParams()
   const [rubric, setRubric] = useState<Rubric>({
@@ -20,7 +19,7 @@ const RubricEdit = () => {
     if (rubricId) {
       dispatch(fetchRubric(rubricId))
     }
-  }, [])
+  }, [rubricId])
 
   useEffect(() => {
     if (fetchedRubric) {

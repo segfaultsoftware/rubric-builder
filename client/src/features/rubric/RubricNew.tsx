@@ -17,6 +17,7 @@ const RubricNew = () => {
       id: 0,
       name: '',
       description: '',
+      profileWeights: [],
       _new: true,
     }],
     members: []

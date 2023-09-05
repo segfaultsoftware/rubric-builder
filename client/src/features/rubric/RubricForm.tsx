@@ -49,6 +49,7 @@ const RubricForm = ({
       id: incrementor++,
       name: '',
       description: '',
+      profileWeights: [],
       _new: true
     }
 

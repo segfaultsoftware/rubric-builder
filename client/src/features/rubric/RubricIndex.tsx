@@ -20,6 +20,7 @@ const RubricIndex = () => {
       return (
         <li key={rubric.id}>
           {rubric.name} &nbsp;
+          <Link to={`/calibrations/edit/${rubric.id}`}>Calibrate</Link> &nbsp;
           <Link to={`/rubrics/edit/${rubric.id}`}>Edit</Link> &nbsp;
           <button type='button' onClick={() => handleDelete(rubric)}>Delete</button>
         </li>

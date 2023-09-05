@@ -16,12 +16,14 @@ module Api
       def create
         rubric = Rubric.create!(rubric_params)
         rubric.profiles << rubric.author
+        rubric.initialize_profile_weights!
         render json: serialize(rubric)
       end
 
       def update
         rubric = Rubric.find(params[:id])
         rubric.update(rubric_params)
+        rubric.initialize_profile_weights!
         render json: serialize(rubric)
       end
 

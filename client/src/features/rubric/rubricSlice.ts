@@ -1,12 +1,21 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSelector, createSlice} from "@reduxjs/toolkit";
 import {camelCaseKeys, fetchWrapper, snakeCaseKeys} from "../../api/FetchWrapper";
 import {RootState} from "../../app/store";
 import {Profile} from "../profile/profileSlice";
+
+export interface Calibration {
+  id?: number;
+  profileId: number;
+  weightId: number;
+  value: number;
+  error?: string | null | undefined;
+}
 
 export interface Weight {
   id?: number;
   name: string;
   description: string;
+  profileWeights: Calibration[],
   _destroy?: boolean;
   _new?: boolean;
 }
@@ -38,6 +47,31 @@ const prepareForServer = (rubric: Rubric) => {
   return railsReady
 }
 
+type updateCalibrationsProperties = {
+  rubric: Rubric,
+  calibrations: Calibration[],
+}
+
+const callFetchRubric = async (id: number | null | undefined): Promise<Rubric> => {
+  if (!id) {
+    return Promise.reject('Attempting to query a rubric with no id')
+  }
+  const response = await fetchWrapper.get(`/api/v1/rubrics/${id}.json`)
+  return camelCaseKeys(response) as Rubric
+}
+
+export const updateCalibrationsForRubric = createAsyncThunk(
+  'rubric/updateCalibrationsForRubric',
+  async ({ rubric, calibrations }: updateCalibrationsProperties) => {
+    await fetchWrapper.put(`/api/v1/rubrics/${rubric.id}/calibrations.json`, {
+      body: {
+        calibrations: calibrations.map((calibration) => snakeCaseKeys(calibration))
+      }
+    })
+    return callFetchRubric(rubric.id)
+  }
+)
+
 type memberRubricProperties = {
   profile: Profile,
   rubric: Rubric,
@@ -52,8 +86,7 @@ export const addMemberToRubric = createAsyncThunk(
         rubric_id: rubric.id,
       }
     })
-    const response = await fetchWrapper.get(`/api/v1/rubrics/${rubric.id}.json`)
-    return camelCaseKeys(response) as Rubric
+    return callFetchRubric(rubric.id)
   }
 )
 
@@ -61,8 +94,7 @@ export const removeMemberFromRubric = createAsyncThunk(
   'rubric/removeMemberFromRubric',
   async ({ profile, rubric }: memberRubricProperties) => {
     await fetchWrapper.delete(`/api/v1/rubrics/${rubric.id}/profiles/${profile.id}`)
-    const response = await fetchWrapper.get(`/api/v1/rubrics/${rubric.id}.json`)
-    return camelCaseKeys(response) as Rubric
+    return callFetchRubric(rubric.id)
   }
 )
 
@@ -77,8 +109,7 @@ export const fetchRubrics = createAsyncThunk(
 export const fetchRubric = createAsyncThunk(
   'rubric/fetchRubric',
   async (id: string) => {
-    const rubric = await fetchWrapper.get(`/api/v1/rubrics/${id}.json`)
-    return camelCaseKeys(rubric) as Rubric
+    return callFetchRubric(parseInt(id))
   }
 )
 
@@ -140,5 +171,24 @@ const rubricSlice = createSlice({
 
 export const selectRubrics = (state: RootState) => state.rubric.rubrics
 export const selectRubric = (state: RootState) => state.rubric.rubric
+export const selectCalibrationsByUserAndWeight = createSelector(
+  selectRubric,
+  (rubric) => {
+    const calibrationsByUserAndWeight = new Map()
+    if (!rubric) {
+      return calibrationsByUserAndWeight
+    }
+
+    rubric.weights.forEach((weight) => {
+      weight.profileWeights.forEach((profileWeight) => {
+        const userWeights = calibrationsByUserAndWeight.get(profileWeight.profileId) || new Map()
+        userWeights.set(profileWeight.weightId, profileWeight)
+        calibrationsByUserAndWeight.set(profileWeight.profileId, userWeights)
+      })
+    })
+
+    return calibrationsByUserAndWeight
+  }
+)
 
 export default rubricSlice.reducer
