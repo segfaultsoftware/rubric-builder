@@ -27,7 +27,7 @@ module Api
 
       def destroy
         rubric = Rubric.find(params[:id])
-        rubric.delete
+        rubric.destroy
         render json: {}
       end
 

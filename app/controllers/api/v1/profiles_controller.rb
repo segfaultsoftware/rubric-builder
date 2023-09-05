@@ -11,7 +11,7 @@ module Api
 
       def destroy
         rubric_profile = RubricProfile.find_by(profile_id:, rubric_id:)
-        rubric_profile.delete if rubric_profile.present?
+        rubric_profile.destroy if rubric_profile.present?
         render head: :ok
       end
 
