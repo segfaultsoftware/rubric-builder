@@ -15,6 +15,7 @@ module Api
 
       def create
         rubric = Rubric.create!(rubric_params)
+        rubric.profiles << rubric.author
         render json: serialize(rubric)
       end
 
