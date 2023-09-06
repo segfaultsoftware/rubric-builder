@@ -1,21 +1,21 @@
-import { getCookie, setCookie } from 'typescript-cookie';
+import { getCookie, setCookie } from 'typescript-cookie'
 
-export const saveJWTinCookie = ({response}: {response: Response}) => {
-  const jwt_token = response.headers.get('authorization');
-  if (jwt_token) {
-    setCookie('jwt_token', jwt_token, {
+export const saveJWTinCookie = ({ response }: { response: Response }): void => {
+  const jwtToken = response.headers.get('authorization')
+  if (jwtToken != null) {
+    setCookie('jwt_token', jwtToken, {
       expires: 7,
       path: '/',
       secure: true,
       sameSite: 'strict'
-    });
+    })
   }
 }
 
-export const injectJWTFromCookies = (headers: Headers) => {
-  const jwt = getCookie('jwt_token');
-  if (jwt) {
-    headers.set('Authorization', jwt);
+export const injectJWTFromCookies = (headers: Headers): Headers => {
+  const jwt = getCookie('jwt_token')
+  if (jwt != null) {
+    headers.set('Authorization', jwt)
   }
-  return headers;
+  return headers
 }

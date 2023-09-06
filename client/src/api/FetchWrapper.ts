@@ -1,32 +1,33 @@
-import {injectJWTFromCookies, saveJWTinCookie} from "./Authentication";
+import { injectJWTFromCookies, saveJWTinCookie } from './Authentication'
 
 export class FetchNotOkError extends Error {
   payload: object
 
-  constructor(message: string, payload: object) {
+  constructor (message: string, payload: object) {
     super(message)
     this.name = this.constructor.name
     this.payload = payload
   }
 }
 
-export const camelToSnakeCase = (str: string) => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
+export const camelToSnakeCase = (str: string): string => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`)
 
-export const snakeCaseKeys = (obj: {[key: string]: any}) => {
-  const returnObj: {[key: string]: any} = {}
+export const snakeCaseKeys = (obj: Record<string, any>): Record<string, any> => {
+  const returnObj: Record<string, any> = {}
 
-  for(let camel in obj) {
+  for (const camel in obj) {
     returnObj[camelToSnakeCase(camel)] = obj[camel]
   }
 
   return returnObj
 }
 
-export const snakeToCamelCase = (str: string) => str.replace(/(_([a-z]))/g, letter => letter[1].toUpperCase())
-export const camelCaseKeys = (obj: {[key: string]: any}) => {
-  const returnObj: {[key: string]: any} = {}
+export const snakeToCamelCase = (str: string): string => str.replace(/(_([a-z]))/g, letter => letter[1].toUpperCase())
 
-  for(let snake in obj) {
+export const camelCaseKeys = (obj: Record<string, any>): Record<string, any> => {
+  const returnObj: Record<string, any> = {}
+
+  for (const snake in obj) {
     const value = obj[snake]
     if (value instanceof Array) {
       returnObj[snakeToCamelCase(snake)] = value.map((v) => camelCaseKeys(v))
@@ -40,18 +41,17 @@ export const camelCaseKeys = (obj: {[key: string]: any}) => {
   return returnObj
 }
 
-async function handleResponse(response: Response) {
+async function handleResponse (response: Response): Promise<any> {
   const text = await response.text()
-  const json = text.trim().length ? JSON.parse(text) : {}
+  const json = text.trim().length > 0 ? JSON.parse(text) : {}
   if (!response.ok) {
-    throw new FetchNotOkError(response.statusText, {message: text});
+    throw new FetchNotOkError(response.statusText, { message: text })
   }
 
-  saveJWTinCookie({ response });
+  saveJWTinCookie({ response })
 
-  return json;
+  return json
 }
-
 
 interface RequestOptions {
   body?: object
@@ -62,8 +62,8 @@ const defaultRequestOptions: RequestOptions = {
   useJIT: true
 }
 
-function request(method: string) {
-  return (url: string, options = defaultRequestOptions) => {
+function request (method: string) {
+  return async (url: string, options = defaultRequestOptions): Promise<any> => {
     const userOptions = {
       ...defaultRequestOptions,
       ...options
@@ -73,13 +73,13 @@ function request(method: string) {
       headers: new Headers({
         'Content-Type': 'application/json'
       }),
-      ...(userOptions.body && {body: JSON.stringify(userOptions.body)})
-    };
-
-    if (userOptions.useJIT) {
-      injectJWTFromCookies(requestOptions.headers);
+      ...(userOptions.body != null && { body: JSON.stringify(userOptions.body) })
     }
-    return fetch(url, requestOptions).then(handleResponse);
+
+    if (userOptions.useJIT != null) {
+      injectJWTFromCookies(requestOptions.headers)
+    }
+    return await fetch(url, requestOptions).then(handleResponse)
   }
 }
 
