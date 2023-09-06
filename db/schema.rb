@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_05_140210) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_06_111209) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -48,6 +48,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_05_140210) do
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_rubrics_on_author_id"
     t.index ["name"], name: "index_rubrics_on_name", unique: true
+  end
+
+  create_table "score_weights", force: :cascade do |t|
+    t.bigint "weight_id"
+    t.bigint "score_id"
+    t.integer "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["score_id", "weight_id"], name: "index_score_weights_on_score_id_and_weight_id", unique: true
+    t.index ["score_id"], name: "index_score_weights_on_score_id"
+    t.index ["weight_id"], name: "index_score_weights_on_weight_id"
+  end
+
+  create_table "scores", force: :cascade do |t|
+    t.bigint "profile_id"
+    t.bigint "rubric_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id"], name: "index_scores_on_profile_id"
+    t.index ["rubric_id", "profile_id"], name: "index_scores_on_rubric_id_and_profile_id"
+    t.index ["rubric_id"], name: "index_scores_on_rubric_id"
   end
 
   create_table "weights", force: :cascade do |t|

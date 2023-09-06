@@ -7,6 +7,8 @@ class Rubric < ApplicationRecord
   has_many :rubric_profiles, dependent: :destroy
   has_many :profiles, through: :rubric_profiles
 
+  has_many :scores, dependent: :destroy
+
   validates :name, presence: true, uniqueness: true
 
   # for every member of the rubric, for every weight of the rubric, create a profile_weight

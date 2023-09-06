@@ -2,6 +2,7 @@ class Weight < ApplicationRecord
   belongs_to :rubric
 
   has_many :profile_weights, dependent: :destroy
+  has_many :score_weights, dependent: :destroy
 
   default_scope { order(id: :asc) }
 

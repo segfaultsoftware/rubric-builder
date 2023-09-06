@@ -9,6 +9,8 @@ Rails.application.routes.draw do
       resources :profiles, only: [:index, :create]
       resources :rubrics, only: [:index, :create, :show, :update, :destroy] do
         resources :profiles, only: [:destroy]
+        resources :scores, only: [:create]
+
         resource :calibrations, only: [:update]
       end
       resources :rubric_profiles, only: [:create]
