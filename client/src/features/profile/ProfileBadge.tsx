@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react'
-import Select from "react-select";
-import {fetchProfiles, Profile, selectAllProfiles, selectLoggedInAs, setProfile} from "./profileSlice";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import React, { useEffect } from 'react'
+import Select from 'react-select'
+import { fetchProfiles, type Profile, selectAllProfiles, selectLoggedInAs, setProfile } from './profileSlice'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
 
-import styles from './ProfileBadge.module.css';
+import styles from './ProfileBadge.module.css'
 
 const ProfileBadge = () => {
   const dispatch = useAppDispatch()
@@ -18,20 +18,22 @@ const ProfileBadge = () => {
     dispatch(fetchProfiles())
   }, [])
 
-  return loggedInAs ? (
+  return loggedInAs
+    ? (
     <div>Logged In As {loggedInAs.displayName}</div>
-  ) : (
+      )
+    : (
     <div className={styles.selector}>
       <span>Log In As:</span>
       <Select
         value={loggedInAs}
         options={allProfiles}
-        getOptionLabel={(option) => option?.displayName || 'Default'}
-        getOptionValue={(option) => "" + option?.id || 'Default'}
+        getOptionLabel={(option) => option?.displayName ?? 'Default'}
+        getOptionValue={(option) => '' + option?.id}
         onChange={handleLoginSelect}
       />
     </div>
-  )
+      )
 }
 
 export default ProfileBadge

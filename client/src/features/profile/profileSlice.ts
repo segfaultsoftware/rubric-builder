@@ -1,21 +1,20 @@
-import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "../../app/store";
-import {Root} from "react-dom/client";
-import {camelCaseKeys, fetchWrapper} from "../../api/FetchWrapper";
+import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { type RootState } from '../../app/store'
+import { camelCaseKeys, fetchWrapper } from '../../api/FetchWrapper'
 
 export interface Profile {
-  id: number;
-  displayName: string;
+  id: number
+  displayName: string
 }
 
 export interface ProfileState {
-  loggedInAs: Profile | null;
-  profiles: Profile[];
+  loggedInAs: Profile | null
+  profiles: Profile[]
 }
 
 const initialState: ProfileState = {
   loggedInAs: null,
-  profiles: [],
+  profiles: []
 }
 
 export const fetchProfiles = createAsyncThunk(
@@ -27,7 +26,7 @@ export const fetchProfiles = createAsyncThunk(
 )
 
 export const profileSlice = createSlice({
-  name: "profile",
+  name: 'profile',
   initialState,
   reducers: {
     setProfile: (state, action: PayloadAction<Profile | null>) => {
