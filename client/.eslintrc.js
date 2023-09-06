@@ -32,6 +32,7 @@ module.exports = {
         "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/return-await": "off",
-        "@typescript-eslint/strict-boolean-expressions": "off"
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/triple-slash-reference": "off"
     }
 }

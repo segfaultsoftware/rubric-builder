@@ -1,9 +1,9 @@
 import React from 'react'
 
-import ProfileBadge from "./features/profile/ProfileBadge";
-import {Link, Outlet} from "react-router-dom";
+import ProfileBadge from './features/profile/ProfileBadge'
+import { Link, Outlet } from 'react-router-dom'
 
-import styles from './RootLayout.module.css';
+import styles from './RootLayout.module.css'
 
 const RootLayout = () => {
   return (
