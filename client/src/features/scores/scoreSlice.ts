@@ -1,20 +1,19 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
-import {camelCaseKeys, fetchWrapper, snakeCaseKeys} from "../../api/FetchWrapper";
-import {RootState} from "../../app/store";
-import {Rubric} from "../rubric/rubricSlice";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
+import { type RootState } from '../../app/store'
 
 export interface ScoreWeight {
-  id?: number,
-  weightId: number;
-  value: number;
+  id?: number
+  weightId: number
+  value: number
 }
 
 export interface Score {
-  id?: number,
-  name: string;
-  profileId: number;
-  rubricId: number;
-  scoreWeights: ScoreWeight[];
+  id?: number
+  name: string
+  profileId: number
+  rubricId: number
+  scoreWeights: ScoreWeight[]
 }
 
 const prepareScoreForServer = (score: Score) => {
@@ -40,7 +39,7 @@ export const fetchScoresForRubricId = createAsyncThunk(
   async (rubricId: string) => {
     const scores = await fetchWrapper.get(`/api/v1/rubrics/${rubricId}/scores.json`)
     const readyForClient = scores.map((score: any) => camelCaseKeys(score)) as Score[]
-    return readyForClient.sort((a,b) => a.name.localeCompare(b.name))
+    return readyForClient.sort((a, b) => a.name.localeCompare(b.name))
   }
 )
 
@@ -53,7 +52,7 @@ export interface ScoreState {
 const initialState: ScoreState = {
   createScoreStatus: undefined,
   score: null,
-  scores: [],
+  scores: []
 }
 
 const scoreSlice = createSlice({

@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react'
-import {useNavigate, useParams} from "react-router-dom";
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {fetchRubric, selectRubric, Weight} from "../rubric/rubricSlice";
-import {selectLoggedInAs} from "../profile/profileSlice";
-import {clearCreateScoreStatus, createScore, Score, ScoreWeight, selectCreateScoreStatus} from "./scoreSlice";
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { fetchRubric, selectRubric, type Weight } from '../rubric/rubricSlice'
+import { selectLoggedInAs } from '../profile/profileSlice'
+import { clearCreateScoreStatus, createScore, type Score, type ScoreWeight, selectCreateScoreStatus } from './scoreSlice'
 
 const ScoreNew = () => {
   const dispatch = useAppDispatch()
@@ -52,14 +52,14 @@ const ScoreNew = () => {
       const scoreWeights: ScoreWeight[] = Array.from(scores.keys()).map((weightId) => {
         return {
           weightId,
-          value: scores.get(weightId),
+          value: scores.get(weightId)
         }
       })
       const score: Score = {
         name: scoreName,
         profileId: loggedInAs.id,
         rubricId: parseInt(rubricId),
-        scoreWeights,
+        scoreWeights
       }
       dispatch(createScore(score))
     }
@@ -76,7 +76,7 @@ const ScoreNew = () => {
           max="5"
           step="1"
           value={scores.get(weight.id)}
-          onChange={(e) => handleChange(weight, e.target.value)}
+          onChange={(e) => { handleChange(weight, e.target.value) }}
         />
         <input
           type='text'
@@ -90,7 +90,8 @@ const ScoreNew = () => {
 
   const hasInvalidName = !scoreName
 
-  return rubric && loggedInAs && scores.size ? (
+  return rubric && loggedInAs && scores.size
+    ? (
     <>
       <header><h1>Score a Property</h1></header>
       <div>
@@ -98,7 +99,7 @@ const ScoreNew = () => {
         <input
           type='text'
           value={scoreName}
-          onChange={(e) => setScoreName(e.target.value)}
+          onChange={(e) => { setScoreName(e.target.value) }}
         />
         {hasInvalidName && <span>Requires a score name</span>}
       </div>
@@ -107,7 +108,8 @@ const ScoreNew = () => {
         <button type='button' onClick={handleSave}>Save</button>
       </div>
     </>
-  ) : <div>Loading</div>
+      )
+    : <div>Loading</div>
 }
 
 export default ScoreNew

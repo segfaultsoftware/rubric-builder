@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react'
-import {useParams} from "react-router-dom";
+import React, { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {fetchRubric, selectRubric, Weight} from "../rubric/rubricSlice";
-import {fetchScoresForRubricId, Score, ScoreWeight, selectScoresForRubric} from "./scoreSlice";
-import {fetchProfiles, Profile, selectAllProfiles} from "../profile/profileSlice";
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { fetchRubric, selectRubric, type Weight } from '../rubric/rubricSlice'
+import { fetchScoresForRubricId, type Score, selectScoresForRubric } from './scoreSlice'
+import { fetchProfiles, type Profile, selectAllProfiles } from '../profile/profileSlice'
 
 const ScoreAnalysis = () => {
   const dispatch = useAppDispatch()
@@ -25,16 +25,16 @@ const ScoreAnalysis = () => {
     dispatch(fetchProfiles())
   }, [])
 
-  const profileLookup: Map<number | undefined, Profile> = new Map()
+  const profileLookup = new Map<number | undefined, Profile>()
   profiles.forEach((profile) => profileLookup.set(profile.id, profile))
 
-  const weightLookup: Map<number | undefined, Weight> = new Map()
+  const weightLookup = new Map<number | undefined, Weight>()
   if (rubric) {
     rubric.weights.forEach((weight) => weightLookup.set(weight.id, weight))
   }
 
   const renderScore = (score: Score) => {
-    const author = profileLookup.get(score.profileId)?.displayName || 'Unknown'
+    const author = profileLookup.get(score.profileId)?.displayName ?? 'Unknown'
     const scoreTitle = `${score.name} by ${author}`
     const totalScore = score.scoreWeights.reduce((prev, curr) => prev + curr.value, 0)
 
@@ -63,12 +63,14 @@ const ScoreAnalysis = () => {
     )
   }
 
-  return rubric && profiles.length ? (
+  return rubric && profiles.length
+    ? (
     <>
       <header><h1>Analysis for {rubric.name}</h1></header>
       {scores.map((score) => renderScore(score))}
     </>
-  ) : <div>Loading...</div>
+      )
+    : <div>Loading...</div>
 }
 
 export default ScoreAnalysis
