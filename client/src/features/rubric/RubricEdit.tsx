@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react'
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {fetchRubric, Rubric, selectRubric, updateRubric, Weight} from "./rubricSlice";
-import {useParams} from "react-router-dom";
-import RubricForm from "./RubricForm";
-import {selectLoggedInAs} from "../profile/profileSlice";
-import RubricMembers from "./RubricMembers";
+import React, { useEffect, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { fetchRubric, type Rubric, selectRubric, updateRubric } from './rubricSlice'
+import { useParams } from 'react-router-dom'
+import RubricForm from './RubricForm'
+import { selectLoggedInAs } from '../profile/profileSlice'
+import RubricMembers from './RubricMembers'
 
 const RubricEdit = () => {
   const dispatch = useAppDispatch()
@@ -31,7 +31,8 @@ const RubricEdit = () => {
     dispatch(updateRubric(modifiedRubric))
   }
 
-  return author ? (
+  return author
+    ? (
     <>
       <header><h1>Edit a Rubric</h1></header>
       <RubricForm
@@ -42,11 +43,12 @@ const RubricEdit = () => {
       />
       <RubricMembers />
     </>
-  ) : (
+      )
+    : (
     <div>
       Need to be logged in to edit rubrics.
     </div>
-  )
+      )
 }
 
 export default RubricEdit

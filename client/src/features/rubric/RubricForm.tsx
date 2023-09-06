@@ -1,12 +1,12 @@
 import React from 'react'
-import {Rubric, Weight} from "./rubricSlice";
-import {Profile} from "../profile/profileSlice";
+import { type Rubric, type Weight } from './rubricSlice'
+import { type Profile } from '../profile/profileSlice'
 
-type RubricFormProperties = {
-  author: Profile,
-  rubric: Rubric,
-  onRubricChange: (rubric: Rubric) => void,
-  onSubmit: (rubric: Rubric) => void,
+interface RubricFormProperties {
+  author: Profile
+  rubric: Rubric
+  onRubricChange: (rubric: Rubric) => void
+  onSubmit: (rubric: Rubric) => void
 }
 
 let incrementor = new Date().getTime()
@@ -15,7 +15,7 @@ const RubricForm = ({
   author,
   rubric,
   onRubricChange,
-  onSubmit,
+  onSubmit
 }: RubricFormProperties) => {
   const handleRubricChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const field = e.target.name
@@ -35,7 +35,7 @@ const RubricForm = ({
     const index = existingWeights.findIndex((w) => w.id === weight.id)
     const slicedWeights = existingWeights.slice(0, index).concat([{
       ...weight,
-      [field]: value,
+      [field]: value
     }]).concat(existingWeights.slice(index + 1))
 
     onRubricChange({
@@ -96,14 +96,14 @@ const RubricForm = ({
               type='text'
               name='name'
               value={weight.name}
-              onChange={(e) => handleWeightChange(weight, e)}
+              onChange={(e) => { handleWeightChange(weight, e) }}
             />
             <label>Description</label>
             <input
               type='text'
               name='description'
               value={weight.description}
-              onChange={(e) => handleWeightChange(weight, e)}
+              onChange={(e) => { handleWeightChange(weight, e) }}
             />
           </div>
         )

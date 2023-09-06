@@ -1,40 +1,40 @@
-import {createAsyncThunk, createSelector, createSlice} from "@reduxjs/toolkit";
-import {camelCaseKeys, fetchWrapper, snakeCaseKeys} from "../../api/FetchWrapper";
-import {RootState} from "../../app/store";
-import {Profile} from "../profile/profileSlice";
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
+import { type RootState } from '../../app/store'
+import { type Profile } from '../profile/profileSlice'
 
 export interface Calibration {
-  id?: number;
-  profileId: number;
-  weightId: number;
-  value: number;
-  error?: string | null | undefined;
+  id?: number
+  profileId: number
+  weightId: number
+  value: number
+  error?: string | null | undefined
 }
 
 export interface Weight {
-  id?: number;
-  name: string;
-  description: string;
-  profileWeights: Calibration[],
-  _destroy?: boolean;
-  _new?: boolean;
+  id?: number
+  name: string
+  description: string
+  profileWeights: Calibration[]
+  _destroy?: boolean
+  _new?: boolean
 }
 export interface Rubric {
-  id?: number | null;
-  name: string;
-  authorId?: number | null;
-  weights: Weight[],
-  members: Profile[],
+  id?: number | null
+  name: string
+  authorId?: number | null
+  weights: Weight[]
+  members: Profile[]
 }
 
 export interface RubricState {
-  rubrics: Rubric[];
-  rubric: Rubric | null;
+  rubrics: Rubric[]
+  rubric: Rubric | null
 }
 
 const initialState: RubricState = {
   rubrics: [],
-  rubric: null,
+  rubric: null
 }
 
 const prepareForServer = (rubric: Rubric) => {
@@ -47,14 +47,14 @@ const prepareForServer = (rubric: Rubric) => {
   return railsReady
 }
 
-type updateCalibrationsProperties = {
-  rubric: Rubric,
-  calibrations: Calibration[],
+interface updateCalibrationsProperties {
+  rubric: Rubric
+  calibrations: Calibration[]
 }
 
 const callFetchRubric = async (id: number | null | undefined): Promise<Rubric> => {
   if (!id) {
-    return Promise.reject('Attempting to query a rubric with no id')
+    return Promise.reject(new Error('Attempting to query a rubric with no id'))
   }
   const response = await fetchWrapper.get(`/api/v1/rubrics/${id}.json`)
   return camelCaseKeys(response) as Rubric
@@ -72,9 +72,9 @@ export const updateCalibrationsForRubric = createAsyncThunk(
   }
 )
 
-type memberRubricProperties = {
-  profile: Profile,
-  rubric: Rubric,
+interface memberRubricProperties {
+  profile: Profile
+  rubric: Rubric
 }
 
 export const addMemberToRubric = createAsyncThunk(
@@ -83,7 +83,7 @@ export const addMemberToRubric = createAsyncThunk(
     await fetchWrapper.post('/api/v1/rubric_profiles.json', {
       body: {
         profile_id: profile.id,
-        rubric_id: rubric.id,
+        rubric_id: rubric.id
       }
     })
     return callFetchRubric(rubric.id)

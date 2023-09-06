@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {createRubric, Rubric} from "./rubricSlice";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {useNavigate} from "react-router-dom";
-import {selectLoggedInAs} from "../profile/profileSlice";
-import RubricForm from "./RubricForm";
+import React, { useState } from 'react'
+import { createRubric, type Rubric } from './rubricSlice'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { useNavigate } from 'react-router-dom'
+import { selectLoggedInAs } from '../profile/profileSlice'
+import RubricForm from './RubricForm'
 
 const RubricNew = () => {
   const dispatch = useAppDispatch()
@@ -18,7 +18,7 @@ const RubricNew = () => {
       name: '',
       description: '',
       profileWeights: [],
-      _new: true,
+      _new: true
     }],
     members: []
   })
@@ -28,7 +28,8 @@ const RubricNew = () => {
     navigate(`/rubrics/edit/${(response.payload as Rubric).id}`)
   }
 
-  return author ? (
+  return author
+    ? (
     <>
       <header><h1>Create a Rubric</h1></header>
       <RubricForm
@@ -38,11 +39,12 @@ const RubricNew = () => {
         onSubmit={handleSubmit}
       />
     </>
-  ) : (
+      )
+    : (
     <div>
       Must be logged in to create a rubric.
     </div>
-  )
+      )
 }
 
 export default RubricNew
