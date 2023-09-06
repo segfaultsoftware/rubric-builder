@@ -37,7 +37,7 @@ const ScoreNew = () => {
   useEffect(() => {
     if (createScoreStatus === 'Created') {
       dispatch(clearCreateScoreStatus())
-      navigate(`/`)
+      navigate(`/rubrics/${rubricId}/scores`)
     }
   }, [createScoreStatus])
 

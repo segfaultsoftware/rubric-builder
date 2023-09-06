@@ -3,7 +3,7 @@ module V1
     include JSONAPI::Serializer
     attributes :id, :name, :profile_id
 
-    attribute :weight_scores do |score|
+    attribute :score_weights do |score|
       score.score_weights.map do |score_weight|
         ::V1::ScoreWeightSerializer.new(score_weight).serializable_hash[:data][:attributes]
       end

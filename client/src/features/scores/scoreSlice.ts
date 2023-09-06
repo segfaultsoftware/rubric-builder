@@ -1,13 +1,16 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import {camelCaseKeys, fetchWrapper, snakeCaseKeys} from "../../api/FetchWrapper";
 import {RootState} from "../../app/store";
+import {Rubric} from "../rubric/rubricSlice";
 
 export interface ScoreWeight {
+  id?: number,
   weightId: number;
   value: number;
 }
 
 export interface Score {
+  id?: number,
   name: string;
   profileId: number;
   rubricId: number;
@@ -31,14 +34,26 @@ export const createScore = createAsyncThunk(
     return camelCaseKeys(response) as Score
   }
 )
+
+export const fetchScoresForRubricId = createAsyncThunk(
+  'score/fetchScoresForRubricId',
+  async (rubricId: string) => {
+    const scores = await fetchWrapper.get(`/api/v1/rubrics/${rubricId}/scores.json`)
+    const readyForClient = scores.map((score: any) => camelCaseKeys(score)) as Score[]
+    return readyForClient.sort((a,b) => a.name.localeCompare(b.name))
+  }
+)
+
 export interface ScoreState {
   score: null | Score
+  scores: Score[]
   createScoreStatus: undefined | 'In Progress' | 'Created'
 }
 
 const initialState: ScoreState = {
   createScoreStatus: undefined,
   score: null,
+  scores: [],
 }
 
 const scoreSlice = createSlice({
@@ -58,11 +73,15 @@ const scoreSlice = createSlice({
         state.score = action.payload
         state.createScoreStatus = 'Created'
       })
+      .addCase(fetchScoresForRubricId.fulfilled, (state, action) => {
+        state.scores = action.payload
+      })
   }
 })
 
 export const { clearCreateScoreStatus } = scoreSlice.actions
 
 export const selectCreateScoreStatus = (state: RootState) => state.score.createScoreStatus
+export const selectScoresForRubric = (state: RootState) => state.score.scores
 
 export default scoreSlice.reducer

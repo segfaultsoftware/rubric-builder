@@ -1,6 +1,11 @@
 module Api
   module V1
     class ScoresController < ApplicationController
+      def index
+        rubric = Rubric.find(params[:rubric_id])
+        render json: rubric.scores.map { |score| serialize(score) }
+      end
+
       def create
         score = Score.create!(score_params)
         render json: serialize(score)

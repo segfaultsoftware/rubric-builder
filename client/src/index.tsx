@@ -12,6 +12,7 @@ import RubricNew from "./features/rubric/RubricNew";
 import RubricEdit from "./features/rubric/RubricEdit";
 import CalibrationsEdit from "./features/calibrations/CalibrationsEdit";
 import ScoreNew from "./features/scores/ScoreNew";
+import ScoreAnalysis from "./features/scores/ScoreAnalysis";
 
 import './index.css';
 
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: 'rubrics/:rubricId/scores/new',
         element: <ScoreNew />
+      },
+      {
+        path: 'rubrics/:rubricId/scores',
+        element: <ScoreAnalysis />
       }
     ]
   }
