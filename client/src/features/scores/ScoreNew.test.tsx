@@ -1,36 +1,20 @@
 import React from 'react'
 
-import { rest } from 'msw'
-import { setupServer } from 'msw/node'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react'
 
-import { renderWithProviders } from '../../utils/test-utils'
+import { renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import ScoreNew from './ScoreNew'
 import { type Rubric } from '../rubric/rubricSlice'
 
 describe('ScoreNew', () => {
   let rubric: Rubric
   let router: ReturnType<typeof createMemoryRouter>
-  let server: ReturnType<typeof setupServer>
+  let server: ReturnType<typeof setupServerWithStubs>
   let stubs: ServerStub[]
 
-  interface ServerStub {
-    method: 'get' | 'post' | 'put' | 'delete'
-    url: string
-    json: object | object[]
-  }
-
   const render = () => {
-    server = setupServer(
-      ...stubs.map((serverStub) => {
-        return rest[serverStub.method](serverStub.url, async (req, res, ctx) => {
-          return res(
-            ctx.json(serverStub.json)
-          )
-        })
-      })
-    )
+    server = setupServerWithStubs(stubs)
     server.listen()
     return renderWithProviders(
       <RouterProvider router={router} />,
