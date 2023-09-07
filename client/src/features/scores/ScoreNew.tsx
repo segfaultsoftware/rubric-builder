@@ -66,12 +66,14 @@ const ScoreNew = () => {
   }
 
   const renderWeightScore = (weight: Weight) => {
+    const id = `range:${weight.name}`
     return (
       <div key={weight.id}>
-        <label>{weight.name} (?)</label>
+        <label htmlFor={id}>{weight.name} (?)</label>
         <input
+          id={id}
           type='range'
-          name={`range:${weight.name}`}
+          name={id}
           min="0"
           max="5"
           step="1"
@@ -93,7 +95,7 @@ const ScoreNew = () => {
   return rubric && loggedInAs && scores.size
     ? (
     <>
-      <header><h1>Score a Property</h1></header>
+      <header><h1>Score {rubric.name}</h1></header>
       <div>
         <label>Name for this Scoring</label>
         <input

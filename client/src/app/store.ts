@@ -1,23 +1,26 @@
-import { configureStore, type ThunkAction, type Action } from '@reduxjs/toolkit'
+import { configureStore, type ThunkAction, type Action, combineReducers, type PreloadedState } from '@reduxjs/toolkit'
 import counterReducer from '../features/counter/counterSlice'
 import profileReducer from '../features/profile/profileSlice'
 import rubricReducer from '../features/rubric/rubricSlice'
 import scoreReducer from '../features/scores/scoreSlice'
 
-export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
-    profile: profileReducer,
-    rubric: rubricReducer,
-    score: scoreReducer
-  }
+const rootReducer = combineReducers({
+  counter: counterReducer,
+  profile: profileReducer,
+  rubric: rubricReducer,
+  score: scoreReducer
 })
 
-export type AppDispatch = typeof store.dispatch
-export type RootState = ReturnType<typeof store.getState>
-export type AppThunk<ReturnType = void> = ThunkAction<
-ReturnType,
-RootState,
-unknown,
-Action<string>
->
+export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
+  return configureStore({
+    reducer: rootReducer,
+    preloadedState
+  })
+}
+
+export const store = setupStore()
+
+export type RootState = ReturnType<typeof rootReducer>
+export type AppStore = ReturnType<typeof setupStore>
+export type AppDispatch = AppStore['dispatch']
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, Action<string>>

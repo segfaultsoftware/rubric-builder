@@ -6,10 +6,18 @@
   "author": "Sam Serrano <samuel.j.serrano@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "create-react-app": "^5.0.1"
+    "create-react-app": "^5.0.1",
+    "msw": "^1.3.0"
   },
   "scripts": {
-    "start": "heroku local -f Procfile.dev"
+    "eslint": "eslint client/src --ext .ts --ext .tsx --ext .js -c client/.eslintrc.js",
+    "lint": "yarn run rubocop && cd client && yarn lint",
+    "jest": "cd client && yarn test --watchAll=false",
+    "preflight": "yarn run lint && yarn run test",
+    "rspec": "bundle exec rspec",
+    "rubocop": "bundle exec rubocop -A",
+    "start": "heroku local -f Procfile.dev",
+    "test": "yarn run rspec && yarn run jest"
   },
   "dependencies": {
     "typescript-cookie": "^1.0.6"
