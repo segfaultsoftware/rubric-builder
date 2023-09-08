@@ -43,3 +43,11 @@ export const setupServerWithStubs = (stubs: ServerStub[] = []) => {
     })
   )
 }
+
+export const addStubToServer = (server: ReturnType<typeof setupServer>, stub: ServerStub) => {
+  server.use(
+    rest[stub.method](stub.url, async (req, res, ctx) => {
+      return res(ctx.json(stub.json))
+    })
+  )
+}
