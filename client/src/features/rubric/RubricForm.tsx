@@ -84,22 +84,26 @@ const RubricForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label>Name</label>
-        <input type='text' name='name' required value={rubric.name} onChange={handleRubricChange}/>
+        <label htmlFor='rubric:name'>Name</label>
+        <input id='rubric:name' type='text' name='name' required value={rubric.name} onChange={handleRubricChange}/>
       </div>
       <h3>Weights</h3>
       {rubric.weights.map((weight) => {
+        const nameId = `weight:name:${weight.id}`
+        const descriptionId = `weight:description:${weight.id}`
         return (
           <div key={weight.id}>
-            <label>Name</label>
+            <label htmlFor={nameId}>Name</label>
             <input
+              id={nameId}
               type='text'
               name='name'
               value={weight.name}
               onChange={(e) => { handleWeightChange(weight, e) }}
             />
-            <label>Description</label>
+            <label htmlFor={descriptionId}>Description</label>
             <input
+              id={descriptionId}
               type='text'
               name='description'
               value={weight.description}

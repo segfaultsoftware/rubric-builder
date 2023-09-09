@@ -9,7 +9,11 @@ class Rubric < ApplicationRecord
 
   has_many :scores, dependent: :destroy
 
+  default_scope { order(id: :asc) }
+
   validates :name, presence: true, uniqueness: true
+
+
 
   # for every member of the rubric, for every weight of the rubric, create a profile_weight
   def initialize_profile_weights!
