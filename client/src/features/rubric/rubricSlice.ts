@@ -30,11 +30,13 @@ export interface Rubric {
 export interface RubricState {
   rubrics: Rubric[]
   rubric: Rubric | null
+  saveRubricState: 'initial' | 'pending' | 'saved'
 }
 
 const initialState: RubricState = {
   rubrics: [],
-  rubric: null
+  rubric: null,
+  saveRubricState: 'initial'
 }
 
 const prepareForServer = (rubric: Rubric) => {
@@ -148,14 +150,21 @@ const rubricSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchRubric.pending, (state) => {
+        state.saveRubricState = 'initial'
+      })
       .addCase(fetchRubric.fulfilled, (state, action) => {
         state.rubric = action.payload
       })
       .addCase(fetchRubrics.fulfilled, (state, action) => {
         state.rubrics = action.payload
       })
+      .addCase(updateRubric.pending, (state) => {
+        state.saveRubricState = 'pending'
+      })
       .addCase(updateRubric.fulfilled, (state, action) => {
         state.rubric = action.payload
+        state.saveRubricState = 'saved'
       })
       .addCase(deleteRubric.fulfilled, (state, action) => {
         state.rubrics = action.payload
@@ -171,6 +180,7 @@ const rubricSlice = createSlice({
 
 export const selectRubrics = (state: RootState) => state.rubric.rubrics
 export const selectRubric = (state: RootState) => state.rubric.rubric
+export const selectSaveRubricState = (state: RootState) => state.rubric.saveRubricState
 export const selectCalibrationsByUserAndWeight = createSelector(
   selectRubric,
   (rubric) => {
