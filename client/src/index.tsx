@@ -29,7 +29,7 @@ const router = createBrowserRouter([
         element: <HomePage />
       },
       {
-        path: 'calibrations/edit/:rubricId',
+        path: 'calibrations/:rubricId/edit',
         element: <CalibrationsEdit />
       },
       {
