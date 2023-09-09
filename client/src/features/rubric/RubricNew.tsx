@@ -25,7 +25,7 @@ const RubricNew = () => {
 
   const handleSubmit = async (newRubric: Rubric) => {
     const response = await dispatch(createRubric(newRubric))
-    navigate(`/rubrics/edit/${(response.payload as Rubric).id}`)
+    navigate(`/rubrics/${(response.payload as Rubric).id}/edit`)
   }
 
   return author

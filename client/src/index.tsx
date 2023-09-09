@@ -41,8 +41,7 @@ const router = createBrowserRouter([
         element: <RubricNew />
       },
       {
-        // TODO fix this to be rubrics/:rubricId/edit
-        path: 'rubrics/edit/:rubricId',
+        path: 'rubrics/:rubricId/edit',
         element: <RubricEdit />
       },
       {

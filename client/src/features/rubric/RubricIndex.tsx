@@ -23,7 +23,7 @@ const RubricIndex = () => {
           <Link to={`/rubrics/${rubric.id}/scores/new`}>Score</Link> &nbsp;
           <Link to={`/rubrics/${rubric.id}/scores`}>Analyze</Link> &nbsp;
           <Link to={`/calibrations/edit/${rubric.id}`}>Calibrate</Link> &nbsp;
-          <Link to={`/rubrics/edit/${rubric.id}`}>Edit</Link> &nbsp;
+          <Link to={`/rubrics/${rubric.id}/edit`}>Edit</Link> &nbsp;
           <button type='button' onClick={() => { handleDelete(rubric) }}>Delete</button>
         </li>
       )
