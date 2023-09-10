@@ -55,7 +55,8 @@ const CalibrationsEdit = () => {
 
     const calibration = calibrationsByWeight.get(weight.id)
 
-    return (
+    return calibration
+      ? (
       <div key={weight.id}>
         <label>
           {weight.name} (?):
@@ -69,7 +70,8 @@ const CalibrationsEdit = () => {
           <span>{calibration.error}</span>
         )}
       </div>
-    )
+        )
+      : <></>
   }
 
   const handleSave = () => {

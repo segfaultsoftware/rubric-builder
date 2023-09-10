@@ -134,7 +134,7 @@ describe('RubricEdit', () => {
         descInputs = await findAllByLabelText('Description')
         expect(descInputs[2]).toHaveValue(newDescription)
 
-        addStubToServer(server, {
+        const putRubricBodyPromise = addStubToServer(server, {
           method: 'put',
           url: `/api/v1/rubrics/${rubric.id}.json`,
           json: {
@@ -159,6 +159,14 @@ describe('RubricEdit', () => {
         await user.click(submitButton)
 
         expect(await findByText(/Saved at /)).toBeInTheDocument()
+
+        const putRubricBody = await putRubricBodyPromise as any
+        const weightAttributes = putRubricBody.weights_attributes as Array<Record<any, any>>
+        expect(weightAttributes.length).toEqual(3)
+        expect(weightAttributes[2].name).toEqual(newName)
+        expect(weightAttributes[2].description).toEqual(newDescription)
+        expect(weightAttributes[2]).not.toHaveProperty('id')
+        expect(weightAttributes[2]).not.toHaveProperty('_destroy')
       })
     })
   })

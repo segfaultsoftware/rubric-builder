@@ -74,7 +74,7 @@ describe('RubricNew', () => {
         await user.type(nameInputs[0], 'My New Rubric')
         await user.type(nameInputs[1], 'My New Weight')
 
-        addStubToServer(server, {
+        const createRubricBodyPromise = addStubToServer(server, {
           method: 'post',
           url: '/api/v1/rubrics.json',
           json: {
@@ -94,6 +94,15 @@ describe('RubricNew', () => {
         await user.click(buttons[1])
 
         expect(await findByText('Edit This')).toBeInTheDocument()
+
+        const createRubricBody = await createRubricBodyPromise as any
+        expect(createRubricBody.name).toEqual('My New Rubric')
+        const weightAttributes = createRubricBody.weights_attributes as Array<Record<any, any>>
+        expect(weightAttributes.length).toEqual(1)
+        expect(weightAttributes[0].name).toEqual('My New Weight')
+        expect(weightAttributes[0].description).toEqual('')
+        expect(weightAttributes[0]).not.toHaveProperty('id')
+        expect(weightAttributes[0]).not.toHaveProperty('_destroy')
       })
     })
   })
