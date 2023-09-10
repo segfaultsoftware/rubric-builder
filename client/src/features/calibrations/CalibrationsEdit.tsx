@@ -37,11 +37,12 @@ const CalibrationsEdit = () => {
   const handleCalibrationChange = (weight: Weight, value: string) => {
     const updatedMap = new Map(calibrationsByWeight)
     const oldCalibration = updatedMap.get(weight.id)
+    const isPresentError = value.length ? null : 'Must have a value'
     const isNumberError = Number.isNaN(toNumber(value)) ? 'Must be a number' : null
     const isPositiveError = !isNumberError && toNumber(value) < 0 ? 'Must be >= 0' : null
     updatedMap.set(weight.id, {
       ...oldCalibration,
-      error: isNumberError ?? isPositiveError,
+      error: isPresentError ?? isNumberError ?? isPositiveError,
       value
     })
     setCalibrationsByWeight(updatedMap)
@@ -56,12 +57,14 @@ const CalibrationsEdit = () => {
 
     return (
       <div key={weight.id}>
-        {weight.name} (?):
-        <input
-          type="text"
-          value={calibration.value}
-          onChange={(e) => { handleCalibrationChange(weight, e.target.value) }}
-        />
+        <label>
+          {weight.name} (?):
+          <input
+            type="text"
+            value={calibration.value}
+            onChange={(e) => { handleCalibrationChange(weight, e.target.value) }}
+          />
+        </label>
         {calibration.error && (
           <span>{calibration.error}</span>
         )}
