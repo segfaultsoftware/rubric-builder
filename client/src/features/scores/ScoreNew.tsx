@@ -52,7 +52,7 @@ const ScoreNew = () => {
       const scoreWeights: ScoreWeight[] = Array.from(scores.keys()).map((weightId) => {
         return {
           weightId,
-          value: scores.get(weightId)
+          value: parseInt(scores.get(weightId))
         }
       })
       const score: Score = {
@@ -97,12 +97,13 @@ const ScoreNew = () => {
     <>
       <header><h1>Score {rubric.name}</h1></header>
       <div>
-        <label>Name for this Scoring</label>
-        <input
-          type='text'
-          value={scoreName}
-          onChange={(e) => { setScoreName(e.target.value) }}
-        />
+        <label>Name for this Scoring
+          <input
+            type='text'
+            value={scoreName}
+            onChange={(e) => { setScoreName(e.target.value) }}
+          />
+        </label>
         {hasInvalidName && <span>Requires a score name</span>}
       </div>
       {rubric.weights.map((weight) => renderWeightScore(weight))}

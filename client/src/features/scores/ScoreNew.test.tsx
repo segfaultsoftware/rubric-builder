@@ -2,8 +2,9 @@ import React from 'react'
 
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
-import { renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
+import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import ScoreNew from './ScoreNew'
 import { type Rubric } from '../rubric/rubricSlice'
 
@@ -16,20 +17,23 @@ describe('ScoreNew', () => {
   const render = () => {
     server = setupServerWithStubs(stubs)
     server.listen()
-    return renderWithProviders(
-      <RouterProvider router={router} />,
-      {
-        preloadedState: {
-          profile: {
-            loggedInAs: {
-              id: 123,
-              displayName: 'The Author'
-            },
-            profiles: []
-          }
+    return {
+      user: userEvent.setup(),
+      ...renderWithProviders(
+    <RouterProvider router={router}/>,
+    {
+      preloadedState: {
+        profile: {
+          loggedInAs: {
+            id: 123,
+            displayName: 'The Author'
+          },
+          profiles: []
         }
       }
-    )
+    }
+      )
+    }
   }
 
   beforeEach(() => {
@@ -107,12 +111,14 @@ describe('ScoreNew', () => {
       })
 
       describe('adjusting a score and submitting', () => {
-        beforeEach(() => {
-          stubs.push(postScoreStub())
-        })
-
         it('redirects', async () => {
-          const { findByLabelText, findByText, queryByText } = render()
+          const { user, findByLabelText, findByText, queryByText } = render()
+
+          const postBodyPromise = addStubToServer(server, postScoreStub())
+
+          const scoreNameInput = await findByLabelText('Name for this Scoring')
+          await user.type(scoreNameInput, '123 Main St')
+
           const slider = await findByLabelText(/Weight 1/)
           fireEvent.change(slider, { target: { value: 5 } })
 
@@ -122,6 +128,18 @@ describe('ScoreNew', () => {
           await waitForElementToBeRemoved(() => queryByText('Save'))
 
           expect(router.state.location.pathname).toEqual(`/rubrics/${rubric.id}/scores`)
+
+          const postBody = await postBodyPromise as any
+          expect(postBody.name).toEqual('123 Main St')
+          expect(postBody.profile_id).toEqual(123)
+          expect(postBody.rubric_id).toEqual(rubric.id)
+
+          const scoreWeights = postBody.score_weights_attributes
+          expect(scoreWeights.length).toEqual(2)
+          expect(scoreWeights[0].weight_id).toEqual(rubric.weights[0].id)
+          expect(scoreWeights[0].value).toEqual(5)
+          expect(scoreWeights[1].weight_id).toEqual(rubric.weights[1].id)
+          expect(scoreWeights[1].value).toEqual(1)
         })
       })
     })
