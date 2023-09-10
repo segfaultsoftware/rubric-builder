@@ -1,11 +1,9 @@
 import { configureStore, type ThunkAction, type Action, combineReducers, type PreloadedState } from '@reduxjs/toolkit'
-import counterReducer from '../features/counter/counterSlice'
 import profileReducer from '../features/profile/profileSlice'
 import rubricReducer from '../features/rubric/rubricSlice'
 import scoreReducer from '../features/scores/scoreSlice'
 
 const rootReducer = combineReducers({
-  counter: counterReducer,
   profile: profileReducer,
   rubric: rubricReducer,
   score: scoreReducer
