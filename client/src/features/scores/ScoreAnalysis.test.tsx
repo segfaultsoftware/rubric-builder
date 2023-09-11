@@ -2,13 +2,13 @@ import React from 'react'
 
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
+import { within } from '@testing-library/react'
 
 import { type Calibration, type Rubric, type Weight } from '../rubric/rubricSlice'
 import { type Profile } from '../profile/profileSlice'
 import { renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import ScoreAnalysis from './ScoreAnalysis'
 import { type Score } from './scoreSlice'
-import { within } from '@testing-library/react'
 
 describe('ScoreAnalysis', () => {
   let rubric: Rubric

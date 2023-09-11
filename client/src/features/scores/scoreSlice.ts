@@ -1,6 +1,7 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
 import { type RootState } from '../../app/store'
+import { selectCalibrationsByUserAndWeight } from '../rubric/rubricSlice'
 
 export interface ScoreWeight {
   id?: number
@@ -82,5 +83,38 @@ export const { clearCreateScoreStatus } = scoreSlice.actions
 
 export const selectCreateScoreStatus = (state: RootState) => state.score.createScoreStatus
 export const selectScoresForRubric = (state: RootState) => state.score.scores
+
+export const selectScoreCalculationsMap = createSelector(
+  selectScoresForRubric,
+  selectCalibrationsByUserAndWeight,
+  (scores, calibrationsByUserAndWeight) => {
+    const calculationByScoreNameUserWeight = new Map<string, Map<number, Map<number, number>>>()
+
+    scores.forEach((score) => {
+      const scoreByWeight = new Map<number, number>()
+      score.scoreWeights.forEach((scoreWeight) => {
+        scoreByWeight.set(scoreWeight.weightId, scoreWeight.value)
+      })
+
+      const calculationByUserWeight = calculationByScoreNameUserWeight.get(score.name) ?? new Map<number, Map<number, number>>()
+      const calculationByWeight = calculationByUserWeight.get(score.profileId) ?? new Map<number, number>()
+
+      let totalScore = 0
+      const weightIds = Array.from(calibrationsByUserAndWeight.get(score.profileId)?.keys() ?? [])
+      weightIds.forEach((weightId) => {
+        const fromScore = scoreByWeight.get(weightId) ?? 0
+        const fromCalibration = calibrationsByUserAndWeight.get(score.profileId)?.get(weightId)?.value ?? 0
+        const scoreForWeight = fromScore * fromCalibration
+        totalScore += scoreForWeight
+        calculationByWeight.set(weightId, scoreForWeight)
+      })
+      calculationByWeight.set(-1, totalScore)
+      calculationByUserWeight.set(score.profileId, calculationByWeight)
+      calculationByScoreNameUserWeight.set(score.name, calculationByUserWeight)
+    })
+
+    return calculationByScoreNameUserWeight
+  }
+)
 
 export default scoreSlice.reducer

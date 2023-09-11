@@ -191,17 +191,33 @@ export const selectRubrics = (state: RootState) => state.rubric.rubrics
 export const selectRubric = (state: RootState) => state.rubric.rubric
 export const selectSaveRubricState = (state: RootState) => state.rubric.saveRubricState
 export const selectSaveCalibrationsState = (state: RootState) => state.rubric.saveCalibrationsState
+
+export const selectWeightByWeightId = createSelector(
+  selectRubric,
+  (rubric) => {
+    const weightById = new Map<number, Weight>()
+
+    rubric?.weights.forEach((weight) => {
+      if (weight.id) {
+        weightById.set(weight.id, weight)
+      }
+    })
+
+    return weightById
+  }
+)
+
 export const selectCalibrationsByUserAndWeight = createSelector(
   selectRubric,
   (rubric) => {
-    const calibrationsByUserAndWeight = new Map()
+    const calibrationsByUserAndWeight = new Map<number, Map<number, Calibration>>()
     if (!rubric) {
       return calibrationsByUserAndWeight
     }
 
     rubric.weights.forEach((weight) => {
       weight.profileWeights.forEach((profileWeight) => {
-        const userWeights = calibrationsByUserAndWeight.get(profileWeight.profileId) || new Map()
+        const userWeights = calibrationsByUserAndWeight.get(profileWeight.profileId) ?? new Map<number, Calibration>()
         userWeights.set(profileWeight.weightId, profileWeight)
         calibrationsByUserAndWeight.set(profileWeight.profileId, userWeights)
       })

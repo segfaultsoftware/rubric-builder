@@ -38,7 +38,7 @@ const CalibrationsEdit = () => {
 
   useEffect(() => {
     if (loggedInAs) {
-      setCalibrationsByWeight(calibrationsByUserAndWeight.get(loggedInAs.id) || new Map())
+      setCalibrationsByWeight(calibrationsByUserAndWeight.get(loggedInAs.id) ?? new Map())
     }
   }, [calibrationsByUserAndWeight, loggedInAs])
 
@@ -96,7 +96,7 @@ const CalibrationsEdit = () => {
   const handleSave = () => {
     if (loggedInAs && rubric) {
       const weightsToUpdate: Calibration[] = []
-      const existingValuesForUser = calibrationsByUserAndWeight.get(loggedInAs.id)
+      const existingValuesForUser = calibrationsByUserAndWeight.get(loggedInAs.id) ?? new Map()
       const weightIds: string[] = Array.from(existingValuesForUser.keys())
 
       weightIds.forEach((weightIdAsString) => {

@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { type RootState } from '../../app/store'
 import { camelCaseKeys, fetchWrapper } from '../../api/FetchWrapper'
 
@@ -45,5 +45,16 @@ export const { setProfile } = profileSlice.actions
 
 export const selectAllProfiles = (state: RootState) => state.profile.profiles
 export const selectLoggedInAs = (state: RootState) => state.profile.loggedInAs
+
+export const selectProfileByProfileId = createSelector(
+  selectAllProfiles,
+  (profiles) => {
+    const profileByProfileId = new Map<number, Profile>()
+
+    profiles.forEach((profile) => profileByProfileId.set(profile.id, profile))
+
+    return profileByProfileId
+  }
+)
 
 export default profileSlice.reducer

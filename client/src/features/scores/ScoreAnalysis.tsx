@@ -2,9 +2,9 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { type Calibration, fetchRubric, selectRubric, type Weight } from '../rubric/rubricSlice'
-import { fetchScoresForRubricId, type Score, selectScoresForRubric } from './scoreSlice'
-import { fetchProfiles, type Profile, selectAllProfiles } from '../profile/profileSlice'
+import { fetchRubric, selectRubric, selectWeightByWeightId } from '../rubric/rubricSlice'
+import { fetchScoresForRubricId, type Score, selectScoreCalculationsMap, selectScoresForRubric } from './scoreSlice'
+import { fetchProfiles, selectAllProfiles, selectProfileByProfileId } from '../profile/profileSlice'
 
 const ScoreAnalysis = () => {
   const dispatch = useAppDispatch()
@@ -13,6 +13,9 @@ const ScoreAnalysis = () => {
   const rubric = useAppSelector(selectRubric)
   const scores = useAppSelector(selectScoresForRubric)
   const profiles = useAppSelector(selectAllProfiles)
+  const weightById = useAppSelector(selectWeightByWeightId)
+  const profileById = useAppSelector(selectProfileByProfileId)
+  const calculationsByScoreNameUserWeight = useAppSelector(selectScoreCalculationsMap)
 
   useEffect(() => {
     if (rubricId) {
@@ -25,43 +28,9 @@ const ScoreAnalysis = () => {
     dispatch(fetchProfiles())
   }, [])
 
-  const profileLookup = new Map<number | undefined, Profile>()
-  profiles.forEach((profile) => profileLookup.set(profile.id, profile))
-
-  const weightLookup = new Map<number | undefined, Weight>()
-  if (rubric) {
-    rubric.weights.forEach((weight) => weightLookup.set(weight.id, weight))
-  }
-  const weightAndProfileToCalibration = new Map<number, Map<number, Calibration>>()
-  if (rubric) {
-    rubric.weights.forEach((weight) => {
-      const profileToCalibration = new Map<number, Calibration>()
-
-      weight.profileWeights.forEach((calibration) => {
-        profileToCalibration.set(calibration.profileId, calibration)
-      })
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      weightAndProfileToCalibration.set(weight.id!, profileToCalibration)
-    })
-  }
-
   const renderScore = (score: Score) => {
-    const author = profileLookup.get(score.profileId)?.displayName ?? 'Unknown'
+    const author = profileById.get(score.profileId)?.displayName ?? 'Unknown'
     const scoreTitle = `${score.name} by ${author}`
-    const scoreCalculations = new Map()
-    let totalScore = 0
-    score.scoreWeights.forEach((scoreWeight) => {
-      const profileToCalibration = weightAndProfileToCalibration.get(scoreWeight.weightId)
-      if (profileToCalibration) {
-        const calibration = profileToCalibration.get(score.profileId)
-        if (calibration) {
-          const calculated = scoreWeight.value * calibration.value
-          totalScore += calculated
-          scoreCalculations.set(scoreWeight.weightId, calculated)
-        }
-      }
-    })
 
     return (
       <div key={score.id}>
@@ -71,14 +40,16 @@ const ScoreAnalysis = () => {
             <thead>
               <td>Total</td>
               {score.scoreWeights.map((scoreWeight) => (
-                <td key={scoreWeight.id}>{weightLookup.get(scoreWeight.weightId)?.name}</td>
+                <td key={scoreWeight.id}>{weightById.get(scoreWeight.weightId)?.name}</td>
               ))}
             </thead>
             <tbody>
               <tr>
-                <td>{totalScore}</td>
+                <td>{calculationsByScoreNameUserWeight.get(score.name)?.get(score.profileId)?.get(-1)}</td>
                 {score.scoreWeights.map((scoreWeight) => (
-                  <td key={scoreWeight.id}>{scoreCalculations.get(scoreWeight.weightId)}</td>
+                  <td key={scoreWeight.id}>
+                    {calculationsByScoreNameUserWeight.get(score.name)?.get(score.profileId)?.get(scoreWeight.weightId)}
+                  </td>
                 ))}
               </tr>
             </tbody>
