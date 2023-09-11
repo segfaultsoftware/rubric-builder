@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { fetchRubric, selectRubric, type Weight } from '../rubric/rubricSlice'
+import { type Calibration, fetchRubric, selectRubric, type Weight } from '../rubric/rubricSlice'
 import { fetchScoresForRubricId, type Score, selectScoresForRubric } from './scoreSlice'
 import { fetchProfiles, type Profile, selectAllProfiles } from '../profile/profileSlice'
 
@@ -32,11 +32,36 @@ const ScoreAnalysis = () => {
   if (rubric) {
     rubric.weights.forEach((weight) => weightLookup.set(weight.id, weight))
   }
+  const weightAndProfileToCalibration = new Map<number, Map<number, Calibration>>()
+  if (rubric) {
+    rubric.weights.forEach((weight) => {
+      const profileToCalibration = new Map<number, Calibration>()
+
+      weight.profileWeights.forEach((calibration) => {
+        profileToCalibration.set(calibration.profileId, calibration)
+      })
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      weightAndProfileToCalibration.set(weight.id!, profileToCalibration)
+    })
+  }
 
   const renderScore = (score: Score) => {
     const author = profileLookup.get(score.profileId)?.displayName ?? 'Unknown'
     const scoreTitle = `${score.name} by ${author}`
-    const totalScore = score.scoreWeights.reduce((prev, curr) => prev + curr.value, 0)
+    const scoreCalculations = new Map()
+    let totalScore = 0
+    score.scoreWeights.forEach((scoreWeight) => {
+      const profileToCalibration = weightAndProfileToCalibration.get(scoreWeight.weightId)
+      if (profileToCalibration) {
+        const calibration = profileToCalibration.get(score.profileId)
+        if (calibration) {
+          const calculated = scoreWeight.value * calibration.value
+          totalScore += calculated
+          scoreCalculations.set(scoreWeight.weightId, calculated)
+        }
+      }
+    })
 
     return (
       <div key={score.id}>
@@ -53,7 +78,7 @@ const ScoreAnalysis = () => {
               <tr>
                 <td>{totalScore}</td>
                 {score.scoreWeights.map((scoreWeight) => (
-                  <td key={scoreWeight.id}>{scoreWeight.value}</td>
+                  <td key={scoreWeight.id}>{scoreCalculations.get(scoreWeight.weightId)}</td>
                 ))}
               </tr>
             </tbody>
