@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { fetchRubric, selectRubric, selectWeightByWeightId } from '../rubric/rubricSlice'
-import { fetchScoresForRubricId, type Score, selectScoreCalculationsMap, selectScoresForRubric } from './scoreSlice'
+import { fetchScoresForRubricId, selectScoreCalculationsMap, selectScoresForRubric } from './scoreSlice'
 import { fetchProfiles, selectAllProfiles, selectProfileByProfileId } from '../profile/profileSlice'
+import ScoreSummary from './ScoreSummary'
 
 const ScoreAnalysis = () => {
   const dispatch = useAppDispatch()
@@ -28,42 +29,23 @@ const ScoreAnalysis = () => {
     dispatch(fetchProfiles())
   }, [])
 
-  const renderScore = (score: Score) => {
-    const author = profileById.get(score.profileId)?.displayName ?? 'Unknown'
-    const scoreTitle = `${score.name} by ${author}`
-
-    return (
-      <div key={score.id}>
-        <div>{scoreTitle}</div>
-        <div>
-          <table>
-            <thead>
-              <td>Total</td>
-              {score.scoreWeights.map((scoreWeight) => (
-                <td key={scoreWeight.id}>{weightById.get(scoreWeight.weightId)?.name}</td>
-              ))}
-            </thead>
-            <tbody>
-              <tr>
-                <td>{calculationsByScoreNameUserWeight.get(score.name)?.get(score.profileId)?.get(-1)}</td>
-                {score.scoreWeights.map((scoreWeight) => (
-                  <td key={scoreWeight.id}>
-                    {calculationsByScoreNameUserWeight.get(score.name)?.get(score.profileId)?.get(scoreWeight.weightId)}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )
-  }
+  const uniqueScoreNames: string[] = useMemo(() => {
+    return Array.from(calculationsByScoreNameUserWeight.keys())
+  }, [scores])
 
   return rubric && profiles.length
     ? (
     <>
       <header><h1>Analysis for {rubric.name}</h1></header>
-      {scores.map((score) => renderScore(score))}
+      {uniqueScoreNames.map((scoreName) => (
+        <ScoreSummary
+          key={scoreName}
+          calculationsByUserWeight={calculationsByScoreNameUserWeight.get(scoreName) ?? new Map()}
+          profileById={profileById}
+          scoreName={scoreName}
+          weightById={weightById}
+        />
+      ))}
     </>
       )
     : <div>Loading...</div>

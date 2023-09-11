@@ -84,6 +84,20 @@ export const { clearCreateScoreStatus } = scoreSlice.actions
 export const selectCreateScoreStatus = (state: RootState) => state.score.createScoreStatus
 export const selectScoresForRubric = (state: RootState) => state.score.scores
 
+export const selectScoresByName = createSelector(
+  selectScoresForRubric,
+  (scores) => {
+    const scoresByName = new Map<string, Score[]>()
+
+    scores.forEach((score) => {
+      const scoresAtName = scoresByName.get(score.name) ?? []
+      scoresByName.set(score.name, [...scoresAtName, score])
+    })
+
+    return scoresByName
+  }
+)
+
 export const selectScoreCalculationsMap = createSelector(
   selectScoresForRubric,
   selectCalibrationsByUserAndWeight,

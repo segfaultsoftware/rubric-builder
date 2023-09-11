@@ -1,131 +1,143 @@
-import { type Score, selectScoreCalculationsMap } from './scoreSlice'
+import { type Score, selectScoreCalculationsMap, selectScoresByName } from './scoreSlice'
 import { type Calibration, type Weight } from '../rubric/rubricSlice'
 import { type Profile } from '../profile/profileSlice'
 
 describe('scoreSlice', () => {
+  let user1: Profile
+  let user2: Profile
+
+  let calibrationUser1Weight1: Calibration
+  let calibrationUser1Weight2: Calibration
+  let calibrationUser2Weight1: Calibration
+  let calibrationUser2Weight2: Calibration
+
+  let weight1: Weight
+  let weight2: Weight
+
+  let calibrationsByUserAndWeight: Map<number, Map<number, Calibration>>
+
+  const scoreName1 = '123 Place Ct'
+  const scoreName2 = '999 Foobar Blvd'
+
+  let scoreName1User1: Score
+  let scoreName2User1: Score
+  let scoreName2User2: Score
+
+  beforeEach(() => {
+    user1 = { id: 1, displayName: 'User One' }
+    user2 = { id: 2, displayName: 'User Two' }
+
+    calibrationUser1Weight1 = {
+      id: 11,
+      profileId: user1.id,
+      weightId: 1,
+      value: 3
+    }
+    calibrationUser1Weight2 = {
+      id: 12,
+      profileId: user1.id,
+      weightId: 2,
+      value: 5
+    }
+    calibrationUser2Weight1 = {
+      id: 21,
+      profileId: user2.id,
+      weightId: 1,
+      value: 7
+    }
+    calibrationUser2Weight2 = {
+      id: 22,
+      profileId: user2.id,
+      weightId: 2,
+      value: 11
+    }
+
+    weight1 = {
+      id: 1,
+      name: 'Weight 1',
+      description: '',
+      profileWeights: [
+        calibrationUser1Weight1,
+        calibrationUser2Weight1
+      ]
+    }
+
+    weight2 = {
+      id: 2,
+      name: 'Weight 2',
+      description: '',
+      profileWeights: [
+        calibrationUser1Weight2,
+        calibrationUser2Weight2
+      ]
+    }
+
+    calibrationsByUserAndWeight = new Map<number, Map<number, Calibration>>()
+    const calibrationsByUser1AndWeight = new Map<number, Calibration>()
+    calibrationsByUser1AndWeight.set(weight1.id!, calibrationUser1Weight1)
+    calibrationsByUser1AndWeight.set(weight2.id!, calibrationUser1Weight2)
+    const calibrationsByUser2AndWeight = new Map<number, Calibration>()
+    calibrationsByUser2AndWeight.set(weight1.id!, calibrationUser2Weight1)
+    calibrationsByUser2AndWeight.set(weight2.id!, calibrationUser2Weight2)
+
+    calibrationsByUserAndWeight.set(user1.id, calibrationsByUser1AndWeight)
+    calibrationsByUserAndWeight.set(user2.id, calibrationsByUser2AndWeight)
+
+    scoreName1User1 = {
+      id: 1,
+      name: scoreName1,
+      rubricId: 999,
+      profileId: user1.id,
+      scoreWeights: [{
+        weightId: 1,
+        value: 1
+      }, {
+        weightId: 2,
+        value: 2
+      }]
+    }
+    scoreName2User1 = {
+      id: 2,
+      name: scoreName2,
+      rubricId: 999,
+      profileId: user1.id,
+      scoreWeights: [{
+        weightId: 1,
+        value: 3
+      }, {
+        weightId: 2,
+        value: 4
+      }]
+    }
+    scoreName2User2 = {
+      id: 3,
+      name: scoreName2,
+      rubricId: 999,
+      profileId: user2.id,
+      scoreWeights: [{
+        weightId: 1,
+        value: 5
+      }, {
+        weightId: 2,
+        value: 0
+      }]
+    }
+  })
+
   describe('selectors', () => {
-    describe('selectScoreCalculationsMap', () => {
-      let user1: Profile
-      let user2: Profile
+    describe('selectScoresByName', () => {
+      it('returns a map of score name to list of scores', () => {
+        expect(selectScoresByName.resultFunc([])).toEqual(new Map())
 
-      let calibrationUser1Weight1: Calibration
-      let calibrationUser1Weight2: Calibration
-      let calibrationUser2Weight1: Calibration
-      let calibrationUser2Weight2: Calibration
+        const expected = new Map<string, Score[]>()
+        expected.set(scoreName1, [scoreName1User1])
+        expected.set(scoreName2, [scoreName2User1, scoreName2User2])
 
-      let weight1: Weight
-      let weight2: Weight
-
-      let calibrationsByUserAndWeight: Map<number, Map<number, Calibration>>
-
-      const scoreName1 = '123 Place Ct'
-      const scoreName2 = '999 Foobar Blvd'
-
-      let scoreName1User1: Score
-      let scoreName2User1: Score
-      let scoreName2User2: Score
-
-      beforeEach(() => {
-        user1 = { id: 1, displayName: 'User One' }
-        user2 = { id: 2, displayName: 'User Two' }
-
-        calibrationUser1Weight1 = {
-          id: 11,
-          profileId: user1.id,
-          weightId: 1,
-          value: 3
-        }
-        calibrationUser1Weight2 = {
-          id: 12,
-          profileId: user1.id,
-          weightId: 2,
-          value: 5
-        }
-        calibrationUser2Weight1 = {
-          id: 21,
-          profileId: user2.id,
-          weightId: 1,
-          value: 7
-        }
-        calibrationUser2Weight2 = {
-          id: 22,
-          profileId: user2.id,
-          weightId: 2,
-          value: 11
-        }
-
-        weight1 = {
-          id: 1,
-          name: 'Weight 1',
-          description: '',
-          profileWeights: [
-            calibrationUser1Weight1,
-            calibrationUser2Weight1
-          ]
-        }
-
-        weight2 = {
-          id: 2,
-          name: 'Weight 2',
-          description: '',
-          profileWeights: [
-            calibrationUser1Weight2,
-            calibrationUser2Weight2
-          ]
-        }
-
-        calibrationsByUserAndWeight = new Map<number, Map<number, Calibration>>()
-        const calibrationsByUser1AndWeight = new Map<number, Calibration>()
-        calibrationsByUser1AndWeight.set(weight1.id!, calibrationUser1Weight1)
-        calibrationsByUser1AndWeight.set(weight2.id!, calibrationUser1Weight2)
-        const calibrationsByUser2AndWeight = new Map<number, Calibration>()
-        calibrationsByUser2AndWeight.set(weight1.id!, calibrationUser2Weight1)
-        calibrationsByUser2AndWeight.set(weight2.id!, calibrationUser2Weight2)
-
-        calibrationsByUserAndWeight.set(user1.id, calibrationsByUser1AndWeight)
-        calibrationsByUserAndWeight.set(user2.id, calibrationsByUser2AndWeight)
-
-        scoreName1User1 = {
-          id: 1,
-          name: scoreName1,
-          rubricId: 999,
-          profileId: user1.id,
-          scoreWeights: [{
-            weightId: 1,
-            value: 1
-          }, {
-            weightId: 2,
-            value: 2
-          }]
-        }
-        scoreName2User1 = {
-          id: 2,
-          name: scoreName2,
-          rubricId: 999,
-          profileId: user1.id,
-          scoreWeights: [{
-            weightId: 1,
-            value: 3
-          }, {
-            weightId: 2,
-            value: 4
-          }]
-        }
-        scoreName2User2 = {
-          id: 3,
-          name: scoreName2,
-          rubricId: 999,
-          profileId: user2.id,
-          scoreWeights: [{
-            weightId: 1,
-            value: 5
-          }, {
-            weightId: 2,
-            value: 0
-          }]
-        }
+        expect(selectScoresByName.resultFunc([scoreName1User1, scoreName2User1, scoreName2User2])).toEqual(expected)
       })
+    })
 
+    describe('selectScoreCalculationsMap', () => {
       describe('with no scores and no calibrations', () => {
         it('returns an empty map', () => {
           expect(selectScoreCalculationsMap.resultFunc([], new Map())).toEqual(new Map())

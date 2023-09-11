@@ -23,9 +23,16 @@ describe('ScoreAnalysis', () => {
   let user1: Profile
   let user2: Profile
 
+  let scoreName1: string
+  let scoreName2: string
+
   let scoreName1User1: Score
   let scoreName2User1: Score
   let scoreName2User2: Score
+
+  let scoreName1User1Total: number
+  let scoreName2User1Total: number
+  let scoreName2User2Total: number
 
   let serverStubs: ServerStub[]
   let server: ReturnType<typeof setupServerWithStubs>
@@ -88,39 +95,35 @@ describe('ScoreAnalysis', () => {
       authorId: user1.id
     }
 
+    scoreName1 = '123 Mangrum'
     scoreName1User1 = {
       id: 9,
-      name: '123 Mangrum',
+      name: scoreName1,
       profileId: user1.id,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       rubricId: rubric.id!,
       scoreWeights: [{
         id: 1,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         weightId: weight1.id!,
         value: 11
       }, {
         id: 2,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         weightId: weight2.id!,
         value: 12
       }]
     }
 
+    scoreName2 = '425 1st St Unit 1006'
     scoreName2User1 = {
       id: 10,
-      name: '425 1st St Unit 1006',
+      name: scoreName2,
       profileId: user1.id,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       rubricId: rubric.id!,
       scoreWeights: [{
         id: 3,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         weightId: weight1.id!,
         value: 13
       }, {
         id: 4,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         weightId: weight2.id!,
         value: 14
       }]
@@ -128,22 +131,23 @@ describe('ScoreAnalysis', () => {
 
     scoreName2User2 = {
       id: 11,
-      name: scoreName2User1.name,
+      name: scoreName2,
       profileId: user2.id,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       rubricId: rubric.id!,
       scoreWeights: [{
         id: 5,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         weightId: weight1.id!,
         value: 15
       }, {
         id: 6,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         weightId: weight2.id!,
         value: 16
       }]
     }
+
+    scoreName1User1Total = calibrationForUser1Weight1.value * scoreName1User1.scoreWeights[0].value + calibrationForUser1Weight2.value * scoreName1User1.scoreWeights[1].value
+    scoreName2User1Total = calibrationForUser1Weight1.value * scoreName2User1.scoreWeights[0].value + calibrationForUser1Weight2.value * scoreName2User1.scoreWeights[1].value
+    scoreName2User2Total = calibrationForUser2Weight1.value * scoreName2User2.scoreWeights[0].value + calibrationForUser2Weight2.value * scoreName2User2.scoreWeights[1].value
 
     serverStubs = []
   })
@@ -179,20 +183,20 @@ describe('ScoreAnalysis', () => {
       })
     })
 
-    it('renders the calculated scores per score name and user', async () => {
+    it('displays a list of score names with high level stats', async () => {
       const { findByText } = render()
 
-      const name1User1Section = await findByText(`${scoreName1User1.name} by ${user1.displayName}`)
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const name1User1Table = name1User1Section.parentElement!
-      const name1User1Weight1Score = calibrationForUser1Weight1.value * scoreName1User1.scoreWeights[0].value
-      const name1User1Weight2Score = calibrationForUser1Weight2.value * scoreName1User1.scoreWeights[1].value
-      const name1User1TotalScore = name1User1Weight1Score + name1User1Weight2Score
+      const scoreName1Header = await findByText(`Scores for ${scoreName1}`)
+      const scoreName1Section = scoreName1Header.parentElement!
 
-      expect(await findByText(name1User1Weight1Score)).toBeInTheDocument()
-      expect(await within(name1User1Table).findByText(name1User1Weight1Score)).toBeInTheDocument()
-      expect(await within(name1User1Table).findByText(name1User1Weight2Score)).toBeInTheDocument()
-      expect(await within(name1User1Table).findByText(name1User1TotalScore)).toBeInTheDocument()
+      expect(await within(scoreName1Section).findByText(`Total for ${user1.displayName}: ${scoreName1User1Total}`)).toBeInTheDocument()
+      expect(within(scoreName1Section).queryByText(`Total for ${user2.displayName}`)).not.toBeInTheDocument()
+
+      const scoreName2Header = await findByText(`Scores for ${scoreName2}`)
+      const scoreName2Section = scoreName2Header.parentElement!
+
+      expect(await within(scoreName2Section).findByText(`Total for ${user1.displayName}: ${scoreName2User1Total}`)).toBeInTheDocument()
+      expect(await within(scoreName2Section).findByText(`Total for ${user2.displayName}: ${scoreName2User2Total}`)).toBeInTheDocument()
     })
   })
 })

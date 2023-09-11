@@ -40,5 +40,10 @@ module.exports = {
         "@typescript-eslint/return-await": "off",
         "@typescript-eslint/strict-boolean-expressions": "off",
         "@typescript-eslint/triple-slash-reference": "off"
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
     }
 }
