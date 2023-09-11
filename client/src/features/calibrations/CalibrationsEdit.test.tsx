@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 
 import { type Calibration, type Rubric, type Weight } from '../rubric/rubricSlice'
 import { type Profile } from '../profile/profileSlice'
-import { renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
+import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import CalibrationsEdit from './CalibrationsEdit'
 
 describe('CalibrationsEdit', () => {
@@ -165,7 +165,30 @@ describe('CalibrationsEdit', () => {
     })
 
     describe('after updating values', () => {
+      it('notifies of the save', async () => {
+        const { user, findByLabelText, findByRole, findByText } = render()
 
+        const weight1Input = await findByLabelText(new RegExp(weight1.name))
+        await user.clear(weight1Input)
+        await user.type(weight1Input, '23.456')
+
+        const putCalibrationsPromise = addStubToServer(server, {
+          method: 'put',
+          url: `/api/v1/rubrics/${rubric.id}/calibrations.json`,
+          json: {}
+        })
+
+        const saveButton = await findByRole('button')
+        await user.click(saveButton)
+
+        expect(await findByText(/Saved at /)).toBeInTheDocument()
+
+        const putCalibrations = await putCalibrationsPromise as any
+        expect(putCalibrations.calibrations?.length).toEqual(1)
+        expect(putCalibrations.calibrations[0].profile_id).toEqual(loggedInAs.id)
+        expect(putCalibrations.calibrations[0].weight_id).toEqual(weight1.id)
+        expect(putCalibrations.calibrations[0].value).toEqual('23.456')
+      })
     })
   })
 })

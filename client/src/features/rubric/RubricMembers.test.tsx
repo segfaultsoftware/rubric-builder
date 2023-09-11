@@ -31,7 +31,8 @@ describe('RubricMembers', () => {
             rubric: {
               rubric,
               rubrics: [],
-              saveRubricState: 'initial'
+              saveRubricState: 'initial',
+              saveCalibrationsState: 'initial'
             }
           }
         }

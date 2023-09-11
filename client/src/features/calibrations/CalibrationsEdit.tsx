@@ -5,12 +5,18 @@ import {
   fetchRubric,
   selectCalibrationsByUserAndWeight,
   selectRubric,
+  selectSaveCalibrationsState,
   updateCalibrationsForRubric,
   type Weight
 } from '../rubric/rubricSlice'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import { useParams } from 'react-router-dom'
 import { toNumber } from 'lodash'
+
+interface Notification {
+  id: number
+  message: string
+}
 
 const CalibrationsEdit = () => {
   const dispatch = useAppDispatch()
@@ -19,8 +25,10 @@ const CalibrationsEdit = () => {
   const rubric = useAppSelector(selectRubric)
   const loggedInAs = useAppSelector(selectLoggedInAs)
   const calibrationsByUserAndWeight = useAppSelector(selectCalibrationsByUserAndWeight)
+  const saveState = useAppSelector(selectSaveCalibrationsState)
 
   const [calibrationsByWeight, setCalibrationsByWeight] = useState(new Map())
+  const [notifications, setNotifications] = useState<Notification[]>([])
 
   useEffect(() => {
     if (rubricId) {
@@ -33,6 +41,17 @@ const CalibrationsEdit = () => {
       setCalibrationsByWeight(calibrationsByUserAndWeight.get(loggedInAs.id) || new Map())
     }
   }, [calibrationsByUserAndWeight, loggedInAs])
+
+  useEffect(() => {
+    if (saveState === 'saved') {
+      const savedAt = new Date()
+      const notification: Notification = {
+        id: savedAt.getTime(),
+        message: `Saved at ${savedAt.toString()}`
+      }
+      setNotifications([...notifications, notification])
+    }
+  }, [saveState])
 
   const handleCalibrationChange = (weight: Weight, value: string) => {
     const updatedMap = new Map(calibrationsByWeight)
@@ -108,6 +127,11 @@ const CalibrationsEdit = () => {
     ? (
     <>
       <header><h1>Calibrate {rubric.name}</h1></header>
+      <ul>
+        {notifications.map((notification) => (
+          <li key={notification.id}>{notification.message}</li>
+        ))}
+      </ul>
       {rubric.weights.map((weight) => renderCalibration(weight))}
       <div>
         <button type='button' disabled={hasErrors} onClick={handleSave}>Save</button>
