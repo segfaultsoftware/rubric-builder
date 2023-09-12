@@ -5,6 +5,7 @@ import Logo from './Logo'
 import ProfileBadge from './features/profile/ProfileBadge'
 
 import styles from './NavBar.module.scss'
+import classNames from 'classnames'
 
 interface NavBarProps {
   isAuthenticationFlow?: boolean
@@ -18,25 +19,21 @@ const NavBar = (params: NavBarProps) => {
   const { isAuthenticationFlow } = { ...navBarPropsDefaults, ...params }
 
   return (
-    <div className="mb-3">
-      <header className={styles.header}>
-        <div>
-          <ul className={styles.links}>
-            <li><Link to={'rubrics'}>Your Rubrics</Link></li>
-          </ul>
-        </div>
+    <header className="row mb-3 align-items-center justify-content-between">
+      <div className='col-3'>
+        <Link to={'rubrics'}>Your Rubrics</Link>
+      </div>
 
-        <div className={styles.logo}>
-          <Link to={'/'}>
-            <Logo />
-          </Link>
-        </div>
+      <div className={classNames(styles.logo, 'col-6')}>
+        <Link to={'/'}>
+          <Logo />
+        </Link>
+      </div>
 
-        <div className={styles.badge}>
-          {!isAuthenticationFlow && <ProfileBadge />}
-        </div>
-      </header>
-    </div>
+      <div className={classNames(styles.badge, 'col-3')}>
+        {!isAuthenticationFlow && <ProfileBadge />}
+      </div>
+    </header>
   )
 }
 
