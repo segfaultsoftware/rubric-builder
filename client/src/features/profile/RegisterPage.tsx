@@ -45,16 +45,20 @@ const RegisterPage = ({ isEmbedded }: RegisterPageProps) => {
     />
       )
     : (
-    <div className='container-sm'>
+    <div className='container-sm col-xl-10 col-xxl-8 px-4 py-1'>
       <NavBar isAuthenticationFlow={true} />
-      <ProfileForm
-        errors={registrationErrors}
-        handleSubmit={handleSubmit}
-        isRegister
-        setProfile={setProfile}
-        submitLabel={'Register!'}
-        profile={profile}
-      />
+      <div className='row justify-content-center'>
+        <div className='col-md-10 col-lg-5 border rounded-3 bg-body-tertiary p-4 p-md-5'>
+          <ProfileForm
+            errors={registrationErrors}
+            handleSubmit={handleSubmit}
+            isRegister
+            setProfile={setProfile}
+            submitLabel={'Register!'}
+            profile={profile}
+          />
+        </div>
+      </div>
     </div>
       )
 }

@@ -29,7 +29,7 @@ module Users
 
     def user_not_created
       {
-        message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}"
+        errors: resource.errors
       }
     end
   end

@@ -1,9 +1,9 @@
 import { injectJWTFromCookies, saveJWTinCookie } from './Authentication'
 
 export class FetchNotOkError extends Error {
-  payload: object
+  payload: Record<string, object>
 
-  constructor (message: string, payload: object) {
+  constructor (message: string, payload: Record<string, object>) {
     super(message)
     this.name = this.constructor.name
     this.payload = payload
@@ -45,7 +45,7 @@ async function handleResponse (response: Response): Promise<any> {
   const text = await response.text()
   const json = text.trim().length > 0 ? JSON.parse(text) : {}
   if (!response.ok) {
-    throw new FetchNotOkError(response.statusText, { message: text })
+    throw new FetchNotOkError(response.statusText, { message: json })
   }
 
   saveJWTinCookie({ response })

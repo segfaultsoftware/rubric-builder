@@ -32,20 +32,20 @@ const ProfileForm = (params: ProfileFormProps) => {
 
   const renderErrors = () => {
     return (
-      <div>
-        {errors.map(error => <div key={error}>{error}</div>)}
+      <div className='alert alert-danger' role='alert'>
+        {errors.map(error => (
+          <div key={error}>{error}</div>
+        ))}
       </div>
     )
   }
 
   return (
-    <div>
-      {/* TODO NavBar */}
       <div>
         {errors.length > 0 && renderErrors()}
         <form onSubmit={handleSubmit}>
-          <div>
-            <label>
+          <div className='mb-2'>
+            <label className='form-label w-100'>
               Email address
               <input
                 type='email'
@@ -53,40 +53,44 @@ const ProfileForm = (params: ProfileFormProps) => {
                 value={profile.email}
                 onChange={handleChange}
                 aria-describedby='emailHelp'
+                className='form-control'
               />
-              <div id='emailHelp'>We will never share your email with anyone else.</div>
+              <div id='emailHelp' className='form-text'>
+                We will never share your email with anyone else.
+              </div>
             </label>
           </div>
-          <div>
-            <label>
+          <div className='mb-2'>
+            <label className='form-label w-100'>
               Password
               <input
                 type="password"
                 name="password"
                 value={profile.password}
                 onChange={handleChange}
+                className='form-control'
               />
             </label>
           </div>
           {isRegister && (
-            <div>
-              <label>
+            <div className='mb-4'>
+              <label className='form-label w-100'>
                 Password Confirmation
                 <input
                   type='password'
                   name='passwordConfirmation'
                   value={profile.passwordConfirmation}
                   onChange={handleChange}
+                  className='form-control'
                 />
               </label>
             </div>
           )}
           <div>
-            <button type='submit'>{submitLabel}</button>
+            <button type='submit' className='btn btn-primary'>{submitLabel}</button>
           </div>
         </form>
       </div>
-    </div>
   )
 }
 

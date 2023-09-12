@@ -43,7 +43,7 @@ export const register = createAsyncThunk<Profile, ProfileAuthentication, { rejec
       return camelCaseKeys(json) as Profile
     } catch (err) {
       if (err instanceof FetchNotOkError) {
-        return rejectWithValue(err.payload as RegistrationError)
+        return rejectWithValue(err.payload.message as RegistrationError)
       }
       return rejectWithValue({
         errors: {
@@ -131,7 +131,10 @@ export const profileSlice = createSlice({
             const registerErrors: string[] = []
             for (const [userProperty, propertyErrors] of Object.entries(errors)) {
               propertyErrors.forEach(propertyError => {
-                registerErrors.push(`${userProperty} ${propertyError}`)
+                const firstLetter = userProperty.charAt(0).toUpperCase()
+                const remainingLetters = userProperty.slice(1)
+                const capitalizedWord = firstLetter + remainingLetters
+                registerErrors.push(`${capitalizedWord} ${propertyError}`)
               })
             }
             state.registerErrors = registerErrors
