@@ -66,6 +66,13 @@ export const login = createAsyncThunk(
   }
 )
 
+export const logout = createAsyncThunk(
+  'profile/logout',
+  async () => {
+    return await fetchWrapper.delete('/logout.json')
+  }
+)
+
 export const getLoggedInAs = createAsyncThunk(
   'profile/getLoggedInAs',
   async () => {
@@ -109,6 +116,12 @@ export const profileSlice = createSlice({
       .addCase(register.fulfilled, (state, action) => {
         state.loggedInAs = action.payload
         state.registerErrors = []
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.loggedInAs = null
+      })
+      .addCase(logout.rejected, (state) => {
+        state.loggedInAs = null
       })
       .addCase(register.rejected, (state, action) => {
         const { payload } = action
