@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_11_234938) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_12_004957) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -29,6 +29,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_11_234938) do
     t.string "display_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
   end
 
   create_table "rubric_profiles", force: :cascade do |t|
@@ -96,5 +98,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_11_234938) do
     t.index ["rubric_id"], name: "index_weights_on_rubric_id"
   end
 
+  add_foreign_key "profiles", "users"
   add_foreign_key "rubrics", "profiles", column: "author_id"
 end

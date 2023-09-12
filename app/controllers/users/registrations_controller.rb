@@ -16,33 +16,33 @@ module Users
         render json: user_not_created, status: :unprocessable_entity
       end
     end
-  end
 
-  def signed_up_successfully
-    {
-      status: {
-        code: 200,
-        message: 'Signed up successfully.',
-        data: UserSerializer.new(resource).serializable_hash[:data][:attributes]
+    def signed_up_successfully
+      {
+        status: {
+          code: 200,
+          message: 'Signed up successfully.',
+          data: UserSerializer.new(resource).serializable_hash[:data][:attributes]
+        }
       }
-    }
-  end
+    end
 
-  def account_deleted_successfully
-    {
-      status: {
-        code: 200,
-        message: 'Account deleted successfully.'
+    def account_deleted_successfully
+      {
+        status: {
+          code: 200,
+          message: 'Account deleted successfully.'
+        }
       }
-    }
-  end
+    end
 
-  def user_not_created
-    {
-      status: {
-        code: 422,
-        message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}"
+    def user_not_created
+      {
+        status: {
+          code: 422,
+          message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}"
+        }
       }
-    }
+    end
   end
 end
