@@ -14,7 +14,7 @@
     "yarn": "1.22.19"
   },
   "scripts": {
-    "build": "cd yarn && yarn install && yarn build",
+    "build": "yarn --cwd client install && yarn --cwd client build",
     "deploy": "cp -a client/build/. public/",
     "eslint": "eslint client/src --ext .ts --ext .tsx --ext .js -c client/.eslintrc.js",
     "heroku-postbuild": "yarn build && yarn deploy",
