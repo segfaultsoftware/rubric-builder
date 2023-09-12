@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { type RootState } from '../../app/store'
 import { camelCaseKeys, FetchNotOkError, fetchWrapper } from '../../api/FetchWrapper'
 
@@ -93,8 +93,9 @@ export const profileSlice = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-    setProfile: (state, action: PayloadAction<Profile | null>) => {
-      state.loggedInAs = action.payload
+    clearAuthenticationErrors: (state) => {
+      state.registerErrors = []
+      state.loginError = undefined
     }
   },
   extraReducers: (builder) => {
@@ -146,7 +147,7 @@ export const profileSlice = createSlice({
   }
 })
 
-export const { setProfile } = profileSlice.actions
+export const { clearAuthenticationErrors } = profileSlice.actions
 
 export const selectAllProfiles = (state: RootState) => state.profile.profiles
 export const selectLoggedInAs = (state: RootState) => state.profile.loggedInAs

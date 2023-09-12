@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { type ProfileAuthentication, register, selectLoggedInAs, selectRegistrationErrors } from './profileSlice'
+import {
+  clearAuthenticationErrors,
+  type ProfileAuthentication,
+  register,
+  selectLoggedInAs,
+  selectRegistrationErrors
+} from './profileSlice'
 import { useNavigate } from 'react-router-dom'
 import ProfileForm from './ProfileForm'
 import NavBar from '../../NavBar'
@@ -21,6 +27,12 @@ const RegisterPage = ({ isEmbedded }: RegisterPageProps) => {
     password: '',
     passwordConfirmation: ''
   })
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearAuthenticationErrors())
+    }
+  }, [])
 
   useEffect(() => {
     if (loggedInAs) {
