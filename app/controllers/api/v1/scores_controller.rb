@@ -2,12 +2,13 @@ module Api
   module V1
     class ScoresController < ApplicationController
       def index
-        rubric = Rubric.find(params[:rubric_id])
+        rubric = current_profile.rubrics.find(params[:rubric_id])
         render json: rubric.scores.map { |score| serialize(score) }
       end
 
       def create
-        score = Score.create!(score_params)
+        rubric = current_profile.rubrics.find(params[:rubric_id])
+        score = rubric.scores.create!(score_params.merge(profile_id: current_profile.id))
         render json: serialize(score)
       end
 
@@ -16,7 +17,6 @@ module Api
       def score_params
         params.require(:score).permit(
           :name,
-          :profile_id,
           :rubric_id,
           score_weights_attributes: [
             :weight_id, :value

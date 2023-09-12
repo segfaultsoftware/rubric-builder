@@ -32,7 +32,7 @@ const RubricIndex = () => {
 
   return (
     <div>
-      <span>Rubrics You Can See:</span>
+      <h1>Your Rubrics:</h1>
       <ol>
         {rubricList()}
       </ol>

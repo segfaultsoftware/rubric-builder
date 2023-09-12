@@ -3,19 +3,9 @@ module Api
     class CalibrationsController < ApplicationController
       def update
         calibrations = params[:calibrations]
-        ProfileWeight.update_calibrations!(calibrations)
+        ProfileWeight.update_calibrations!(calibrations, current_profile)
 
         render head: :ok
-      end
-
-      private
-
-      def rubric_id
-        params[:rubric_id]
-      end
-
-      def rubric
-        Rubric.find(rubric_id)
       end
     end
   end

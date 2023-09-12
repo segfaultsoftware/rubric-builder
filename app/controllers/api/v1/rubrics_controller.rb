@@ -2,33 +2,32 @@ module Api
   module V1
     class RubricsController < ApplicationController
       def index
-        json = Rubric.all.map do |rubric|
+        json = current_profile.rubrics.map do |rubric|
           serialize(rubric)
         end
         render json:
       end
 
       def show
-        rubric = Rubric.find(params[:id])
+        rubric = current_profile.rubrics.find(params[:id])
         render json: serialize(rubric)
       end
 
       def create
-        rubric = Rubric.create!(rubric_params)
-        rubric.profiles << rubric.author
+        rubric = current_profile.rubrics.create!(rubric_params.merge(author_id: current_profile.id))
         rubric.initialize_profile_weights!
         render json: serialize(rubric)
       end
 
       def update
-        rubric = Rubric.find(params[:id])
+        rubric = current_profile.rubrics.find(params[:id])
         rubric.update(rubric_params)
         rubric.initialize_profile_weights!
         render json: serialize(rubric)
       end
 
       def destroy
-        rubric = Rubric.find(params[:id])
+        rubric = current_profile.rubrics.find(params[:id])
         rubric.destroy
         render json: {}
       end
@@ -38,7 +37,6 @@ module Api
       def rubric_params
         params.require(:rubric).permit(
           :name,
-          :author_id,
           weights_attributes: [
             :id, :name, :description, :_destroy
           ]

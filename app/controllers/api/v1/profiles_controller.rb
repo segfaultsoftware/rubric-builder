@@ -2,13 +2,10 @@ module Api
   module V1
     class ProfilesController < ApplicationController
       def index
-        render json: Profile.all
+        render json: current_profile.rubrics.map(&:profiles).flatten.uniq
       end
 
-      def create
-        render json: Profile.create!(profile_params)
-      end
-
+      # TODO: maybe move this into a RubricProfilesController?
       def destroy
         rubric_profile = RubricProfile.find_by(profile_id:, rubric_id:)
         rubric_profile.destroy if rubric_profile.present?
@@ -17,12 +14,8 @@ module Api
 
       private
 
-      def profile_params
-        params.require(:profile).permit(:display_name)
-      end
-
       def profile_id
-        params[:id]
+        current_profile.id
       end
 
       def rubric_id
