@@ -76,7 +76,7 @@ function request (method: string) {
       ...(userOptions.body != null && { body: JSON.stringify(userOptions.body) })
     }
 
-    if (userOptions.useJIT != null) {
+    if (userOptions.useJIT) {
       injectJWTFromCookies(requestOptions.headers)
     }
     return await fetch(url, requestOptions).then(handleResponse)

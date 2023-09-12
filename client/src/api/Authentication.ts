@@ -2,7 +2,7 @@ import { getCookie, setCookie } from 'typescript-cookie'
 
 export const saveJWTinCookie = ({ response }: { response: Response }): void => {
   const jwtToken = response.headers.get('authorization')
-  if (jwtToken != null) {
+  if (jwtToken) {
     setCookie('jwt_token', jwtToken, {
       expires: 7,
       path: '/',
@@ -14,7 +14,7 @@ export const saveJWTinCookie = ({ response }: { response: Response }): void => {
 
 export const injectJWTFromCookies = (headers: Headers): Headers => {
   const jwt = getCookie('jwt_token')
-  if (jwt != null) {
+  if (jwt) {
     headers.set('Authorization', jwt)
   }
   return headers
