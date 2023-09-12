@@ -19,7 +19,7 @@ const RootLayout = () => {
 
   return (
     <div className="container-sm col-xl-10 col-xxl-8 px-4 py-1">
-      <NavBar />
+      <NavBar loggedInAs={loggedInAs} />
       <Outlet />
     </div>
   )

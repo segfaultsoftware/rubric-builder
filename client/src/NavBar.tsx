@@ -6,22 +6,25 @@ import ProfileBadge from './features/profile/ProfileBadge'
 
 import styles from './NavBar.module.scss'
 import classNames from 'classnames'
+import { type Profile } from './features/profile/profileSlice'
 
 interface NavBarProps {
   isAuthenticationFlow?: boolean
+  loggedInAs?: Profile | null
 }
 
 const navBarPropsDefaults: NavBarProps = {
-  isAuthenticationFlow: false
+  isAuthenticationFlow: false,
+  loggedInAs: null
 }
 
 const NavBar = (params: NavBarProps) => {
-  const { isAuthenticationFlow } = { ...navBarPropsDefaults, ...params }
+  const { isAuthenticationFlow, loggedInAs } = { ...navBarPropsDefaults, ...params }
 
   return (
     <header className="row mb-3 align-items-center justify-content-between">
       <div className='col-3'>
-        <Link to={'rubrics'}>Your Rubrics</Link>
+        {loggedInAs && <Link to={'rubrics'}>Your Rubrics</Link>}
       </div>
 
       <div className={classNames(styles.logo, 'col-6')}>

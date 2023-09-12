@@ -53,7 +53,7 @@ const RubricEdit = () => {
   }
 
   if (!author) {
-    return <div>Need to be logged in to edit rubrics.</div>
+    return <div>Loading...</div>
   }
 
   return hasFetched

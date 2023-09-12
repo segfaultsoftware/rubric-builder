@@ -19,6 +19,7 @@ import RegisterPage from './features/profile/RegisterPage'
 import LoginPage from './features/profile/LoginPage'
 
 import './index.css'
+import AuthenticationProtected from './AuthenticationProtected'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const container = document.getElementById('root')!
@@ -42,27 +43,27 @@ const router = createBrowserRouter([
       },
       {
         path: 'calibrations/:rubricId/edit',
-        element: <CalibrationsEdit />
+        element: <AuthenticationProtected><CalibrationsEdit /></AuthenticationProtected>
       },
       {
         path: 'rubrics',
-        element: <RubricIndex />
+        element: <AuthenticationProtected><RubricIndex /></AuthenticationProtected>
       },
       {
         path: 'rubrics/new',
-        element: <RubricNew />
+        element: <AuthenticationProtected><RubricNew /></AuthenticationProtected>
       },
       {
         path: 'rubrics/:rubricId/edit',
-        element: <RubricEdit />
+        element: <AuthenticationProtected><RubricEdit /></AuthenticationProtected>
       },
       {
         path: 'rubrics/:rubricId/scores/new',
-        element: <ScoreNew />
+        element: <AuthenticationProtected><ScoreNew /></AuthenticationProtected>
       },
       {
         path: 'rubrics/:rubricId/scores',
-        element: <ScoreAnalysis />
+        element: <AuthenticationProtected><ScoreAnalysis /></AuthenticationProtected>
       }
     ]
   }

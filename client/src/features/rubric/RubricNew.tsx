@@ -42,7 +42,7 @@ const RubricNew = () => {
       )
     : (
     <div>
-      Must be logged in to create a rubric.
+      Loading...
     </div>
       )
 }

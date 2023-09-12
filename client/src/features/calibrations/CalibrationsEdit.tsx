@@ -118,12 +118,7 @@ const CalibrationsEdit = () => {
 
   const hasErrors = Array.from(calibrationsByWeight.values()).find((calibration) => !!calibration.error)
 
-  if (!loggedInAs) {
-    return (
-      <div>Please log in to use this feature</div>
-    )
-  }
-  return rubric && calibrationsByWeight.size
+  return loggedInAs && rubric && calibrationsByWeight.size
     ? (
     <>
       <header><h1>Calibrate {rubric.name}</h1></header>
