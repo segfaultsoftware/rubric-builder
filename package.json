@@ -25,8 +25,5 @@
     "rubocop": "bundle exec rubocop -A",
     "start": "heroku local -f Procfile.dev",
     "test": "yarn run rspec && yarn run jest"
-  },
-  "dependencies": {
-    "typescript-cookie": "^1.0.6"
   }
 }
