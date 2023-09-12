@@ -1,24 +1,7 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
 
-Things you may want to cover:
+Reference project: https://github.com/utricularian/the-recipe-spreadsheet
+Which follows: https://bennierobinson.com/programming/2020/12/01/react-rails-setup.html
+For authentication: https://dakotaleemartinez.com/tutorials/devise-jwt-api-only-mode-for-authentication/
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...

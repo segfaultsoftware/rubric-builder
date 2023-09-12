@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { login, type ProfileAuthentication, selectLoggedInAs, selectLoginError } from './profileSlice'
 import ProfileForm from './ProfileForm'
+import NavBar from '../../NavBar'
 
 const LoginPage = () => {
   const dispatch = useAppDispatch()
@@ -32,13 +33,16 @@ const LoginPage = () => {
   const errors = loginError ? ['Username or password was incorrect.'] : []
 
   return (
-    <ProfileForm
-      errors={errors}
-      handleSubmit={handleSubmit}
-      setProfile={setProfile}
-      submitLabel={'Login'}
-      profile={profile}
-    />
+    <div className='container-sm'>
+      <NavBar isAuthenticationFlow={true} />
+      <ProfileForm
+        errors={errors}
+        handleSubmit={handleSubmit}
+        setProfile={setProfile}
+        submitLabel={'Login'}
+        profile={profile}
+      />
+    </div>
   )
 }
 

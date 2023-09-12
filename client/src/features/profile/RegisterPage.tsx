@@ -4,8 +4,13 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { type ProfileAuthentication, register, selectLoggedInAs, selectRegistrationErrors } from './profileSlice'
 import { useNavigate } from 'react-router-dom'
 import ProfileForm from './ProfileForm'
+import NavBar from '../../NavBar'
 
-const RegisterPage = () => {
+interface RegisterPageProps {
+  isEmbedded?: boolean
+}
+
+const RegisterPage = ({ isEmbedded }: RegisterPageProps) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const loggedInAs = useAppSelector(selectLoggedInAs)
@@ -28,7 +33,8 @@ const RegisterPage = () => {
     dispatch(register(profile))
   }
 
-  return (
+  return isEmbedded
+    ? (
     <ProfileForm
       errors={registrationErrors}
       handleSubmit={handleSubmit}
@@ -37,7 +43,20 @@ const RegisterPage = () => {
       submitLabel={'Register!'}
       profile={profile}
     />
-  )
+      )
+    : (
+    <div className='container-sm'>
+      <NavBar isAuthenticationFlow={true} />
+      <ProfileForm
+        errors={registrationErrors}
+        handleSubmit={handleSubmit}
+        isRegister
+        setProfile={setProfile}
+        submitLabel={'Register!'}
+        profile={profile}
+      />
+    </div>
+      )
 }
 
 export default RegisterPage

@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
+import './bootstrapOverrides.scss'
+
 import { store } from './app/store'
 import reportWebVitals from './reportWebVitals'
 import RootLayout from './RootLayout'

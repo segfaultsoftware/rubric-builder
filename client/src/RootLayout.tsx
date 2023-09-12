@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react'
 
-import { Link, Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from './app/hooks'
-import ProfileBadge from './features/profile/ProfileBadge'
 import { getLoggedInAs, selectLoggedInAs } from './features/profile/profileSlice'
 
-import styles from './RootLayout.module.css'
+import NavBar from './NavBar'
 
 const RootLayout = () => {
   const dispatch = useAppDispatch()
@@ -19,16 +18,8 @@ const RootLayout = () => {
   }, [loggedInAs])
 
   return (
-    <div>
-      <header className={styles.header}>
-        <div>
-          <ul className={styles.links}>
-            <li><Link to={'rubrics'}>Your Rubrics</Link></li>
-          </ul>
-        </div>
-
-        <ProfileBadge />
-      </header>
+    <div className="container-sm col-xl-10 col-xxl-8 px-4 py-1">
+      <NavBar />
       <Outlet />
     </div>
   )
