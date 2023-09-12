@@ -8,7 +8,7 @@ module Users
     private
 
     def respond_with(resource, _opts = {})
-      render json: logged_in_successfully(resource), status: :ok
+      render json: logged_in_successfully(resource), status: :created
     end
 
     def respond_to_on_destroy
@@ -20,25 +20,17 @@ module Users
     end
 
     def logged_in_successfully(resource)
-      {
-        status: {
-          code: 200,
-          message: 'Logged in successfully.'
-        },
-        data: UserSerializer.new(resource).serializable_hash[:data][:attributes]
-      }
+      UserSerializer.new(resource).serializable_hash[:data][:attributes]
     end
 
     def logged_out_successfully
       {
-        status: 200,
         message: 'Logged out successfully.'
       }
     end
 
     def not_logged_in
       {
-        status: 401,
         message: "Couldn't find an active session."
       }
     end

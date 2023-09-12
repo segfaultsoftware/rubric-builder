@@ -13,6 +13,8 @@ import RubricEdit from './features/rubric/RubricEdit'
 import CalibrationsEdit from './features/calibrations/CalibrationsEdit'
 import ScoreNew from './features/scores/ScoreNew'
 import ScoreAnalysis from './features/scores/ScoreAnalysis'
+import RegisterPage from './features/profile/RegisterPage'
+import LoginPage from './features/profile/LoginPage'
 
 import './index.css'
 
@@ -20,6 +22,14 @@ import './index.css'
 const container = document.getElementById('root')!
 const root = createRoot(container)
 const router = createBrowserRouter([
+  {
+    path: '/register',
+    element: <RegisterPage />
+  },
+  {
+    path: '/login',
+    element: <LoginPage />
+  },
   {
     path: '/',
     element: <RootLayout />,

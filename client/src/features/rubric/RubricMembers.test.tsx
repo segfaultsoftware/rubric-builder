@@ -26,7 +26,9 @@ describe('RubricMembers', () => {
           preloadedState: {
             profile: {
               loggedInAs: profile1,
-              profiles: [profile1, profile2, profile3]
+              profiles: [profile1, profile2, profile3],
+              loginError: undefined,
+              registerErrors: []
             },
             rubric: {
               rubric,

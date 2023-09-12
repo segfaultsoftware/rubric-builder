@@ -28,7 +28,9 @@ describe('ScoreNew', () => {
             id: 123,
             displayName: 'The Author'
           },
-          profiles: []
+          profiles: [],
+          loginError: undefined,
+          registerErrors: []
         }
       }
     }
