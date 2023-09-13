@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react'
+
+import { useParams } from 'react-router-dom'
+import classNames from 'classnames'
+
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { fetchRubric, type Rubric, selectRubric, selectSaveRubricState, updateRubric } from './rubricSlice'
-import { useParams } from 'react-router-dom'
 import RubricForm from './RubricForm'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import RubricMembers from './RubricMembers'
+
+import styles from './RubricEdit.module.scss'
 
 interface Notification {
   id: number
@@ -58,13 +63,15 @@ const RubricEdit = () => {
 
   return hasFetched
     ? (
-    <div className='text-center col-6 offset-3'>
+    <div className='text-center col-lg-6 offset-lg-3'>
       <header><h1>Edit a Rubric</h1></header>
-      <ul>
-        {notifications.map((notification) => (
-          <li key={notification.id}>{notification.message}</li>
-        ))}
-      </ul>
+      {notifications.length > 0 && (
+        <ul className='ps-0'>
+          {notifications.map((notification) => (
+            <li className={classNames(styles.notification, 'alert alert-info')} key={notification.id}>{notification.message}</li>
+          ))}
+        </ul>
+      )}
       <RubricForm
         author={author}
         rubric={rubric}

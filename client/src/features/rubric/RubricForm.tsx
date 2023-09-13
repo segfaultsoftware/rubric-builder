@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { type Rubric, type Weight } from './rubricSlice'
 import { type Profile } from '../profile/profileSlice'
 
@@ -83,40 +84,64 @@ const RubricForm = ({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor='rubric:name'>Name</label>
-        <input id='rubric:name' type='text' name='name' required value={rubric.name} onChange={handleRubricChange}/>
+      <div className='row mb-3'>
+        <label className='col-lg-2 col-form-label' htmlFor='rubric:name'>Name</label>
+        <div className='col-lg-10'>
+          <input
+            id='rubric:name'
+            className='form-control'
+            type='text'
+            name='name'
+            placeholder='Rubric Name'
+            required
+            value={rubric.name}
+            onChange={handleRubricChange}
+          />
+        </div>
       </div>
       <h3>Weights</h3>
       {rubric.weights.map((weight) => {
         const nameId = `weight:name:${weight.id}`
         const descriptionId = `weight:description:${weight.id}`
         return (
-          <div key={weight.id}>
-            <label htmlFor={nameId}>Name</label>
-            <input
-              id={nameId}
-              type='text'
-              name='name'
-              value={weight.name}
-              onChange={(e) => { handleWeightChange(weight, e) }}
-            />
-            <label htmlFor={descriptionId}>Description</label>
-            <input
-              id={descriptionId}
-              type='text'
-              name='description'
-              value={weight.description}
-              onChange={(e) => { handleWeightChange(weight, e) }}
-            />
+          <div className='row mb-2' key={weight.id}>
+            <div className='col-lg-6'>
+              <input
+                id={nameId}
+                type='text'
+                name='name'
+                className='form-control'
+                placeholder='Weight Name'
+                value={weight.name}
+                onChange={(e) => { handleWeightChange(weight, e) }}
+              />
+            </div>
+            <div className='col-lg-6'>
+              <input
+                id={descriptionId}
+                type='text'
+                name='description'
+                className='form-control'
+                placeholder='Weight Description'
+                value={weight.description}
+                onChange={(e) => { handleWeightChange(weight, e) }}
+              />
+            </div>
           </div>
         )
       })}
-      <div>
-        <button type='button' onClick={handleAddWeight}>Add</button>
+      <div className='row mb-2'>
+        <div className='col-lg-12'>
+          <button className='btn btn-primary' type='button' onClick={handleAddWeight}>
+            <span>Add Weight</span>
+            <i className="ms-2 bi bi-plus-circle-fill"></i>
+          </button>
+        </div>
       </div>
-      <div>
-        <input type='submit' />
+      <div className='row mb-3'>
+        <div className='col-lg-12'>
+          <button className='btn btn-primary' type='submit'>Save Rubric</button>
+        </div>
       </div>
     </form>
   )

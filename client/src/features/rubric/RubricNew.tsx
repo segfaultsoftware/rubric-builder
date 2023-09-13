@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+
+import { useNavigate } from 'react-router-dom'
+
 import { createRubric, type Rubric } from './rubricSlice'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { useNavigate } from 'react-router-dom'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import RubricForm from './RubricForm'
 
@@ -30,7 +32,7 @@ const RubricNew = () => {
 
   return author
     ? (
-    <>
+    <div className='text-center col-lg-6 offset-lg-3'>
       <header><h1>Create a Rubric</h1></header>
       <RubricForm
         author={author}
@@ -38,7 +40,7 @@ const RubricNew = () => {
         onRubricChange={setRubric}
         onSubmit={handleSubmit}
       />
-    </>
+    </div>
       )
     : (
     <div>

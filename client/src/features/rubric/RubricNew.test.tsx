@@ -1,10 +1,11 @@
 import React from 'react'
 
+import userEvent from '@testing-library/user-event'
+import { createMemoryRouter, RouterProvider } from 'react-router-dom'
+
 import { type Profile } from '../profile/profileSlice'
 import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import RubricNew from './RubricNew'
-import { createMemoryRouter, RouterProvider } from 'react-router-dom'
-import userEvent from '@testing-library/user-event'
 
 describe('RubricNew', () => {
   const loggedInAs: Profile = { id: 123, displayName: 'Foo Bar' }
@@ -60,21 +61,25 @@ describe('RubricNew', () => {
 
   describe('on initial render', () => {
     it('comes with one empty weight', async () => {
-      const { findByText, findAllByLabelText } = render()
+      const { findByText, findByLabelText, findAllByPlaceholderText } = render()
 
       expect(await findByText('Create a Rubric')).toBeInTheDocument()
-      const nameInputs = await findAllByLabelText('Name')
-      expect(nameInputs.length).toEqual(2) // one for rubric, one for empty weight
+      const nameInput = await findByLabelText('Name')
+      expect(nameInput).toBeInTheDocument()
+
+      const weightNameInputs = await findAllByPlaceholderText('Weight Name')
+      expect(weightNameInputs.length).toEqual(1)
     })
 
     describe('on submit', () => {
       it('redirects to the new edit page', async () => {
-        const { user, findAllByRole, findAllByLabelText, findByText } = render()
+        const { user, findAllByRole, findByLabelText, findByText, findByPlaceholderText } = render()
 
-        const nameInputs = await findAllByLabelText('Name')
+        const nameInput = await findByLabelText('Name')
+        await user.type(nameInput, 'My New Rubric')
 
-        await user.type(nameInputs[0], 'My New Rubric')
-        await user.type(nameInputs[1], 'My New Weight')
+        const weightNameInput = await findByPlaceholderText('Weight Name')
+        await user.type(weightNameInput, 'My New Weight')
 
         const createRubricBodyPromise = addStubToServer(server, {
           method: 'post',

@@ -1,10 +1,11 @@
 import React from 'react'
+
+import userEvent from '@testing-library/user-event'
+
 import { renderWithProviders } from '../../utils/test-utils'
 import RubricForm from './RubricForm'
 import { type Rubric, type Weight } from './rubricSlice'
 import { type Profile } from '../profile/profileSlice'
-import { fireEvent } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 
 describe('RubricForm', () => {
   const author: Profile = {
@@ -60,11 +61,11 @@ describe('RubricForm', () => {
   })
 
   it('handles adding a new blank weight', async () => {
-    const { findByText } = render()
+    const { user, findByText } = render()
 
-    const addButton = await findByText('Add')
+    const addButton = await findByText(/Add Weight/)
 
-    fireEvent.click(addButton)
+    await user.click(addButton)
 
     expect(onRubricChange).toHaveBeenCalledTimes(1)
     const upboundRubric = onRubricChange.mock.lastCall[0]
@@ -95,11 +96,11 @@ describe('RubricForm', () => {
     rubric.weights.push(weight2)
     rubric.weights.push(weight3)
 
-    const { user, findAllByLabelText } = render()
+    const { user, findAllByPlaceholderText } = render()
 
-    const nameInputs = await findAllByLabelText('Name')
-    expect(nameInputs.length).toEqual(4) // rubric + 3 weights
-    const middleWeightNameInput = nameInputs[2]
+    const nameInputs = await findAllByPlaceholderText('Weight Name')
+    expect(nameInputs.length).toEqual(3) // 3 weights
+    const middleWeightNameInput = nameInputs[1]
 
     await user.type(middleWeightNameInput, 'X')
 
@@ -131,9 +132,9 @@ describe('RubricForm', () => {
     rubric.weights.push(weight2)
     rubric.weights.push(weight3)
 
-    const { user, findAllByLabelText } = render()
+    const { user, findAllByPlaceholderText } = render()
 
-    const descriptionInputs = await findAllByLabelText('Description')
+    const descriptionInputs = await findAllByPlaceholderText('Weight Description')
     expect(descriptionInputs.length).toEqual(3) // 3 weights
     const middleWeightDescriptionInput = descriptionInputs[1]
 

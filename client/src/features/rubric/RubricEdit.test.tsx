@@ -101,39 +101,40 @@ describe('RubricEdit', () => {
       })
 
       it('renders the rubric', async () => {
-        const { findByText, findAllByLabelText } = render()
+        const { findByText, findByLabelText, findAllByPlaceholderText } = render()
 
         expect(await findByText('Edit a Rubric')).toBeInTheDocument()
-        const nameInputs = await findAllByLabelText('Name')
-        expect(nameInputs.length).toEqual(3) // rubric + weight x 2
+        const nameInput = await findByLabelText('Name')
+        expect(nameInput).toHaveValue(rubric.name)
 
-        expect(nameInputs[0]).toHaveValue(rubric.name)
-        expect(nameInputs[1]).toHaveValue(weight1.name)
-        expect(nameInputs[2]).toHaveValue(weight2.name)
+        const weightNameInputs = await findAllByPlaceholderText('Weight Name')
+        expect(weightNameInputs.length).toEqual(2)
+        expect(weightNameInputs[0]).toHaveValue(weight1.name)
+        expect(weightNameInputs[1]).toHaveValue(weight2.name)
       })
 
       it('saves new weights to the backend', async () => {
-        const { user, findByText, findAllByLabelText, findAllByRole } = render()
+        const { user, findByText, findAllByRole, findAllByPlaceholderText } = render()
 
-        const addButton = await findByText('Add')
+        const addButton = await findByText(/Add Weight/)
         await user.click(addButton)
 
-        let nameInputs = await findAllByLabelText('Name')
-        expect(nameInputs.length).toEqual(4) // rubric + weight x 2 + new weight
+        let nameInputs = await findAllByPlaceholderText('Weight Name')
+        expect(nameInputs.length).toEqual(3) // weight x 2 + new weight
 
         const newName = 'Newly Added Weight'
         const newDescription = 'Newly Added Description'
-        await user.type(nameInputs[3], newName)
+        await user.type(nameInputs[2], newName)
 
-        nameInputs = await findAllByLabelText('Name')
-        expect(nameInputs[3]).toHaveValue(newName)
+        nameInputs = await findAllByPlaceholderText('Weight Name')
+        expect(nameInputs[2]).toHaveValue(newName)
 
-        let descInputs = await findAllByLabelText('Description')
+        let descInputs = await findAllByPlaceholderText('Weight Description')
         expect(descInputs.length).toEqual(3) // weight x2 + new weight
 
         await user.type(descInputs[2], newDescription)
 
-        descInputs = await findAllByLabelText('Description')
+        descInputs = await findAllByPlaceholderText('Weight Description')
         expect(descInputs[2]).toHaveValue(newDescription)
 
         const putRubricBodyPromise = addStubToServer(server, {
