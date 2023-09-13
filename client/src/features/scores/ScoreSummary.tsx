@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 
+import classNames from 'classnames'
+
 import { type Profile } from '../profile/profileSlice'
 import { type Weight } from '../rubric/rubricSlice'
 
@@ -25,7 +27,7 @@ const ScoreSummary = ({
   const DetailLine = () => {
     return (
       <div>
-        <table>
+        <table className='table table-striped-columns'>
           <thead>
             <tr>
               <th>&nbsp;</th>
@@ -52,26 +54,30 @@ const ScoreSummary = ({
     )
   }
 
-  const SummaryLine = ({ userId }: { userId: number }) => {
+  const SummaryLine = ({ userId, onChevronClick }: { userId: number, onChevronClick: () => void }) => {
     const userName = profileById.get(userId)?.displayName
     const totalScore = calculationsByUserWeight.get(userId)?.get(-1)
 
     return (
-      <div>Total for {userName}: {totalScore}</div>
+      <div className='row'>
+        <div className='col'>Total for {userName}: {totalScore}</div>
+      </div>
     )
   }
 
   return (
     <div>
-      <header>
-        <div className={'chevron'} onClick={() => {
-          setIsShowingDetails(!isShowingDetails)
-        }}>V</div>
-        {header}
-      </header>
-      <div>
-        {!isShowingDetails && userIds.map((userId) => <SummaryLine key={userId} userId={userId} />)}
-        {isShowingDetails && <DetailLine />}
+      <header><h2 className='text-center'>{header}</h2></header>
+      <div className='row'>
+        <div role='button' className='offset-2 col-lg-1 text-end' onClick={() => { setIsShowingDetails(!isShowingDetails) }}>
+          <i className={classNames('bi', { 'bi-chevron-double-right': !isShowingDetails, 'bi-chevron-double-down': isShowingDetails })}></i>
+        </div>
+        <div className='col-lg-7'>
+          {!isShowingDetails && userIds.map((userId) => (
+            <SummaryLine key={userId} userId={userId} onChevronClick={() => { setIsShowingDetails(!isShowingDetails) }}/>
+          ))}
+          {isShowingDetails && <DetailLine />}
+        </div>
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { render } from '@testing-library/react'
+import { render, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import ScoreSummary from './ScoreSummary'
@@ -71,7 +71,8 @@ describe('ScoreSummary', () => {
     const { user, findByText, queryByText } = renderPlease()
 
     const header = await findByText(`Scores for ${scoreName}`)
-    const chevron = header.children[0]
+    const scoreSection = header.parentElement!.parentElement!
+    const chevron = await within(scoreSection).findByRole('button')
     await user.click(chevron)
 
     expect(await findByText('Weight 1')).toBeInTheDocument()

@@ -187,13 +187,13 @@ describe('ScoreAnalysis', () => {
       const { findByText } = render()
 
       const scoreName1Header = await findByText(`Scores for ${scoreName1}`)
-      const scoreName1Section = scoreName1Header.parentElement!
+      const scoreName1Section = scoreName1Header.parentElement!.parentElement!
 
       expect(await within(scoreName1Section).findByText(`Total for ${user1.displayName}: ${scoreName1User1Total}`)).toBeInTheDocument()
       expect(within(scoreName1Section).queryByText(`Total for ${user2.displayName}`)).not.toBeInTheDocument()
 
       const scoreName2Header = await findByText(`Scores for ${scoreName2}`)
-      const scoreName2Section = scoreName2Header.parentElement!
+      const scoreName2Section = scoreName2Header.parentElement!.parentElement!
 
       expect(await within(scoreName2Section).findByText(`Total for ${user1.displayName}: ${scoreName2User1Total}`)).toBeInTheDocument()
       expect(await within(scoreName2Section).findByText(`Total for ${user2.displayName}: ${scoreName2User2Total}`)).toBeInTheDocument()

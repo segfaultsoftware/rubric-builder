@@ -35,8 +35,8 @@ const ScoreAnalysis = () => {
 
   return rubric && profiles.length
     ? (
-    <>
-      <header><h1>Analysis for {rubric.name}</h1></header>
+    <div className='col-6 offset-3'>
+      <header><h1 className='text-center'>Analysis for {rubric.name}</h1></header>
       {uniqueScoreNames.map((scoreName) => (
         <ScoreSummary
           key={scoreName}
@@ -46,7 +46,7 @@ const ScoreAnalysis = () => {
           weightById={weightById}
         />
       ))}
-    </>
+    </div>
       )
     : <div>Loading...</div>
 }
