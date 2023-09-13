@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { fetchRubric, selectRubric, type Weight } from '../rubric/rubricSlice'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import { clearCreateScoreStatus, createScore, type Score, type ScoreWeight, selectCreateScoreStatus } from './scoreSlice'
+import WeightScore from './WeightScore'
 
 const ScoreNew = () => {
   const dispatch = useAppDispatch()
@@ -43,12 +44,17 @@ const ScoreNew = () => {
 
   const handleChange = (weight: Weight, inputValue: string | number) => {
     const newScores = new Map(scores)
-    newScores.set(weight.id, inputValue)
+    const massagedValue = (typeof inputValue === 'string') ? parseInt(inputValue) : inputValue
+    newScores.set(weight.id, massagedValue)
     setScores(newScores)
   }
 
   const handleSave = () => {
-    if (loggedInAs && rubricId) {
+    if (!scoreName) {
+      // TODO: scroll to top
+      alert('Requires score name')
+    }
+    if (scoreName && loggedInAs && rubricId) {
       const scoreWeights: ScoreWeight[] = Array.from(scores.keys()).map((weightId) => {
         return {
           weightId,
@@ -65,52 +71,41 @@ const ScoreNew = () => {
     }
   }
 
-  const renderWeightScore = (weight: Weight) => {
-    const id = `range:${weight.name}`
-    return (
-      <div key={weight.id}>
-        <label htmlFor={id}>{weight.name} (?)</label>
-        <input
-          id={id}
-          type='range'
-          name={id}
-          min="0"
-          max="5"
-          step="1"
-          value={scores.get(weight.id)}
-          onChange={(e) => { handleChange(weight, e.target.value) }}
-        />
-        <input
-          type='text'
-          name={`text:${weight.name}`}
-          value={scores.get(weight.id)}
-          disabled
-        />
-      </div>
-    )
-  }
-
   const hasInvalidName = !scoreName
 
   return rubric && loggedInAs && scores.size
     ? (
-    <>
-      <header><h1>Score {rubric.name}</h1></header>
-      <div>
-        <label>Name for this Scoring
-          <input
-            type='text'
-            value={scoreName}
-            onChange={(e) => { setScoreName(e.target.value) }}
-          />
-        </label>
-        {hasInvalidName && <span>Requires a score name</span>}
-      </div>
-      {rubric.weights.map((weight) => renderWeightScore(weight))}
-      <div>
-        <button type='button' onClick={handleSave}>Save</button>
-      </div>
-    </>
+    <div className='row'>
+      <form className='container text-center'>
+        <header><h1>Score {rubric.name}</h1></header>
+        <div className='col-6 offset-3'>
+          <label className='form-label w-100'>
+            Name for this Scoring
+            <input
+              type='text'
+              value={scoreName}
+              onChange={(e) => { setScoreName(e.target.value) }}
+              className='form-control'
+            />
+          </label>
+          {hasInvalidName && <div className='alert alert-warning'>Requires a score name</div>}
+        </div>
+        <header><h2>Weights</h2></header>
+        {rubric.weights.map((weight) => (
+          <WeightScore key={weight.id} weight={weight} rating={scores.get(weight.id)} onChange={e => { handleChange(weight, e.target.value) }} />
+        ))}
+        <div>
+          <button
+            type='button'
+            className='btn btn-primary'
+            onClick={handleSave}
+            disabled={hasInvalidName}
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
       )
     : <div>Loading</div>
 }

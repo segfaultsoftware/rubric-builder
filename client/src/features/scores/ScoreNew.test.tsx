@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
-import { fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react'
+import { waitForElementToBeRemoved, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
@@ -95,9 +95,9 @@ describe('ScoreNew', () => {
   })
 
   describe('initial render', () => {
-    it('displays Loading', () => {
-      render()
-      expect(screen.getByText(/Loading/)).toBeInTheDocument()
+    it('displays Loading', async () => {
+      const { findByText } = render()
+      expect(await findByText(/Loading/)).toBeInTheDocument()
     })
 
     describe('after the GET rubric resolves', () => {
@@ -121,11 +121,11 @@ describe('ScoreNew', () => {
           const scoreNameInput = await findByLabelText('Name for this Scoring')
           await user.type(scoreNameInput, '123 Main St')
 
-          const slider = await findByLabelText(/Weight 1/)
-          fireEvent.change(slider, { target: { value: 5 } })
+          const weight1 = await findByText(/Weight 1/)
+          await user.click(await within(weight1.parentElement!).findByLabelText('5'))
 
           const button = await findByText('Save')
-          fireEvent.click(button)
+          await user.click(button)
 
           await waitForElementToBeRemoved(() => queryByText('Save'))
 
