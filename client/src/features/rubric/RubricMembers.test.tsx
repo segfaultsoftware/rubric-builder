@@ -1,10 +1,12 @@
 import React from 'react'
+
+import userEvent from '@testing-library/user-event'
+import { fireEvent, waitForElementToBeRemoved } from '@testing-library/react'
+
 import { type Rubric } from './rubricSlice'
 import { type Profile } from '../profile/profileSlice'
 import { addStubToServer, renderWithProviders, setupServerWithStubs } from '../../utils/test-utils'
-import userEvent from '@testing-library/user-event'
 import RubricMembers from './RubricMembers'
-import { fireEvent, waitForElementToBeRemoved } from '@testing-library/react'
 
 describe('RubricMembers', () => {
   let rubric: Rubric
@@ -65,8 +67,8 @@ describe('RubricMembers', () => {
     const { user, findByText, findAllByRole, queryByText } = render()
 
     expect(await findByText('Members')).toBeInTheDocument()
-    expect(await findByText(profile1.displayName, { selector: 'li' })).toBeInTheDocument()
-    expect(await findByText(profile2.displayName, { selector: 'li' })).toBeInTheDocument()
+    expect(await findByText(profile1.displayName, { selector: 'li span' })).toBeInTheDocument()
+    expect(await findByText(profile2.displayName, { selector: 'li span' })).toBeInTheDocument()
     expect(queryByText(profile3.displayName)).not.toBeInTheDocument()
 
     const label = await findByText('Add Member')
@@ -94,9 +96,9 @@ describe('RubricMembers', () => {
     expect(option).toBeInTheDocument()
     await user.click(option)
 
-    expect(await findByText(profile1.displayName, { selector: 'li' })).toBeInTheDocument()
-    expect(await findByText(profile2.displayName, { selector: 'li' })).toBeInTheDocument()
-    expect(await findByText(profile3.displayName, { selector: 'li' })).toBeInTheDocument()
+    expect(await findByText(profile1.displayName, { selector: 'li span' })).toBeInTheDocument()
+    expect(await findByText(profile2.displayName, { selector: 'li span' })).toBeInTheDocument()
+    expect(await findByText(profile3.displayName, { selector: 'li span' })).toBeInTheDocument()
 
     const removeButtons = await findAllByRole('button')
     expect(removeButtons.length).toEqual(3)
@@ -115,11 +117,13 @@ describe('RubricMembers', () => {
       }
     })
 
+    jest.spyOn(window, 'confirm').mockImplementation(() => true)
+
     await user.click(removeButtons[1])
 
     await waitForElementToBeRemoved(() => queryByText(profile2.displayName))
-    expect(await findByText(profile1.displayName, { selector: 'li' })).toBeInTheDocument()
+    expect(await findByText(profile1.displayName, { selector: 'li span' })).toBeInTheDocument()
     expect(queryByText(profile2.displayName)).not.toBeInTheDocument()
-    expect(await findByText(profile3.displayName, { selector: 'li' })).toBeInTheDocument()
+    expect(await findByText(profile3.displayName, { selector: 'li span' })).toBeInTheDocument()
   })
 })

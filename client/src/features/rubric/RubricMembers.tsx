@@ -25,24 +25,34 @@ const RubricMembers = () => {
 
   const handleRemoveMember = (profile: Profile) => {
     if (profile && rubric) {
-      dispatch(removeMemberFromRubric({ rubric, profile }))
+      if (confirm(`Are you sure you want to remove ${profile.displayName}?`)) {
+        dispatch(removeMemberFromRubric({ rubric, profile }))
+      }
     }
   }
 
   return rubric
     ? (
-    <div>
-      <h3>Members</h3>
-      <ul>
-        {rubric.members.map((member) => {
-          return (
-            <li key={member.id}>
-              <button type='button' onClick={() => { handleRemoveMember(member) }}>-</button>
-              {member.displayName}
-            </li>
-          )
-        })}
-      </ul>
+    <div className='row'>
+      <header><h3>Members</h3></header>
+      <div className='col-lg-12'>
+        <ul className='list-group'>
+          {rubric.members.map((member) => {
+            return (
+              <li key={member.id} className='list-group-item'>
+                <span className='me-2'>{member.displayName}</span>
+                <span
+
+                  role='button'
+                  onClick={() => { handleRemoveMember(member) }}
+                >
+                  <i className="bi bi-x-circle-fill"></i>
+                </span>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
       <label>Add Member</label>
       <Select
         value={null}
