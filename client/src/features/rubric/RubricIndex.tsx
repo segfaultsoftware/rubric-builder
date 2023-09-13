@@ -23,8 +23,13 @@ const RubricIndex = () => {
           <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores/new`}>Score</Link>
           <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores`}>Analyze</Link>
           <Link className='btn btn-link p-1' to={`/calibrations/${rubric.id}/edit`}>Calibrate</Link>
-          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/edit`}><i className="bi bi-pencil-fill"></i></Link>
-          <button className='btn btn-link p-1' type='button' onClick={() => { handleDelete(rubric) }}>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/edit`} title='Edit'><i className="bi bi-pencil-fill"></i></Link>
+          <button
+            className='btn btn-link p-1'
+            type='button'
+            onClick={() => { handleDelete(rubric) }}
+            title='Delete'
+          >
             <i className="bi bi-x-circle-fill"></i>
           </button>
         </li>

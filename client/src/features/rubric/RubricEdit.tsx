@@ -58,7 +58,7 @@ const RubricEdit = () => {
 
   return hasFetched
     ? (
-    <>
+    <div className='text-center col-6 offset-3'>
       <header><h1>Edit a Rubric</h1></header>
       <ul>
         {notifications.map((notification) => (
@@ -72,7 +72,7 @@ const RubricEdit = () => {
         onSubmit={handleSubmit}
       />
       <RubricMembers />
-    </>
+    </div>
       )
     : (
     <div>

@@ -81,9 +81,9 @@ describe('RubricIndex', () => {
 
     describe('deleting a Rubric', () => {
       it('rerenders the page with the fresh data from the server', async () => {
-        const { findByText, queryByText, findAllByText } = render()
+        const { findByText, queryByText, findAllByTitle } = render()
 
-        const deleteButtons = await findAllByText('Delete')
+        const deleteButtons = await findAllByTitle('Delete')
         expect(deleteButtons.length).toEqual(2)
 
         addStubToServer(server, { method: 'delete', url: `/api/v1/rubrics/${rubric2.id}.json`, json: {} })
