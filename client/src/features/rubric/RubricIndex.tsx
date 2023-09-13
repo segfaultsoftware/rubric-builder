@@ -18,25 +18,30 @@ const RubricIndex = () => {
   const rubricList = () => {
     return rubrics.map((rubric) => {
       return (
-        <li key={rubric.id}>
-          {rubric.name} &nbsp;
-          <Link to={`/rubrics/${rubric.id}/scores/new`}>Score</Link> &nbsp;
-          <Link to={`/rubrics/${rubric.id}/scores`}>Analyze</Link> &nbsp;
-          <Link to={`/calibrations/${rubric.id}/edit`}>Calibrate</Link> &nbsp;
-          <Link to={`/rubrics/${rubric.id}/edit`}>Edit</Link> &nbsp;
-          <button type='button' onClick={() => { handleDelete(rubric) }}>Delete</button>
+        <li key={rubric.id} className='list-group-item btn-group'>
+          <div>{rubric.name}</div>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores/new`}>Score</Link>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores`}>Analyze</Link>
+          <Link className='btn btn-link p-1' to={`/calibrations/${rubric.id}/edit`}>Calibrate</Link>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/edit`}><i className="bi bi-pencil-fill"></i></Link>
+          <button className='btn btn-link p-1' type='button' onClick={() => { handleDelete(rubric) }}>
+            <i className="bi bi-x-circle-fill"></i>
+          </button>
         </li>
       )
     })
   }
 
   return (
-    <div>
+    <div className='text-center col-6 offset-3'>
       <h1>Your Rubrics:</h1>
-      <ol>
+      <ul className='list-group mb-3 mt-3'>
         {rubricList()}
-      </ol>
-      <Link to={'/rubrics/new'}>Create Rubric</Link>
+      </ul>
+      <Link to={'/rubrics/new'} className='btn btn-primary'>
+        <span>Create Rubric</span>
+        <i className="ms-2 bi bi-plus-circle-fill"></i>
+      </Link>
     </div>
   )
 }
