@@ -76,27 +76,28 @@ export const updateCalibrationsForRubric = createAsyncThunk(
   }
 )
 
-interface memberRubricProperties {
-  profile: Profile
+interface InviteMemberToRubricProperties {
   rubric: Rubric
+  email: string
 }
 
-export const addMemberToRubric = createAsyncThunk(
-  'rubric/addMemberToRubric',
-  async ({ profile, rubric }: memberRubricProperties) => {
-    await fetchWrapper.post('/api/v1/rubric_profiles.json', {
-      body: {
-        profile_id: profile.id,
-        rubric_id: rubric.id
-      }
+export const inviteMemberToRubric = createAsyncThunk(
+  'rubric/inviteMemberToRubric',
+  async ({ email, rubric }: InviteMemberToRubricProperties) => {
+    await fetchWrapper.post(`/api/v1/rubrics/${rubric.id}/invites.json`, {
+      body: { email }
     })
     return callFetchRubric(rubric.id)
   }
 )
 
+interface RemoveMemberFromRubricProperties {
+  profile: Profile
+  rubric: Rubric
+}
 export const removeMemberFromRubric = createAsyncThunk(
   'rubric/removeMemberFromRubric',
-  async ({ profile, rubric }: memberRubricProperties) => {
+  async ({ profile, rubric }: RemoveMemberFromRubricProperties) => {
     await fetchWrapper.delete(`/api/v1/rubrics/${rubric.id}/profiles/${profile.id}`)
     return callFetchRubric(rubric.id)
   }
@@ -178,7 +179,7 @@ const rubricSlice = createSlice({
       .addCase(deleteRubric.fulfilled, (state, action) => {
         state.rubrics = action.payload
       })
-      .addCase(addMemberToRubric.fulfilled, (state, action) => {
+      .addCase(inviteMemberToRubric.fulfilled, (state, action) => {
         state.rubric = action.payload
       })
       .addCase(removeMemberFromRubric.fulfilled, (state, action) => {

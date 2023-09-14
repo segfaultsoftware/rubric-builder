@@ -9,6 +9,8 @@ module Users
 
     def respond_with(resource, _opts = {})
       if request.method == 'POST' && resource.persisted?
+        # TODO: somehow move this logic out of the rendering logic and out of the User#after_save hook
+        resource.create_profile!(display_name: resource.email)
         render json: signed_up_successfully, status: :created
       elsif request.method == 'DELETE'
         render json: account_deleted_successfully, status: :ok

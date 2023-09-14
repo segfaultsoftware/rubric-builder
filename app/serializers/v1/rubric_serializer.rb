@@ -1,7 +1,7 @@
 module V1
   class RubricSerializer
     include JSONAPI::Serializer
-    attributes :id, :name
+    attributes :id, :name, :author_id
 
     attribute :weights do |rubric|
       rubric.weights.map do |weight|

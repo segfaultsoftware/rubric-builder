@@ -17,14 +17,13 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :profiles, only: [:index]
       resources :rubrics, only: [:index, :create, :show, :update, :destroy] do
+        resources :invites, only: [:create]
         resources :profiles, only: [:destroy]
         resources :scores, only: [:index, :create]
 
         resource :calibrations, only: [:update]
       end
-      resources :rubric_profiles, only: [:create]
     end
   end
 end

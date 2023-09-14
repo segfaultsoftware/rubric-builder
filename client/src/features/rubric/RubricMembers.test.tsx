@@ -1,7 +1,7 @@
 import React from 'react'
 
 import userEvent from '@testing-library/user-event'
-import { fireEvent, waitForElementToBeRemoved } from '@testing-library/react'
+import {findByPlaceholderText, fireEvent, waitForElementToBeRemoved} from '@testing-library/react'
 
 import { type Rubric } from './rubricSlice'
 import { type Profile } from '../profile/profileSlice'
@@ -28,7 +28,7 @@ describe('RubricMembers', () => {
           preloadedState: {
             profile: {
               loggedInAs: profile1,
-              profiles: [profile1, profile2, profile3],
+              profiles: [],
               loginError: undefined,
               registerErrors: []
             },
@@ -50,6 +50,7 @@ describe('RubricMembers', () => {
     profile3 = { id: 10, displayName: 'Profile3' }
     rubric = {
       id: 7,
+      authorId: profile1.id,
       name: 'Rubric w Members',
       weights: [],
       members: [profile1, profile2]
@@ -64,21 +65,16 @@ describe('RubricMembers', () => {
   })
 
   it('renders properly', async () => {
-    const { user, findByText, findAllByRole, queryByText } = render()
+    const { user, findByText, findAllByRole, queryByText, findByPlaceholderText } = render()
 
     expect(await findByText('Members')).toBeInTheDocument()
     expect(await findByText(profile1.displayName, { selector: 'li span' })).toBeInTheDocument()
     expect(await findByText(profile2.displayName, { selector: 'li span' })).toBeInTheDocument()
     expect(queryByText(profile3.displayName)).not.toBeInTheDocument()
 
-    const label = await findByText('Add Member')
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const select = label.nextElementSibling!
-    expect(select).toBeInTheDocument()
-
-    addStubToServer(server, {
+    const invitesRequestBodyPromise = addStubToServer(server, {
       method: 'post',
-      url: '/api/v1/rubric_profiles.json',
+      url: '/api/v1/rubrics/:rubricId/invites.json',
       json: {}
     })
     addStubToServer(server, {
@@ -90,17 +86,20 @@ describe('RubricMembers', () => {
       }
     })
 
-    fireEvent.keyDown(select, { key: 'ArrowDown' })
+    const addMemberInput = await findByPlaceholderText(/Email/)
+    const user3Email = 'foo@bar.com'
+    await user.type(addMemberInput, user3Email)
+    await user.click(await findByText(/Add Member/))
 
-    const option = await findByText(profile3.displayName)
-    expect(option).toBeInTheDocument()
-    await user.click(option)
+    const invitesRequestBody = await invitesRequestBodyPromise as any
+    expect(invitesRequestBody.email).toEqual(user3Email)
 
     expect(await findByText(profile1.displayName, { selector: 'li span' })).toBeInTheDocument()
     expect(await findByText(profile2.displayName, { selector: 'li span' })).toBeInTheDocument()
     expect(await findByText(profile3.displayName, { selector: 'li span' })).toBeInTheDocument()
 
     const removeButtons = await findAllByRole('button')
+    // the author cannot be deleted, so 2 other members, plus Add Member button
     expect(removeButtons.length).toEqual(3)
 
     addStubToServer(server, {
@@ -119,7 +118,7 @@ describe('RubricMembers', () => {
 
     jest.spyOn(window, 'confirm').mockImplementation(() => true)
 
-    await user.click(removeButtons[1])
+    await user.click(removeButtons[0])
 
     await waitForElementToBeRemoved(() => queryByText(profile2.displayName))
     expect(await findByText(profile1.displayName, { selector: 'li span' })).toBeInTheDocument()

@@ -21,4 +21,17 @@ class Rubric < ApplicationRecord
       end
     end
   end
+
+  def remove_member(profile)
+    raise CannotRemoveAuthorFromRubricError if profile == author
+
+    rubric_profile = rubric_profiles.find_by(profile_id: profile.id)
+    rubric_profile.destroy if rubric_profile.present?
+  end
+
+  class CannotRemoveAuthorFromRubricError < StandardError
+    def message
+      'Cannot remove the author from a rubric'
+    end
+  end
 end
