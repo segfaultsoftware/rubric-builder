@@ -2,9 +2,7 @@ module Api
   module V1
     class InvitesController < ApplicationController
       def create
-        user = User.find_by!(email: params[:email])
-        rubric.profiles << user.profile
-        rubric.initialize_profile_weights!
+        current_profile.invite_to_rubric(params[:email], rubric)
         render head: :created
       end
 

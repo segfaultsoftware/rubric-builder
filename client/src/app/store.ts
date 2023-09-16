@@ -2,11 +2,13 @@ import { configureStore, type ThunkAction, type Action, combineReducers, type Pr
 import profileReducer from '../features/profile/profileSlice'
 import rubricReducer from '../features/rubric/rubricSlice'
 import scoreReducer from '../features/scores/scoreSlice'
+import invitationsReducer from '../features/invites/invitationsSlice'
 
 const rootReducer = combineReducers({
   profile: profileReducer,
   rubric: rubricReducer,
-  score: scoreReducer
+  score: scoreReducer,
+  invitations: invitationsReducer
 })
 
 export const setupStore = (preloadedState?: PreloadedState<RootState>) => {

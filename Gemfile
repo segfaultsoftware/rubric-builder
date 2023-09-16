@@ -5,6 +5,7 @@ ruby '3.2.1'
 
 gem 'bootsnap', require: false
 gem 'devise'
+gem 'devise_invitable', '~> 2.0.0'
 gem 'devise-jwt'
 gem 'jsonapi-serializer'
 gem 'pg', '~> 1.1'

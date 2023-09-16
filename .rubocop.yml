@@ -15,9 +15,25 @@ require:
 Layout/LineLength:
   Max: 120
 
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - "spec/**/*"
+
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*_spec.rb'
+
+Rails:
+  Enabled: true
+
+RSpec/ExampleLength:
+  Max: 10
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
 
 Style/Documentation:
   Enabled: false
@@ -39,12 +55,6 @@ Style/HashTransformKeys:
 
 Style/HashTransformValues:
   Enabled: true
-
-Rails:
-  Enabled: true
-
-RSpec/ExampleLength:
-  Max: 10
 
 AllCops:
   Exclude:

@@ -17,9 +17,10 @@ import ScoreNew from './features/scores/ScoreNew'
 import ScoreAnalysis from './features/scores/ScoreAnalysis'
 import RegisterPage from './features/profile/RegisterPage'
 import LoginPage from './features/profile/LoginPage'
+import AuthenticationProtected from './AuthenticationProtected'
+import AcceptInvitation from "./features/invites/AcceptInvitation";
 
 import './index.css'
-import AuthenticationProtected from './AuthenticationProtected'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const container = document.getElementById('root')!
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />
+  },
+  {
+    path: '/invitation/accept',
+    element: <AcceptInvitation />
   },
   {
     path: '/',
