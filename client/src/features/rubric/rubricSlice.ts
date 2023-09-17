@@ -228,4 +228,17 @@ export const selectCalibrationsByUserAndWeight = createSelector(
   }
 )
 
+export const selectRubricProfilesById = createSelector(
+  selectRubric,
+  (rubric) => {
+    const profileById = new Map<number, Profile>()
+    if (rubric) {
+      rubric.members.forEach((member) => {
+        profileById.set(member.id, member)
+      })
+    }
+    return profileById
+  }
+)
+
 export default rubricSlice.reducer

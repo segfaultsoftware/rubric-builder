@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { type RootState } from '../../app/store'
 import { camelCaseKeys, FetchNotOkError, fetchWrapper } from '../../api/FetchWrapper'
 
@@ -15,14 +15,12 @@ export interface ProfileAuthentication {
 
 export interface ProfileState {
   loggedInAs: Profile | null
-  profiles: Profile[]
   loginError: string | undefined
   registerErrors: string[]
 }
 
 const initialState: ProfileState = {
   loggedInAs: null,
-  profiles: [],
   loginError: undefined,
   registerErrors: []
 }
@@ -81,14 +79,6 @@ export const getLoggedInAs = createAsyncThunk(
   }
 )
 
-export const fetchProfiles = createAsyncThunk(
-  'profile/fetchProfiles',
-  async () => {
-    const profiles = await fetchWrapper.get('/api/v1/profiles.json')
-    return profiles.map((profile: any) => camelCaseKeys(profile))
-  }
-)
-
 export const profileSlice = createSlice({
   name: 'profile',
   initialState,
@@ -100,9 +90,6 @@ export const profileSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProfiles.fulfilled, (state, action) => {
-        state.profiles = action.payload
-      })
       .addCase(getLoggedInAs.fulfilled, (state, action) => {
         state.loggedInAs = action.payload
       })
@@ -149,21 +136,9 @@ export const profileSlice = createSlice({
 
 export const { clearAuthenticationErrors } = profileSlice.actions
 
-export const selectAllProfiles = (state: RootState) => state.profile.profiles
 export const selectLoggedInAs = (state: RootState) => state.profile.loggedInAs
 
 export const selectLoginError = (state: RootState) => state.profile.loginError
 export const selectRegistrationErrors = (state: RootState) => state.profile.registerErrors
-
-export const selectProfileByProfileId = createSelector(
-  selectAllProfiles,
-  (profiles) => {
-    const profileByProfileId = new Map<number, Profile>()
-
-    profiles.forEach((profile) => profileByProfileId.set(profile.id, profile))
-
-    return profileByProfileId
-  }
-)
 
 export default profileSlice.reducer

@@ -41,7 +41,6 @@ describe('RubricEdit', () => {
           preloadedState: {
             profile: {
               loggedInAs,
-              profiles: [],
               loginError: undefined,
               registerErrors: []
             }

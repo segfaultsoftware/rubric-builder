@@ -28,7 +28,6 @@ describe('RubricMembers', () => {
           preloadedState: {
             profile: {
               loggedInAs: profile1,
-              profiles: [],
               loginError: undefined,
               registerErrors: []
             },

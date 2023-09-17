@@ -46,7 +46,6 @@ describe('CalibrationsEdit', () => {
           preloadedState: {
             profile: {
               loggedInAs,
-              profiles: [loggedInAs, otherMember],
               loginError: undefined,
               registerErrors: []
             }

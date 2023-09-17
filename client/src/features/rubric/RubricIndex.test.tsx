@@ -42,7 +42,6 @@ describe('RubricIndex', () => {
         preloadedState: {
           profile: {
             loggedInAs,
-            profiles: [],
             loginError: undefined,
             registerErrors: []
           }
