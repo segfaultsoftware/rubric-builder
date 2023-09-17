@@ -10,7 +10,7 @@ module V1
     end
 
     attribute :members do |rubric|
-      rubric.profiles.map do |profile|
+      rubric.profiles.with_no_pending_invites.map do |profile|
         ::V1::ProfileSerializer.new(profile).serializable_hash[:data][:attributes]
       end
     end

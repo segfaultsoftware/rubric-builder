@@ -10,7 +10,9 @@ class Profile < ApplicationRecord
   default_scope { order(id: :asc) }
 
   scope :with_no_pending_invites, lambda {
-    joins(:user).where(users: { invitation_sent_at: nil }).or(where.not(users: { invitation_accepted_at: nil }))
+    joins(:user).where(users: { invitation_sent_at: nil }).or(
+      joins(:user).where.not(users: { invitation_accepted_at: nil })
+    )
   }
 
   def invite_to_rubric(email, rubric)

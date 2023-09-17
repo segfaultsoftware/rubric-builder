@@ -26,6 +26,9 @@ Metrics/BlockLength:
 Rails:
   Enabled: true
 
+RSpec/DescribedClass:
+  Enabled: false
+
 RSpec/ExampleLength:
   Max: 10
 
