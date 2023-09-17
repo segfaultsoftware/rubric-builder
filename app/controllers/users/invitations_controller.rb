@@ -26,7 +26,7 @@ module Users
       raw_invitation_token = update_resource_params[:invitation_token]
       self.resource = accept_resource
       invitation_accepted = resource.errors.empty?
-      { raw_invitation_token:, invitation_accepted: }
+      [raw_invitation_token, invitation_accepted]
     end
 
     def prepare_invitation_accepted
