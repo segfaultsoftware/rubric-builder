@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { toNumber } from 'lodash'
 import classNames from 'classnames'
 
@@ -133,6 +133,13 @@ const CalibrationsEdit = () => {
   return loggedInAs && rubric && calibrationsByWeight.size
     ? (
     <div className='text-center col-6 offset-3'>
+      <div className='row text-center'>
+        <div className='col'>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores/new`}>Score</Link>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores`}>Analyze</Link>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/edit`} title='Edit'>Edit</Link>
+        </div>
+      </div>
       <header><h1>Calibrate {rubric.name}</h1></header>
       <ul>
         {notifications.map((notification) => (

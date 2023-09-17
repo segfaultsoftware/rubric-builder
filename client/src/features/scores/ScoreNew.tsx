@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { fetchRubric, selectRubric, type Weight } from '../rubric/rubricSlice'
@@ -76,6 +76,13 @@ const ScoreNew = () => {
   return rubric && loggedInAs && scores.size
     ? (
     <div className='row'>
+      <div className='row text-center'>
+        <div className='col'>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores`}>Analyze</Link>
+          <Link className='btn btn-link p-1' to={`/calibrations/${rubric.id}/edit`}>Calibrate</Link>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/edit`} title='Edit'>Edit</Link>
+        </div>
+      </div>
       <form className='container text-center'>
         <header><h1>Score {rubric.name}</h1></header>
         <div className='col-6 offset-3'>

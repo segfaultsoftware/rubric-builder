@@ -1,7 +1,7 @@
 import React from 'react'
 
 import userEvent from '@testing-library/user-event'
-import {findByPlaceholderText, fireEvent, waitForElementToBeRemoved} from '@testing-library/react'
+import { waitForElementToBeRemoved } from '@testing-library/react'
 
 import { type Rubric } from './rubricSlice'
 import { type Profile } from '../profile/profileSlice'

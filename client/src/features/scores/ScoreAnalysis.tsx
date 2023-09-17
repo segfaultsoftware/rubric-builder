@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { fetchRubric, selectRubric, selectWeightByWeightId } from '../rubric/rubricSlice'
@@ -36,6 +36,13 @@ const ScoreAnalysis = () => {
   return rubric && profiles.length
     ? (
     <div className='col-6 offset-3'>
+      <div className='row text-center'>
+        <div className='col'>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores/new`}>Score</Link>
+          <Link className='btn btn-link p-1' to={`/calibrations/${rubric.id}/edit`}>Calibrate</Link>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/edit`} title='Edit'>Edit</Link>
+        </div>
+      </div>
       <header><h1 className='text-center'>Analysis for {rubric.name}</h1></header>
       {uniqueScoreNames.map((scoreName) => (
         <ScoreSummary

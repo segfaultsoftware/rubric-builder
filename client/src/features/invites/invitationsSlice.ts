@@ -1,15 +1,15 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import {camelCaseKeys, fetchWrapper, snakeCaseKeys} from "../../api/FetchWrapper";
-import {RootState} from "../../app/store";
-import {Profile} from "../profile/profileSlice";
+import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
+import { type RootState } from '../../app/store'
+import { type Profile } from '../profile/profileSlice'
 
 export interface Invitation {
-  id: number,
-  invitationToken: string,
-  email: string,
-  password?: string,
-  passwordConfirmation?: string,
+  id: number
+  invitationToken: string
+  email: string
+  password?: string
+  passwordConfirmation?: string
 }
 
 export const getInvitation = createAsyncThunk(
@@ -24,8 +24,8 @@ export const getInvitation = createAsyncThunk(
 
 export const acceptInvitation = createAsyncThunk(
   'invitations/acceptInvitation',
-  async (invitation: Invitation)=> {
-    const json = await fetchWrapper.put(`/invitation.json`, {
+  async (invitation: Invitation) => {
+    const json = await fetchWrapper.put('/invitation.json', {
       body: { user: snakeCaseKeys(invitation) },
       useJIT: false
     })
@@ -57,7 +57,7 @@ export const invitationsSlice = createSlice({
         state.invitation = action.payload
       })
       .addCase(getInvitation.rejected, (state, action) => {
-        console.error("AcceptInvitation rejected", action)
+        console.error('AcceptInvitation rejected', action)
       })
       .addCase(acceptInvitation.pending, (state) => {
         state.acceptStatus = 'processing'

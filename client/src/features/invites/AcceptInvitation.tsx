@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 
-import {useNavigate, useSearchParams} from "react-router-dom";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import {
   getInvitation,
   clearAcceptInvitationState,
   selectAcceptInvitationStatus,
-  Invitation,
+  type Invitation,
   selectInvitation, acceptInvitation
-} from "./invitationsSlice";
+} from './invitationsSlice'
 
 const AcceptInvitation = () => {
   const dispatch = useAppDispatch()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
   const acceptInvitationStatus = useAppSelector(selectAcceptInvitationStatus)
@@ -21,7 +21,7 @@ const AcceptInvitation = () => {
   const [invitation, setInvitation] = useState<Invitation>({
     id: -1,
     invitationToken: searchParams.get('invitation_token') ?? '',
-    email: '',
+    email: ''
   })
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const AcceptInvitation = () => {
       dispatch(clearAcceptInvitationState())
       navigate('/')
     }
-  }, [acceptInvitationStatus]);
+  }, [acceptInvitationStatus])
 
   useEffect(() => {
     if (invitationFromServer) {

@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import {inviteMemberToRubric, removeMemberFromRubric, selectRubric} from './rubricSlice'
+import { inviteMemberToRubric, removeMemberFromRubric, selectRubric } from './rubricSlice'
 import { type Profile } from '../profile/profileSlice'
 
 const RubricMembers = () => {
@@ -26,8 +26,7 @@ const RubricMembers = () => {
     if (profile && rubric) {
       if (isAuthor(profile)) {
         alert('Cannot remove author from Rubric')
-      }
-      else if (confirm(`Are you sure you want to remove ${profile.displayName}?`)) {
+      } else if (confirm(`Are you sure you want to remove ${profile.displayName}?`)) {
         dispatch(removeMemberFromRubric({ rubric, profile }))
       }
     }
@@ -69,7 +68,7 @@ const RubricMembers = () => {
               placeholder='Invite by Email'
               className='form-control'
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => { setEmail(e.target.value) }}
             />
           {isShowingInviteError && <div className='alert alert-danger mt-2'>Must be a valid email</div>}
         </div>

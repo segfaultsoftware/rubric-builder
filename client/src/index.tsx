@@ -18,7 +18,7 @@ import ScoreAnalysis from './features/scores/ScoreAnalysis'
 import RegisterPage from './features/profile/RegisterPage'
 import LoginPage from './features/profile/LoginPage'
 import AuthenticationProtected from './AuthenticationProtected'
-import AcceptInvitation from "./features/invites/AcceptInvitation";
+import AcceptInvitation from './features/invites/AcceptInvitation'
 
 import './index.css'
 

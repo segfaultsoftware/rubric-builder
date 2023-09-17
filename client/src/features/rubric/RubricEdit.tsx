@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import classNames from 'classnames'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
@@ -64,6 +64,13 @@ const RubricEdit = () => {
   return hasFetched
     ? (
     <div className='text-center col-lg-6 offset-lg-3'>
+      <div className='row'>
+        <div className='col'>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores/new`}>Score</Link>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores`}>Analyze</Link>
+          <Link className='btn btn-link p-1' to={`/calibrations/${rubric.id}/edit`}>Calibrate</Link>
+        </div>
+      </div>
       <header><h1>Edit a Rubric</h1></header>
       {notifications.length > 0 && (
         <ul className='ps-0'>
