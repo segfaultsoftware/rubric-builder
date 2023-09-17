@@ -32,13 +32,15 @@ export interface RubricState {
   rubric: Rubric | null
   saveRubricState: 'initial' | 'pending' | 'saved'
   saveCalibrationsState: 'initial' | 'pending' | 'saved'
+  inviteMemberState: 'initial' | 'pending' | 'saved' | 'error'
 }
 
 const initialState: RubricState = {
   rubrics: [],
   rubric: null,
   saveRubricState: 'initial',
-  saveCalibrationsState: 'initial'
+  saveCalibrationsState: 'initial',
+  inviteMemberState: 'initial'
 }
 
 const prepareForServer = (rubric: Rubric) => {
@@ -150,7 +152,11 @@ export const deleteRubric = createAsyncThunk(
 const rubricSlice = createSlice({
   name: 'rubric',
   initialState,
-  reducers: {},
+  reducers: {
+    clearInviteMemberStatus: (state) => {
+      state.inviteMemberState = 'initial'
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchRubric.pending, (state) => {
@@ -179,8 +185,16 @@ const rubricSlice = createSlice({
       .addCase(deleteRubric.fulfilled, (state, action) => {
         state.rubrics = action.payload
       })
+      .addCase(inviteMemberToRubric.pending, (state, action) => {
+        state.inviteMemberState = 'pending'
+      })
+      .addCase(inviteMemberToRubric.rejected, (state, action) => {
+        state.inviteMemberState = 'error'
+        console.error('Failed to invite member to rubric', action.payload)
+      })
       .addCase(inviteMemberToRubric.fulfilled, (state, action) => {
         state.rubric = action.payload
+        state.inviteMemberState = 'saved'
       })
       .addCase(removeMemberFromRubric.fulfilled, (state, action) => {
         state.rubric = action.payload
@@ -192,6 +206,7 @@ export const selectRubrics = (state: RootState) => state.rubric.rubrics
 export const selectRubric = (state: RootState) => state.rubric.rubric
 export const selectSaveRubricState = (state: RootState) => state.rubric.saveRubricState
 export const selectSaveCalibrationsState = (state: RootState) => state.rubric.saveCalibrationsState
+export const selectInviteMemberToRubricState = (state: RootState) => state.rubric.inviteMemberState
 
 export const selectWeightByWeightId = createSelector(
   selectRubric,
@@ -240,5 +255,7 @@ export const selectRubricProfilesById = createSelector(
     return profileById
   }
 )
+
+export const { clearInviteMemberStatus } = rubricSlice.actions
 
 export default rubricSlice.reducer

@@ -15,6 +15,7 @@ describe('RubricMembers', () => {
   let profile3: Profile
 
   let server: ReturnType<typeof setupServerWithStubs>
+  const onAddNotification = jest.fn()
 
   const render = () => {
     server = setupServerWithStubs()
@@ -23,7 +24,7 @@ describe('RubricMembers', () => {
     return {
       user: userEvent.setup(),
       ...renderWithProviders(
-        <RubricMembers />,
+        <RubricMembers onAddNotification={onAddNotification} />,
         {
           preloadedState: {
             profile: {
@@ -35,7 +36,8 @@ describe('RubricMembers', () => {
               rubric,
               rubrics: [],
               saveRubricState: 'initial',
-              saveCalibrationsState: 'initial'
+              saveCalibrationsState: 'initial',
+              inviteMemberState: 'initial'
             }
           }
         }

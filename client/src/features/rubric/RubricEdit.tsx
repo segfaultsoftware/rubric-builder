@@ -53,6 +53,14 @@ const RubricEdit = () => {
     }
   }, [saveState])
 
+  const handleAddNotification = (message: string) => {
+    const notification: Notification = {
+      id: new Date().getTime(),
+      message
+    }
+    setNotifications([...notifications, notification])
+  }
+
   const handleSubmit = (modifiedRubric: Rubric) => {
     dispatch(updateRubric(modifiedRubric))
   }
@@ -85,7 +93,7 @@ const RubricEdit = () => {
         onRubricChange={setRubric}
         onSubmit={handleSubmit}
       />
-      <RubricMembers />
+      <RubricMembers onAddNotification={handleAddNotification} />
     </div>
       )
     : (

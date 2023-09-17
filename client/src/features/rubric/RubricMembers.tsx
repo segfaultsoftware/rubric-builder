@@ -1,15 +1,38 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { inviteMemberToRubric, removeMemberFromRubric, selectRubric } from './rubricSlice'
+import {
+  clearInviteMemberStatus,
+  inviteMemberToRubric,
+  removeMemberFromRubric,
+  selectInviteMemberToRubricState,
+  selectRubric
+} from './rubricSlice'
 import { type Profile } from '../profile/profileSlice'
 
-const RubricMembers = () => {
+interface RubricMembersProps {
+  onAddNotification: (message: string) => void
+}
+
+const RubricMembers = ({ onAddNotification }: RubricMembersProps) => {
   const dispatch = useAppDispatch()
   const rubric = useAppSelector(selectRubric)
+  const inviteMemberStatus = useAppSelector(selectInviteMemberToRubricState)
 
   const [email, setEmail] = useState<string>('')
   const [isShowingInviteError, setIsShowingInviteError] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (inviteMemberStatus === 'error') {
+      onAddNotification(`There was an error adding ${email} to the Rubric.`)
+      dispatch(clearInviteMemberStatus())
+      setEmail('')
+    } else if (inviteMemberStatus === 'saved') {
+      onAddNotification(`Invitation sent to ${email}!`)
+      dispatch(clearInviteMemberStatus())
+      setEmail('')
+    }
+  }, [inviteMemberStatus])
 
   const handleInviteMember = (e: React.FormEvent) => {
     e.preventDefault()
@@ -17,7 +40,6 @@ const RubricMembers = () => {
       setIsShowingInviteError(true)
     } else if (rubric) {
       setIsShowingInviteError(false)
-      setEmail('')
       dispatch(inviteMemberToRubric({ rubric, email }))
     }
   }
