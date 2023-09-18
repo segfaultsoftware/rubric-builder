@@ -4,6 +4,10 @@ class ApplicationController < ActionController::API
 
   before_action :authenticate_user!
 
+  def fallback_index_html
+    render file: 'public/index.html'
+  end
+
   private
 
   def current_profile
