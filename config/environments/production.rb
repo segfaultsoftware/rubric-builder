@@ -60,11 +60,11 @@ Rails.application.configure do
     :address        => ENV['MAILGUN_SMTP_SERVER'],
     :user_name      => ENV['MAILGUN_SMTP_LOGIN'],
     :password       => ENV['MAILGUN_SMTP_PASSWORD'],
-    :domain         => 'rubric-me-230af2a3134b.herokuapp.com/',
+    :domain         => 'rubric-me.com',
     :authentication => :plain,
   }
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.default_url_options = { host: 'rubric-me-230af2a3134b.herokuapp.com' }
+  config.action_mailer.default_url_options = { host: 'rubric-me.com' }
   config.action_mailer.perform_caching = false
 
   # Ignore bad email addresses and do not raise email delivery errors.
