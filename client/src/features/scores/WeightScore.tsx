@@ -16,10 +16,10 @@ const WeightScore = ({ weight, rating, onChange }: WeightScoreProps) => {
     <div>
       <div className='mb-1'>{weight.name}</div>
       <div className='row mb-3'>
-        <div className='col-3'></div>
+        <div className='col-md-3'></div>
         {options.map((_, value) => {
           return (
-            <div key={value} className='col-1 form-check'>
+            <div key={value} className='col-2 col-md-1 form-check'>
               <label className='form-check-label'>
                 {value}
                 <input

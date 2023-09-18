@@ -68,11 +68,11 @@ const ScoreSummary = ({
   return (
     <div>
       <header><h2 className='text-center'>{header}</h2></header>
-      <div className='row'>
-        <div role='button' className='offset-2 col-lg-1 text-end' onClick={() => { setIsShowingDetails(!isShowingDetails) }}>
+      <div className='row mb-5 mb-md-0'>
+        <div role='button' className='offset-md-2 col-md-1 md-text-end d-none d-md-block' onClick={() => { setIsShowingDetails(!isShowingDetails) }}>
           <i className={classNames('bi', { 'bi-chevron-double-right': !isShowingDetails, 'bi-chevron-double-down': isShowingDetails })}></i>
         </div>
-        <div className='col-lg-7'>
+        <div className='col-md-7'>
           {!isShowingDetails && userIds.map((userId) => (
             <SummaryLine key={userId} userId={userId} onChevronClick={() => { setIsShowingDetails(!isShowingDetails) }}/>
           ))}

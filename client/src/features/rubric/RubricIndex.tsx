@@ -25,7 +25,7 @@ const RubricIndex = () => {
           <Link className='btn btn-link p-1' to={`/calibrations/${rubric.id}/edit`}>Calibrate</Link>
           <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/edit`} title='Edit'><i className="bi bi-pencil-fill"></i></Link>
           <button
-            className='btn btn-link p-1'
+            className='btn btn-link p-1 d-none d-md-inline'
             type='button'
             onClick={() => { handleDelete(rubric) }}
             title='Delete'
@@ -38,7 +38,7 @@ const RubricIndex = () => {
   }
 
   return (
-    <div className='text-center col-6 offset-3'>
+    <div className='text-center col-md-6 offset-md-3'>
       <h1>Your Rubrics:</h1>
       <ul className='list-group mb-3 mt-3'>
         {rubricList()}

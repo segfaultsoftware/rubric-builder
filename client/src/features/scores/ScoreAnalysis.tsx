@@ -29,7 +29,7 @@ const ScoreAnalysis = () => {
 
   return rubric
     ? (
-    <div className='col-6 offset-3'>
+    <div className='col-md-6 offset-md-3'>
       <div className='row text-center'>
         <div className='col'>
           <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores/new`}>Score</Link>

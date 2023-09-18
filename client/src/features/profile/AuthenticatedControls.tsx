@@ -14,7 +14,7 @@ const AuthenticatedControls = ({ loggedInAs, onLogout }: AuthenticatedControlsPr
 
   return (
     <div className='text-end'>
-      <div className='text-end'>{loggedInAs.displayName}</div>
+      <div className='text-end d-none d-md-block'>{loggedInAs.displayName}</div>
       <div className='text-end'><button className='btn btn-link p-0' onClick={handleLogout}>Logout</button></div>
     </div>
   )

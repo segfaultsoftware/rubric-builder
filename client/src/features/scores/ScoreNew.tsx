@@ -85,7 +85,7 @@ const ScoreNew = () => {
       </div>
       <form className='container text-center'>
         <header><h1>Score {rubric.name}</h1></header>
-        <div className='col-6 offset-3'>
+        <div className='col-md-6 offset-md-3'>
           <label className='form-label w-100'>
             Name for this Scoring
             <input
