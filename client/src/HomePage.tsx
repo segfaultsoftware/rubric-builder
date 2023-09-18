@@ -21,7 +21,7 @@ const HomePage = () => {
             <li>Add Weights</li>
             <li>Invite People</li>
             <li>Record a Metric</li>
-            <li>View Comparisons of All Your Metrics in a Rubirc</li>
+            <li>View Comparisons of All Your Metrics in a Rubric</li>
           </ol>
         </div>
       </div>
