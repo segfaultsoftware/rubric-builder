@@ -23,7 +23,7 @@ Rails.application.routes.draw do
         resources :profiles, only: [:destroy]
         resources :scores, only: [:index, :create]
 
-        resource :calibrations, only: [:update]
+        resource :calibrations, only: [:show, :update]
       end
     end
   end

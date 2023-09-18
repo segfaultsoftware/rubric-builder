@@ -10,9 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_15_145854) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_18_192049) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "calibrations", force: :cascade do |t|
+    t.bigint "profile_id", null: false
+    t.bigint "rubric_id", null: false
+    t.bigint "from_weight_id", null: false
+    t.bigint "to_weight_id", null: false
+    t.float "rating", default: 1.0, null: false
+    t.integer "iteration", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["from_weight_id"], name: "index_calibrations_on_from_weight_id"
+    t.index ["profile_id", "from_weight_id", "to_weight_id"], name: "unique_calibrations_idx", unique: true
+    t.index ["profile_id"], name: "index_calibrations_on_profile_id"
+    t.index ["rubric_id"], name: "index_calibrations_on_rubric_id"
+    t.index ["to_weight_id"], name: "index_calibrations_on_to_weight_id"
+  end
 
   create_table "profile_weights", force: :cascade do |t|
     t.bigint "weight_id"
@@ -109,6 +125,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_15_145854) do
     t.index ["rubric_id"], name: "index_weights_on_rubric_id"
   end
 
+  add_foreign_key "calibrations", "weights", column: "from_weight_id"
+  add_foreign_key "calibrations", "weights", column: "to_weight_id"
   add_foreign_key "profiles", "users"
   add_foreign_key "rubrics", "profiles", column: "author_id"
 end

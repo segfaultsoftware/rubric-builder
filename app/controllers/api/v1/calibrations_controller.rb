@@ -1,11 +1,44 @@
 module Api
   module V1
     class CalibrationsController < ApplicationController
-      def update
-        calibrations = params[:calibrations]
-        ProfileWeight.update_calibrations!(calibrations, current_profile)
+      def show
+        json = rubric.calibrations.where(profile_id: current_profile.id).map do |calibration|
+          ::V1::CalibrationSerializer.new(calibration).serializable_hash[:data][:attributes]
+        end
+        render json:
+      end
 
-        render head: :ok
+      def update
+        calibration = Calibration.update_rating(rubric:, profile:, from_weight:, to_weight:, rating:)
+
+        if calibration.errors.empty?
+          render head: :ok
+        else
+          # TODO: Render calibration with errors
+          render status: :unprocessable_entity, json: { errors: calibration.errors.full_messages }
+        end
+      end
+
+      private
+
+      def rubric
+        current_profile.rubrics.find(params[:rubric_id])
+      end
+
+      def profile
+        current_profile
+      end
+
+      def from_weight
+        rubric.weights.find(params[:from_weight_id])
+      end
+
+      def to_weight
+        rubric.weights.find(params[:to_weight_id])
+      end
+
+      def rating
+        params[:rating]
       end
     end
   end

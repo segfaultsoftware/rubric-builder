@@ -7,6 +7,8 @@ class Profile < ApplicationRecord
   has_many :rubric_profiles, dependent: :destroy
   has_many :rubrics, through: :rubric_profiles
 
+  has_many :calibrations, dependent: :destroy
+
   default_scope { order(id: :asc) }
 
   scope :with_no_pending_invites, lambda {
