@@ -13,11 +13,10 @@ For authentication: https://dakotaleemartinez.com/tutorials/devise-jwt-api-only-
 4. Run `mailcatcher -f` (it's also in the Procfile.dev)
 5. Visit http://127.0.0.1:1080/
 
-## Hosting
+## Production
 
 Hosted via Heroku and Cloudflare for DNS. SSL certs should be automatically managed
-by Heroku
-
+by Heroku. To deploy, `git push heroku main`
 
 ## Feature TODOs
 1. ~~Finish styling with Bootstrap~~
