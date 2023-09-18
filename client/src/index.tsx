@@ -35,7 +35,7 @@ const router = createBrowserRouter([
     element: <LoginPage />
   },
   {
-    path: '/invitation/accept',
+    path: '/invitations/accept',
     element: <AcceptInvitation />
   },
   {
