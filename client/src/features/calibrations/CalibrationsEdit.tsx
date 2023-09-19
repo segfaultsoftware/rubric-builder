@@ -55,8 +55,15 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
     if (rubric?.pairings?.length && pairings.length === 0) {
       setPairings(useRandom ? shuffle(rubric.pairings) : rubric.pairings)
     } else if (rubric && pairings.length) {
-      setFromWeight(weightsById.get(pairings[0][0]))
-      setToWeight(weightsById.get(pairings[0][1]))
+      const flipIt = !!useRandom && Math.floor(Math.random() * 10) % 2 === 1
+
+      if (flipIt) {
+        setFromWeight(weightsById.get(pairings[0][1]))
+        setToWeight(weightsById.get(pairings[0][0]))
+      } else {
+        setFromWeight(weightsById.get(pairings[0][0]))
+        setToWeight(weightsById.get(pairings[0][1]))
+      }
       setRating(0)
     }
   }, [rubric, pairings])
