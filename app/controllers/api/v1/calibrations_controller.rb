@@ -8,18 +8,21 @@ module Api
         render json:
       end
 
+      # rubocop:disable Metrics/AbcSize
       def update
-        calibration = Calibration.update_rating(rubric:, profile:, from_weight:, to_weight:, rating:)
+        calibration, inverse = Calibration.update_rating(rubric:, profile:, from_weight:, to_weight:, rating:)
 
-        if calibration.errors.empty?
+        if calibration.errors.empty? && inverse.errors.empty?
           # TODO: delayed job
           rubric.update_profile_weights_for_profile!(current_profile)
           render head: :ok
         else
-          # TODO: Render calibration with errors
-          render status: :unprocessable_entity, json: { errors: calibration.errors.full_messages }
+          render status: :unprocessable_entity, json: {
+            errors: calibration.errors.full_messages + inverse.errors.full_messages
+          }
         end
       end
+      # rubocop:enable Metrics/AbcSize
 
       private
 

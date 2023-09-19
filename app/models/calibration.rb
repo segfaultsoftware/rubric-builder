@@ -4,22 +4,25 @@ class Calibration < ApplicationRecord
   belongs_to :from_weight, class_name: 'Weight'
   belongs_to :to_weight, class_name: 'Weight'
 
-  validates :rating, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 9 }
+  validates :rating, numericality: { greater_than_or_equal_to: 0.11111, less_than_or_equal_to: 9 }
   validates :iteration, numericality: { greater_than_or_equal_to: 1 }
 
   validate :profile_is_member_of_rubric, :weights_are_member_of_rubric, :ensure_weights_are_different
 
   def self.update_rating(rubric:, profile:, from_weight:, to_weight:, rating:)
-    if rating >= 1.0
-      calibration = Calibration.find_or_initialize_by(rubric:, profile:, from_weight:, to_weight:)
-      calibration.rating = rating
-    else
-      calibration = Calibration.find_or_initialize_by(rubric:, profile:, from_weight: to_weight, to_weight: from_weight)
-      calibration.rating = 1.0 / rating
-    end
+    calibration = Calibration.find_or_initialize_by(rubric:, profile:, from_weight:, to_weight:)
+    inverse = Calibration.find_or_initialize_by(rubric:, profile:, from_weight: to_weight, to_weight: from_weight)
+
+    calibration.rating = rating
+    inverse.rating = 1.0 / rating
+
     calibration.iteration += 1 unless calibration.new_record?
+    inverse.iteration += 1 unless inverse.new_record?
+
     calibration.save
-    calibration
+    inverse.save
+
+    [calibration, inverse]
   end
 
   private

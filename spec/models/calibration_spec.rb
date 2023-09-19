@@ -33,7 +33,10 @@ RSpec.describe Calibration do
       expect(calibration).not_to be_valid
     end
 
-    it { is_expected.to validate_numericality_of(:rating).is_greater_than_or_equal_to(1).is_less_than_or_equal_to(9) }
+    # rubocop:disable Layout/LineLength
+    it { is_expected.to validate_numericality_of(:rating).is_greater_than_or_equal_to(0.11111).is_less_than_or_equal_to(9) }
+    # rubocop:enable Layout/LineLength
+
     it { is_expected.to validate_numericality_of(:iteration).is_greater_than_or_equal_to(1) }
   end
 
@@ -45,16 +48,16 @@ RSpec.describe Calibration do
     end
 
     context 'when the calibration does note exist yet' do
-      it 'creates a new record' do
-        expect { update_rating }.to change(Calibration, :count).by(1)
+      it 'creates two new records' do
+        expect { update_rating }.to change(Calibration, :count).by(2)
       end
 
-      it 'returns the new record' do
-        expect(update_rating).to be_a(Calibration)
+      it 'returns the new records' do
+        expect(update_rating.length).to eq(2)
       end
 
-      describe 'the new record' do
-        let(:new_record) { update_rating }
+      describe 'the first record' do
+        let(:new_record) { update_rating.first }
 
         it 'saves the rating' do
           expect(new_record.rating).to eq(rating)
@@ -64,24 +67,12 @@ RSpec.describe Calibration do
           expect(new_record.iteration).to eq(1)
         end
       end
-    end
 
-    context 'when the rating is < 1.0' do
-      let(:rating) { 0.25 }
+      describe 'the second record' do
+        let(:new_record) { update_rating.last }
 
-      it 'creates a new record' do
-        expect { update_rating }.to change(Calibration, :count).by(1)
-      end
-
-      it 'returns the new record' do
-        expect(update_rating).to be_a(Calibration)
-      end
-
-      describe 'the new record' do
-        let(:new_record) { update_rating }
-
-        it 'saves the rating' do
-          expect(new_record.rating).to eq(4.0)
+        it 'saves the inverse rating' do
+          expect(new_record.rating).to eq(1.0 / rating)
         end
 
         it 'saves the iteration' do
@@ -93,23 +84,38 @@ RSpec.describe Calibration do
     context 'when the calibration already exists' do
       before do
         create(:calibration, rubric:, profile:, from_weight:, to_weight:, rating: 2)
+        create(:calibration, rubric:, profile:, from_weight: to_weight, to_weight: from_weight, rating: 1.0 / 2)
       end
 
       it 'does not create a new record' do
         expect { update_rating }.not_to change(Calibration, :count)
       end
 
-      it 'returns the updated record' do
-        expect(update_rating).to be_valid
+      it 'returns the updated records' do
+        expect(update_rating.length).to eq(2)
       end
 
-      describe 'the updated record' do
+      describe 'the first updated record' do
+        let(:updated_record) { update_rating.first }
+
         it 'updates the rating' do
-          expect { update_rating }.to change { Calibration.last.rating }.from(2).to(4.0)
+          expect(updated_record.rating).to eq(4.0)
         end
 
         it 'increments the iteration' do
-          expect { update_rating }.to change { Calibration.last.iteration }.from(1).to(2)
+          expect(updated_record.iteration).to eq(2)
+        end
+      end
+
+      describe 'the second updated record' do
+        let(:updated_record) { update_rating.last }
+
+        it 'updates the rating' do
+          expect(updated_record.rating).to eq(1 / 4.0)
+        end
+
+        it 'increments the iteration' do
+          expect(updated_record.iteration).to eq(2)
         end
       end
     end
