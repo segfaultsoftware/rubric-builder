@@ -3,9 +3,12 @@ module V1
     include JSONAPI::Serializer
     attributes :id, :name, :author_id
 
-    attribute :weights do |rubric|
+    attribute :weights do |rubric, params|
       rubric.weights.map do |weight|
-        ::V1::WeightSerializer.new(weight).serializable_hash[:data][:attributes]
+        ::V1::WeightSerializer.new(
+          weight,
+          params: { current_profile: params[:current_profile] }
+        ).serializable_hash[:data][:attributes]
       end
     end
 
