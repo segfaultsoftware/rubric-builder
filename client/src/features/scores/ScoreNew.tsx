@@ -45,9 +45,6 @@ const ScoreNew = () => {
   useEffect(() => {
     if (rubric) {
       const defaultScores = new Map()
-      rubric.weights.forEach((weight) => {
-        defaultScores.set(weight.id, 1)
-      })
       setScores(defaultScores)
     }
   }, [rubric])
@@ -70,8 +67,9 @@ const ScoreNew = () => {
     if (!scoreName) {
       // TODO: scroll to top
       alert('Requires score name')
-    }
-    if (scoreName && loggedInAs && rubricId) {
+    } else if (rubric && scores.size !== rubric.weights.length) {
+      alert('Must score all weights')
+    } else if (scoreName && loggedInAs && rubricId) {
       const scoreWeights: ScoreWeight[] = Array.from(scores.keys()).map((weightId) => {
         return {
           weightId,
@@ -89,8 +87,10 @@ const ScoreNew = () => {
   }
 
   const hasInvalidName = !scoreName
+  const hasIncompleteRatings = scores.size !== rubric?.weights.length
+  const isInvalid = hasInvalidName || hasIncompleteRatings
 
-  return rubric && loggedInAs && scores.size
+  return rubric && loggedInAs
     ? (
     <div className='row'>
       <div className='row text-center'>
@@ -123,7 +123,7 @@ const ScoreNew = () => {
             type='button'
             className='btn btn-primary'
             onClick={handleSave}
-            disabled={hasInvalidName}
+            disabled={isInvalid}
           >
             Save
           </button>
