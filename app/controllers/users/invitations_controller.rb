@@ -32,6 +32,10 @@ module Users
     def prepare_invitation_accepted
       resource.after_database_authentication
       sign_in(resource_name, resource)
+      resource.profile.rubrics.each do |rubric|
+        rubric.initialize_profile_weights!
+        rubric.generate_all_pairings!
+      end
       UserSerializer.new(resource).serializable_hash[:data][:attributes]
     end
 
