@@ -17,5 +17,9 @@ module V1
         ::V1::ProfileSerializer.new(profile).serializable_hash[:data][:attributes]
       end
     end
+
+    attribute :pairings do |rubric, params|
+      rubric.pairings_for_profile(params[:current_profile])
+    end
   end
 end

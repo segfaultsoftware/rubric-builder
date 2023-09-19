@@ -88,7 +88,11 @@ describe('CalibrationsEdit', () => {
       name: 'Calibrated Rubric',
       members: [loggedInAs, otherMember],
       weights: [weight1, weight2, weight3],
-      authorId: loggedInAs.id
+      authorId: loggedInAs.id,
+      pairings: [
+        [weight1.id!, weight3.id!],
+        [weight2.id!, weight3.id!]
+      ]
     }
 
     serverStubs = []
@@ -121,8 +125,8 @@ describe('CalibrationsEdit', () => {
       expect(await findByText(`Calibrate ${rubric.name}`)).toBeInTheDocument()
 
       expect(await findByText(weight1.name)).toBeInTheDocument()
-      expect(await findByText(weight2.name)).toBeInTheDocument()
-      expect(queryByText(weight3.name)).not.toBeInTheDocument()
+      expect(await findByText(weight3.name)).toBeInTheDocument()
+      expect(queryByText(weight2.name)).not.toBeInTheDocument()
 
       expect(await findByLabelText('I favor')).toBeInTheDocument()
       expect(await findByRole('button')).toBeInTheDocument()
@@ -144,13 +148,13 @@ describe('CalibrationsEdit', () => {
         const button = await findByRole('button')
         await user.click(button)
 
-        expect(await findByText(weight1.name)).toBeInTheDocument()
+        expect(await findByText(weight2.name)).toBeInTheDocument()
         expect(await findByText(weight3.name)).toBeInTheDocument()
-        expect(queryByText(weight2.name)).not.toBeInTheDocument()
+        expect(queryByText(weight1.name)).not.toBeInTheDocument()
 
         const putCalibration = await putCalibrationsPromise as any
         expect(putCalibration.from_weight_id).toEqual(weight1.id)
-        expect(putCalibration.to_weight_id).toEqual(weight2.id)
+        expect(putCalibration.to_weight_id).toEqual(weight3.id)
         expect(putCalibration.rating).toEqual(5.0)
       })
     })

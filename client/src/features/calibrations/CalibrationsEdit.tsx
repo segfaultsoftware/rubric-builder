@@ -10,7 +10,7 @@ import {
   selectSaveCalibrationsState,
   updateCalibrationsForRubric,
   type Weight,
-  type Calibration
+  type Calibration, selectWeightByWeightId
 } from '../rubric/rubricSlice'
 import { selectLoggedInAs } from '../profile/profileSlice'
 
@@ -28,12 +28,12 @@ const CalibrationsEdit = ({ useRandom }: CalibrationsEditProps = calibrationsEdi
   const rubric = useAppSelector(selectRubric)
   const loggedInAs = useAppSelector(selectLoggedInAs)
   const saveState = useAppSelector(selectSaveCalibrationsState)
+  const weightsById = useAppSelector(selectWeightByWeightId)
 
   const [rating, setRating] = useState<number>(0.0)
-  const [fromWeightIndex, setFromWeightIndex] = useState<number>(0)
-  const [fromWeight, setFromWeight] = useState<Weight | null>(null)
-  const [toWeightIndex, setToWeightIndex] = useState<number>(1)
-  const [toWeight, setToWeight] = useState<Weight | null>(null)
+  const [pairings, setPairings] = useState<number[][]>([])
+  const [fromWeight, setFromWeight] = useState<Weight | undefined>(undefined)
+  const [toWeight, setToWeight] = useState<Weight | undefined>(undefined)
 
   useEffect(() => {
     if (rubricId) {
@@ -43,29 +43,21 @@ const CalibrationsEdit = ({ useRandom }: CalibrationsEditProps = calibrationsEdi
 
   useEffect(() => {
     if (rubric && saveState === 'saved') {
-      const numWeights = rubric.weights.length
-      if (toWeightIndex + 1 >= numWeights) {
-        if (fromWeightIndex + 2 >= numWeights) {
-          setFromWeightIndex(0)
-          setToWeightIndex(1)
-        } else {
-          setFromWeightIndex(fromWeightIndex + 1)
-          setToWeightIndex(fromWeightIndex + 2)
-        }
-      } else {
-        setToWeightIndex(toWeightIndex + 1)
-      }
+      const newPairings = pairings.slice(1)
+      setPairings(newPairings)
       dispatch(clearSaveCalibrationState())
     }
-  }, [rubric, saveState, toWeightIndex, fromWeightIndex])
+  }, [rubric, saveState])
 
   useEffect(() => {
-    if (rubric) {
-      setFromWeight(rubric.weights[fromWeightIndex])
-      setToWeight(rubric.weights[toWeightIndex])
+    if (rubric?.pairings?.length && pairings.length === 0) {
+      setPairings(rubric.pairings)
+    } else if (rubric && pairings.length) {
+      setFromWeight(weightsById.get(pairings[0][0]))
+      setToWeight(weightsById.get(pairings[0][1]))
       setRating(0)
     }
-  }, [rubric, fromWeightIndex, toWeightIndex])
+  }, [rubric, pairings])
 
   const handleCalibrationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRating(parseFloat(e.target.value))

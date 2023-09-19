@@ -101,6 +101,12 @@ class Rubric < ApplicationRecord
     rubric_profile.destroy if rubric_profile.present?
   end
 
+  def generate_all_pairings!
+    profiles.with_no_pending_invites.each do |profile|
+      generate_pairings_for_profile!(profile)
+    end
+  end
+
   def generate_pairings_for_profile!(profile)
     to_calibrate = stale_calibrations_for_profile(profile)
     pairings = set_pairings_for_profile(profile, to_calibrate)

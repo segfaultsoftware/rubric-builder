@@ -15,6 +15,7 @@ module Api
         if calibration.errors.empty? && inverse.errors.empty?
           # TODO: delayed job
           rubric.update_profile_weights_for_profile!(current_profile)
+          rubric.generate_all_pairings!
           render head: :ok
         else
           render status: :unprocessable_entity, json: {

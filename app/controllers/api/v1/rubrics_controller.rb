@@ -16,6 +16,7 @@ module Api
       def create
         rubric = current_profile.rubrics.create!(rubric_params.merge(author_id: current_profile.id))
         rubric.initialize_profile_weights!
+        rubric.generate_all_pairings!
         render json: serialize(rubric)
       end
 
@@ -23,6 +24,7 @@ module Api
         rubric = current_profile.rubrics.find(params[:id])
         rubric.update(rubric_params)
         rubric.initialize_profile_weights!
+        rubric.generate_all_pairings!
         render json: serialize(rubric)
       end
 

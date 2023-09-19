@@ -32,6 +32,7 @@ export interface Rubric {
   authorId?: number | null
   weights: Weight[]
   members: Profile[]
+  pairings?: number[][]
 }
 
 export interface RubricState {
@@ -187,8 +188,9 @@ const rubricSlice = createSlice({
       .addCase(updateCalibrationsForRubric.pending, (state) => {
         state.saveCalibrationsState = 'pending'
       })
-      .addCase(updateCalibrationsForRubric.fulfilled, (state) => {
+      .addCase(updateCalibrationsForRubric.fulfilled, (state, action) => {
         state.saveCalibrationsState = 'saved'
+        state.rubric = action.payload
       })
       .addCase(deleteRubric.fulfilled, (state, action) => {
         state.rubrics = action.payload
