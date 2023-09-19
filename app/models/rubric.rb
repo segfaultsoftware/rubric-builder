@@ -116,7 +116,7 @@ class Rubric < ApplicationRecord
 
   def pairings_for_profile(profile)
     pairings = computed['pairings'] || {}
-    pairings[profile.id.to_s] || []
+    pairings[profile&.id&.to_s] || []
   end
 
   class CannotRemoveAuthorFromRubricError < StandardError
