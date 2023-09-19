@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { fetchRubric, selectRubric, selectRubricProfilesById, selectWeightByWeightId } from '../rubric/rubricSlice'
-import { fetchScoresForRubricId, selectScoreCalculationsMap, selectScoresForRubric } from './scoreSlice'
+import { fetchScoresForRubricId, selectScoresForRubric } from './scoreSlice'
 import ScoreSummary from './ScoreSummary'
 
 const ScoreAnalysis = () => {
@@ -11,10 +11,9 @@ const ScoreAnalysis = () => {
   const { rubricId } = useParams()
 
   const rubric = useAppSelector(selectRubric)
-  const scores = useAppSelector(selectScoresForRubric)
+  const calculationsByScoreNameUserWeight = useAppSelector(selectScoresForRubric)
   const weightById = useAppSelector(selectWeightByWeightId)
   const profileById = useAppSelector(selectRubricProfilesById)
-  const calculationsByScoreNameUserWeight = useAppSelector(selectScoreCalculationsMap)
 
   useEffect(() => {
     if (rubricId) {
@@ -24,8 +23,8 @@ const ScoreAnalysis = () => {
   }, [rubricId])
 
   const uniqueScoreNames: string[] = useMemo(() => {
-    return Array.from(calculationsByScoreNameUserWeight.keys())
-  }, [scores])
+    return Array.from(Object.keys(calculationsByScoreNameUserWeight))
+  }, [calculationsByScoreNameUserWeight])
 
   return rubric
     ? (
@@ -41,7 +40,7 @@ const ScoreAnalysis = () => {
       {uniqueScoreNames.map((scoreName) => (
         <ScoreSummary
           key={scoreName}
-          calculationsByUserWeight={calculationsByScoreNameUserWeight.get(scoreName) ?? new Map()}
+          calculationsByUserWeight={calculationsByScoreNameUserWeight[scoreName] ?? {}}
           profileById={profileById}
           scoreName={scoreName}
           weightById={weightById}

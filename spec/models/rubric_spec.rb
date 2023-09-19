@@ -1,7 +1,88 @@
 require 'rails_helper'
 
 RSpec.describe Rubric do
-  describe 'update_profile_weights_for_profile!' do
+  describe '#calculations' do
+    let(:score_name1) { 'Score 1' }
+    let(:score_name2) { 'Score 2' }
+
+    let(:profile1) { create(:profile) }
+    let(:profile2) { create(:profile) }
+
+    let(:weight1) { build(:weight) }
+    let(:weight2) { build(:weight) }
+
+    let(:rubric) { create(:rubric, members: [profile1, profile2], weights: [weight1, weight2]) }
+
+    # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+    it 'maps calculations from scores' do
+      create(:profile_weight, weight: weight1, profile: profile1, value: 0.2)
+      create(:profile_weight, weight: weight2, profile: profile1, value: 0.8)
+      create(:profile_weight, weight: weight1, profile: profile2, value: 0.3)
+      create(:profile_weight, weight: weight2, profile: profile2, value: 0.7)
+
+      score1_profile1_weight1 = build(:score_weight, weight: weight1, value: 5)
+      score1_profile1_weight2 = build(:score_weight, weight: weight2, value: 2)
+      _score1_profile1 = create(:score, rubric:, profile: profile1, name: score_name1, score_weights: [
+                                  score1_profile1_weight1, score1_profile1_weight2
+                                ])
+
+      score1_profile2_weight1 = build(:score_weight, weight: weight1, value: 0)
+      score1_profile2_weight2 = build(:score_weight, weight: weight2, value: 1)
+      _score1_profile2 = create(:score, rubric:, profile: profile2, name: score_name1, score_weights: [
+                                  score1_profile2_weight1, score1_profile2_weight2
+                                ])
+
+      score2_profile2_weight1 = build(:score_weight, weight: weight1, value: 4)
+      score2_profile2_weight2 = build(:score_weight, weight: weight2, value: 3)
+      _score2_profile2 = create(:score, rubric:, profile: profile2, name: score_name2, score_weights: [
+                                  score2_profile2_weight1, score2_profile2_weight2
+                                ])
+
+      actual = rubric.calculations
+
+      _expected = {
+        score_name1 => {
+          profile1.id => {
+            -1 => 2.6,
+            weight1.id => 1.0,
+            weight2.id => 1.6
+          },
+          profile2.id => {
+            -1 => 0.7,
+            weight1.id => 0,
+            weight2.id => 0.7
+          }
+        },
+        score_name2 => {
+          profile2.id => {
+            -1 => 3.3,
+            weight1.id => 1.2,
+            weight2.id => 2.1
+          }
+        }
+      }
+
+      expect(actual.keys).to match_array([score_name1, score_name2])
+      expect(actual[score_name1].keys).to match_array([profile1.id, profile2.id])
+      expect(actual[score_name1][profile1.id].keys).to match_array([-1, weight1.id, weight2.id])
+      expect(actual[score_name1][profile1.id][-1]).to be_within(0.01).of(2.6)
+      expect(actual[score_name1][profile1.id][weight1.id]).to be_within(0.01).of(1.0)
+      expect(actual[score_name1][profile1.id][weight2.id]).to be_within(0.01).of(1.6)
+      expect(actual[score_name1][profile2.id].keys).to match_array([-1, weight1.id, weight2.id])
+      expect(actual[score_name1][profile2.id][-1]).to be_within(0.01).of(0.7)
+      expect(actual[score_name1][profile2.id][weight1.id]).to be_within(0.01).of(0.0)
+      expect(actual[score_name1][profile2.id][weight2.id]).to be_within(0.01).of(0.7)
+
+      expect(actual[score_name2].keys).to match_array([profile2.id])
+      expect(actual[score_name2][profile2.id].keys).to match_array([-1, weight1.id, weight2.id])
+      expect(actual[score_name2][profile2.id][-1]).to be_within(0.01).of(3.3)
+      expect(actual[score_name2][profile2.id][weight1.id]).to be_within(0.01).of(1.2)
+      expect(actual[score_name2][profile2.id][weight2.id]).to be_within(0.01).of(2.1)
+    end
+    # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
+  end
+
+  describe '#update_profile_weights_for_profile!' do
     let(:member) { create(:profile) }
     let(:author) { rubric.author }
     let(:rubric) { create(:rubric, members: [member], weights: [weight1, weight2, weight3]) }

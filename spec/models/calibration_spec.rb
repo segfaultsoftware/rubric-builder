@@ -66,6 +66,30 @@ RSpec.describe Calibration do
       end
     end
 
+    context 'when the rating is < 1.0' do
+      let(:rating) { 0.25 }
+
+      it 'creates a new record' do
+        expect { update_rating }.to change(Calibration, :count).by(1)
+      end
+
+      it 'returns the new record' do
+        expect(update_rating).to be_a(Calibration)
+      end
+
+      describe 'the new record' do
+        let(:new_record) { update_rating }
+
+        it 'saves the rating' do
+          expect(new_record.rating).to eq(4.0)
+        end
+
+        it 'saves the iteration' do
+          expect(new_record.iteration).to eq(1)
+        end
+      end
+    end
+
     context 'when the calibration already exists' do
       before do
         create(:calibration, rubric:, profile:, from_weight:, to_weight:, rating: 2)

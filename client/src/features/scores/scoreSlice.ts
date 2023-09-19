@@ -1,7 +1,6 @@
-import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
 import { type RootState } from '../../app/store'
-import { selectCalibrationsByUserAndWeight } from '../rubric/rubricSlice'
 
 export interface ScoreWeight {
   id?: number
@@ -39,21 +38,20 @@ export const fetchScoresForRubricId = createAsyncThunk(
   'score/fetchScoresForRubricId',
   async (rubricId: string) => {
     const scores = await fetchWrapper.get(`/api/v1/rubrics/${rubricId}/scores.json`)
-    const readyForClient = scores.map((score: any) => camelCaseKeys(score)) as Score[]
-    return readyForClient.sort((a, b) => a.name.localeCompare(b.name))
+    return scores as Record<string, Record<string, Record<string, number>>>
   }
 )
 
 export interface ScoreState {
   score: null | Score
-  scores: Score[]
+  scores: Record<string, Record<string, Record<string, number>>>
   createScoreStatus: undefined | 'In Progress' | 'Created'
 }
 
 const initialState: ScoreState = {
   createScoreStatus: undefined,
   score: null,
-  scores: []
+  scores: {}
 }
 
 const scoreSlice = createSlice({
@@ -83,52 +81,5 @@ export const { clearCreateScoreStatus } = scoreSlice.actions
 
 export const selectCreateScoreStatus = (state: RootState) => state.score.createScoreStatus
 export const selectScoresForRubric = (state: RootState) => state.score.scores
-
-export const selectScoresByName = createSelector(
-  selectScoresForRubric,
-  (scores) => {
-    const scoresByName = new Map<string, Score[]>()
-
-    scores.forEach((score) => {
-      const scoresAtName = scoresByName.get(score.name) ?? []
-      scoresByName.set(score.name, [...scoresAtName, score])
-    })
-
-    return scoresByName
-  }
-)
-
-export const selectScoreCalculationsMap = createSelector(
-  selectScoresForRubric,
-  selectCalibrationsByUserAndWeight,
-  (scores, calibrationsByUserAndWeight) => {
-    const calculationByScoreNameUserWeight = new Map<string, Map<number, Map<number, number>>>()
-
-    scores.forEach((score) => {
-      const scoreByWeight = new Map<number, number>()
-      score.scoreWeights.forEach((scoreWeight) => {
-        scoreByWeight.set(scoreWeight.weightId, scoreWeight.value)
-      })
-
-      const calculationByUserWeight = calculationByScoreNameUserWeight.get(score.name) ?? new Map<number, Map<number, number>>()
-      const calculationByWeight = calculationByUserWeight.get(score.profileId) ?? new Map<number, number>()
-
-      let totalScore = 0
-      const weightIds = Array.from(calibrationsByUserAndWeight.get(score.profileId)?.keys() ?? [])
-      weightIds.forEach((weightId) => {
-        const fromScore = scoreByWeight.get(weightId) ?? 0
-        const fromCalibration = calibrationsByUserAndWeight.get(score.profileId)?.get(weightId)?.value ?? 0
-        const scoreForWeight = fromScore * fromCalibration
-        totalScore += scoreForWeight
-        calculationByWeight.set(weightId, scoreForWeight)
-      })
-      calculationByWeight.set(-1, totalScore)
-      calculationByUserWeight.set(score.profileId, calculationByWeight)
-      calculationByScoreNameUserWeight.set(score.name, calculationByUserWeight)
-    })
-
-    return calculationByScoreNameUserWeight
-  }
-)
 
 export default scoreSlice.reducer

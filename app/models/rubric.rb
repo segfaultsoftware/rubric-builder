@@ -23,6 +23,36 @@ class Rubric < ApplicationRecord
     end
   end
 
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+  def calculations
+    calculations_by_score_name_profile_weight = {}
+
+    profile_weights = weights.map(&:profile_weights).flatten
+    profile_weights_by_profile_weight = {}
+    profile_weights.each do |profile_weight|
+      profile_weight_by_weight = profile_weights_by_profile_weight[profile_weight.profile_id] ||= {}
+      profile_weight_by_weight[profile_weight.weight_id] = profile_weight
+    end
+
+    scores.each do |score|
+      calculations_by_profile_weight = calculations_by_score_name_profile_weight[score.name] ||= {}
+      calculations_by_weight = calculations_by_profile_weight[score.profile_id] ||= {}
+      total = 0
+      score.score_weights.each do |score_weight|
+        from_score = score_weight.value
+        from_pw = profile_weights_by_profile_weight.dig(score.profile_id, score_weight.weight_id)&.value
+        # from_pw = profile_weights_by_profile_weight[score.profile_id][score_weight.weight_id] || 1.0
+
+        calculations_by_weight[score_weight.weight_id] = from_score * from_pw
+        total += calculations_by_weight[score_weight.weight_id]
+      end
+      calculations_by_weight[-1] = total
+    end
+
+    calculations_by_score_name_profile_weight
+  end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+
   # http://www.gitta.info/Suitability/en/html/Normalisatio_learningObject3.html
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
   def update_profile_weights_for_profile!(profile)

@@ -1,9 +1,10 @@
 module Api
   module V1
     class ScoresController < ApplicationController
+      # TODO: Move into its own resources for Calculations
       def index
         rubric = current_profile.rubrics.find(params[:rubric_id])
-        render json: rubric.scores.map { |score| serialize(score) }
+        render json: rubric.calculations
       end
 
       def create

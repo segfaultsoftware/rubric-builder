@@ -4,21 +4,15 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import { within } from '@testing-library/react'
 
-import { type Calibration, type Rubric, type Weight } from '../rubric/rubricSlice'
+import { type Rubric, type Weight } from '../rubric/rubricSlice'
 import { type Profile } from '../profile/profileSlice'
 import { renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import ScoreAnalysis from './ScoreAnalysis'
-import { type Score } from './scoreSlice'
 
 describe('ScoreAnalysis', () => {
   let rubric: Rubric
   let weight1: Weight
   let weight2: Weight
-
-  let calibrationForUser1Weight1: Calibration
-  let calibrationForUser1Weight2: Calibration
-  let calibrationForUser2Weight1: Calibration
-  let calibrationForUser2Weight2: Calibration
 
   let user1: Profile
   let user2: Profile
@@ -26,13 +20,7 @@ describe('ScoreAnalysis', () => {
   let scoreName1: string
   let scoreName2: string
 
-  let scoreName1User1: Score
-  let scoreName2User1: Score
-  let scoreName2User2: Score
-
-  let scoreName1User1Total: number
-  let scoreName2User1Total: number
-  let scoreName2User2Total: number
+  let scoresFromServer: Record<string, Record<number, Record<number, number>>>
 
   let serverStubs: ServerStub[]
   let server: ReturnType<typeof setupServerWithStubs>
@@ -63,28 +51,17 @@ describe('ScoreAnalysis', () => {
     user1 = { id: 1, displayName: 'Sam' }
     user2 = { id: 2, displayName: 'Francis' }
 
-    calibrationForUser1Weight1 = { id: 3, value: 4, weightId: 5, profileId: user1.id }
-    calibrationForUser1Weight2 = { id: 4, value: 6, weightId: 7, profileId: user1.id }
-    calibrationForUser2Weight1 = { id: 5, value: 8, weightId: 5, profileId: user2.id }
-    calibrationForUser2Weight2 = { id: 6, value: 10, weightId: 7, profileId: user2.id }
-
     weight1 = {
       id: 5,
       name: 'ABC',
       description: '',
-      profileWeights: [
-        calibrationForUser1Weight1,
-        calibrationForUser2Weight1
-      ]
+      profileWeights: []
     }
     weight2 = {
       id: 7,
       name: 'XYZ',
       description: '',
-      profileWeights: [
-        calibrationForUser1Weight2,
-        calibrationForUser2Weight2
-      ]
+      profileWeights: []
     }
 
     rubric = {
@@ -96,58 +73,29 @@ describe('ScoreAnalysis', () => {
     }
 
     scoreName1 = '123 Mangrum'
-    scoreName1User1 = {
-      id: 9,
-      name: scoreName1,
-      profileId: user1.id,
-      rubricId: rubric.id!,
-      scoreWeights: [{
-        id: 1,
-        weightId: weight1.id!,
-        value: 11
-      }, {
-        id: 2,
-        weightId: weight2.id!,
-        value: 12
-      }]
-    }
-
     scoreName2 = '425 1st St Unit 1006'
-    scoreName2User1 = {
-      id: 10,
-      name: scoreName2,
-      profileId: user1.id,
-      rubricId: rubric.id!,
-      scoreWeights: [{
-        id: 3,
-        weightId: weight1.id!,
-        value: 13
-      }, {
-        id: 4,
-        weightId: weight2.id!,
-        value: 14
-      }]
-    }
 
-    scoreName2User2 = {
-      id: 11,
-      name: scoreName2,
-      profileId: user2.id,
-      rubricId: rubric.id!,
-      scoreWeights: [{
-        id: 5,
-        weightId: weight1.id!,
-        value: 15
-      }, {
-        id: 6,
-        weightId: weight2.id!,
-        value: 16
-      }]
+    scoresFromServer = {
+      [scoreName1]: {
+        [user1.id]: {
+          '-1': 6.8,
+          [weight1.id!]: 2.3,
+          [weight2.id!]: 4.5
+        },
+        [user2.id]: {
+          '-1': 1.2,
+          [weight1.id!]: 0.3,
+          [weight2.id!]: 0.9
+        }
+      },
+      [scoreName2]: {
+        [user2.id]: {
+          '-1': 2.5,
+          [weight1.id!]: 1.8,
+          [weight2.id!]: 0.7
+        }
+      }
     }
-
-    scoreName1User1Total = calibrationForUser1Weight1.value * scoreName1User1.scoreWeights[0].value + calibrationForUser1Weight2.value * scoreName1User1.scoreWeights[1].value
-    scoreName2User1Total = calibrationForUser1Weight1.value * scoreName2User1.scoreWeights[0].value + calibrationForUser1Weight2.value * scoreName2User1.scoreWeights[1].value
-    scoreName2User2Total = calibrationForUser2Weight1.value * scoreName2User2.scoreWeights[0].value + calibrationForUser2Weight2.value * scoreName2User2.scoreWeights[1].value
 
     serverStubs = []
   })
@@ -174,12 +122,7 @@ describe('ScoreAnalysis', () => {
       serverStubs.push({
         method: 'get',
         url: `/api/v1/rubrics/${rubric.id}/scores.json`,
-        json: [scoreName1User1, scoreName2User2, scoreName2User1]
-      })
-      serverStubs.push({
-        method: 'get',
-        url: '/api/v1/profiles.json',
-        json: [user1, user2]
+        json: scoresFromServer
       })
     })
 
@@ -189,14 +132,14 @@ describe('ScoreAnalysis', () => {
       const scoreName1Header = await findByText(`Scores for ${scoreName1}`)
       const scoreName1Section = scoreName1Header.parentElement!.parentElement!
 
-      expect(await within(scoreName1Section).findByText(`Total for ${user1.displayName}: ${scoreName1User1Total}`)).toBeInTheDocument()
-      expect(within(scoreName1Section).queryByText(`Total for ${user2.displayName}`)).not.toBeInTheDocument()
+      expect(await within(scoreName1Section).findByText(`Total for ${user1.displayName}: 6.8`)).toBeInTheDocument()
+      expect(await within(scoreName1Section).findByText(`Total for ${user2.displayName}: 1.2`)).toBeInTheDocument()
 
       const scoreName2Header = await findByText(`Scores for ${scoreName2}`)
       const scoreName2Section = scoreName2Header.parentElement!.parentElement!
 
-      expect(await within(scoreName2Section).findByText(`Total for ${user1.displayName}: ${scoreName2User1Total}`)).toBeInTheDocument()
-      expect(await within(scoreName2Section).findByText(`Total for ${user2.displayName}: ${scoreName2User2Total}`)).toBeInTheDocument()
+      expect(await within(scoreName2Section).findByText(`Total for ${user2.displayName}: 2.5`)).toBeInTheDocument()
+      expect(within(scoreName2Section).queryByText(new RegExp(`Total for ${user1.displayName}`))).not.toBeInTheDocument()
     })
   })
 })

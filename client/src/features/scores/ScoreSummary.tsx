@@ -4,9 +4,10 @@ import classNames from 'classnames'
 
 import { type Profile } from '../profile/profileSlice'
 import { type Weight } from '../rubric/rubricSlice'
+import { round } from 'lodash'
 
 interface ScoreSummaryProps {
-  calculationsByUserWeight: Map<number, Map<number, number>>
+  calculationsByUserWeight: Record<string, Record<string, number>>
   profileById: Map<number, Profile>
   scoreName: string
   weightById: Map<number, Weight>
@@ -21,7 +22,7 @@ const ScoreSummary = ({
   const [isShowingDetails, setIsShowingDetails] = useState(false)
 
   const header = `Scores for ${scoreName}`
-  const userIds = Array.from(calculationsByUserWeight.keys())
+  const userIds = Array.from(Object.keys(calculationsByUserWeight))
   const weightIds = Array.from(weightById.keys())
 
   const DetailLine = () => {
@@ -31,7 +32,7 @@ const ScoreSummary = ({
           <thead>
             <tr>
               <th>&nbsp;</th>
-              {userIds.map((userId) => <th key={userId}>{profileById.get(userId)?.displayName}</th>)}
+              {userIds.map((userId) => <th key={userId}>{profileById.get(parseInt(userId))?.displayName}</th>)}
             </tr>
           </thead>
           <tbody>
@@ -42,7 +43,7 @@ const ScoreSummary = ({
                 <tr key={weightId}>
                   <td>{weightName}</td>
                   {userIds.map((userId) => {
-                    const calculation = calculationsByUserWeight.get(userId)?.get(weightId)
+                    const calculation = round(calculationsByUserWeight[userId][weightId], 3)
                     return <td key={userId}>{calculation}</td>
                   })}
                 </tr>
@@ -54,9 +55,9 @@ const ScoreSummary = ({
     )
   }
 
-  const SummaryLine = ({ userId, onChevronClick }: { userId: number, onChevronClick: () => void }) => {
-    const userName = profileById.get(userId)?.displayName
-    const totalScore = calculationsByUserWeight.get(userId)?.get(-1)
+  const SummaryLine = ({ userId, onChevronClick }: { userId: string, onChevronClick: () => void }) => {
+    const userName = profileById.get(parseInt(userId))?.displayName
+    const totalScore = round(calculationsByUserWeight[userId]['-1'], 3)
 
     return (
       <div className='row'>

@@ -2,8 +2,15 @@ import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
 import { type RootState } from '../../app/store'
 import { type Profile } from '../profile/profileSlice'
+import { flatten } from 'lodash'
 
 export interface Calibration {
+  fromWeightId: number
+  toWeightId: number
+  rating: number
+}
+
+export interface ProfileWeight {
   id?: number
   profileId: number
   weightId: number
@@ -15,7 +22,7 @@ export interface Weight {
   id?: number
   name: string
   description: string
-  profileWeights: Calibration[]
+  profileWeights: ProfileWeight[]
   _destroy?: boolean
   _new?: boolean
 }
@@ -55,7 +62,7 @@ const prepareForServer = (rubric: Rubric) => {
 
 interface updateCalibrationsProperties {
   rubric: Rubric
-  calibrations: Calibration[]
+  calibration: Calibration
 }
 
 const callFetchRubric = async (id: number | null | undefined): Promise<Rubric> => {
@@ -68,11 +75,9 @@ const callFetchRubric = async (id: number | null | undefined): Promise<Rubric> =
 
 export const updateCalibrationsForRubric = createAsyncThunk(
   'rubric/updateCalibrationsForRubric',
-  async ({ rubric, calibrations }: updateCalibrationsProperties) => {
+  async ({ rubric, calibration }: updateCalibrationsProperties) => {
     await fetchWrapper.put(`/api/v1/rubrics/${rubric.id}/calibrations.json`, {
-      body: {
-        calibrations: calibrations.map((calibration) => snakeCaseKeys(calibration))
-      }
+      body: snakeCaseKeys(calibration)
     })
     return callFetchRubric(rubric.id)
   }
@@ -155,6 +160,9 @@ const rubricSlice = createSlice({
   reducers: {
     clearInviteMemberStatus: (state) => {
       state.inviteMemberState = 'initial'
+    },
+    clearSaveCalibrationState: (state) => {
+      state.saveCalibrationsState = 'initial'
     }
   },
   extraReducers: (builder) => {
@@ -223,23 +231,19 @@ export const selectWeightByWeightId = createSelector(
   }
 )
 
-export const selectCalibrationsByUserAndWeight = createSelector(
+export const selectProfileWeightByWeightId = createSelector(
   selectRubric,
   (rubric) => {
-    const calibrationsByUserAndWeight = new Map<number, Map<number, Calibration>>()
-    if (!rubric) {
-      return calibrationsByUserAndWeight
+    const profileWeightByWeightId = new Map<number, ProfileWeight>()
+
+    if (rubric) {
+      const profileWeights = flatten(rubric.weights.map((weight) => weight.profileWeights))
+      profileWeights.forEach((profileWeight) => {
+        profileWeightByWeightId.set(profileWeight.weightId, profileWeight)
+      })
     }
 
-    rubric.weights.forEach((weight) => {
-      weight.profileWeights.forEach((profileWeight) => {
-        const userWeights = calibrationsByUserAndWeight.get(profileWeight.profileId) ?? new Map<number, Calibration>()
-        userWeights.set(profileWeight.weightId, profileWeight)
-        calibrationsByUserAndWeight.set(profileWeight.profileId, userWeights)
-      })
-    })
-
-    return calibrationsByUserAndWeight
+    return profileWeightByWeightId
   }
 )
 
@@ -256,6 +260,6 @@ export const selectRubricProfilesById = createSelector(
   }
 )
 
-export const { clearInviteMemberStatus } = rubricSlice.actions
+export const { clearInviteMemberStatus, clearSaveCalibrationState } = rubricSlice.actions
 
 export default rubricSlice.reducer

@@ -9,7 +9,7 @@ import { type Weight } from '../rubric/rubricSlice'
 
 describe('ScoreSummary', () => {
   const scoreName = '555 Some Pl'
-  let calculationsByUserWeight: Map<number, Map<number, number>>
+  let calculationsByUserWeight: Record<string, Record<string, number>>
   let profileById: Map<number, Profile>
   let weightById: Map<number, Weight>
 
@@ -38,21 +38,21 @@ describe('ScoreSummary', () => {
     weightById.set(2, { id: 2, name: 'Weight 2', description: '', profileWeights: [] })
     weightById.set(3, { id: 3, name: 'Weight 3', description: '', profileWeights: [] })
 
-    calculationsByUserWeight = new Map<number, Map<number, number>>()
-    const calculationsByWeightForUser2 = new Map<number, number>()
-    calculationsByWeightForUser2.set(-1, 20)
-    calculationsByWeightForUser2.set(1, 5)
-    calculationsByWeightForUser2.set(2, 12)
-    calculationsByWeightForUser2.set(3, 3)
+    calculationsByUserWeight = {}
+    const calculationsByWeightForUser2: Record<string, number> = {}
+    calculationsByWeightForUser2['-1'] = 20
+    calculationsByWeightForUser2['1'] = 5
+    calculationsByWeightForUser2['2'] = 12
+    calculationsByWeightForUser2['3'] = 3
 
-    const calculationsByWeightForUser3 = new Map<number, number>()
-    calculationsByWeightForUser3.set(-1, 22)
-    calculationsByWeightForUser3.set(1, 7)
-    calculationsByWeightForUser3.set(2, 11)
-    calculationsByWeightForUser3.set(3, 4)
+    const calculationsByWeightForUser3: Record<string, number> = {}
+    calculationsByWeightForUser3['-1'] = 22
+    calculationsByWeightForUser3['1'] = 7
+    calculationsByWeightForUser3['2'] = 11
+    calculationsByWeightForUser3['3'] = 4
 
-    calculationsByUserWeight.set(2, calculationsByWeightForUser2)
-    calculationsByUserWeight.set(3, calculationsByWeightForUser3)
+    calculationsByUserWeight['2'] = calculationsByWeightForUser2
+    calculationsByUserWeight['3'] = calculationsByWeightForUser3
   })
 
   it('displays high level stats', async () => {

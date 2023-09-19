@@ -3,20 +3,21 @@ import React from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 
-import { type Calibration, type Rubric, type Weight } from '../rubric/rubricSlice'
+import { type ProfileWeight, type Rubric, type Weight } from '../rubric/rubricSlice'
 import { type Profile } from '../profile/profileSlice'
 import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import CalibrationsEdit from './CalibrationsEdit'
+import { fireEvent } from '@testing-library/react'
 
 describe('CalibrationsEdit', () => {
   let rubric: Rubric
   let weight1: Weight
   let weight2: Weight
+  let weight3: Weight
 
-  let calibrationForLoggedInAsWeight1: Calibration
-  let calibrationForLoggedInAsWeight2: Calibration
-  let calibrationForOtherMemberWeight1: Calibration
-  let calibrationForOtherMemberWeight2: Calibration
+  let profileWeightForLoggedInAsWeight1: ProfileWeight
+  let profileWeightForLoggedInAsWeight2: ProfileWeight
+  let profileWeightForLoggedInAsWeight3: ProfileWeight
 
   let loggedInAs: Profile
   let otherMember: Profile
@@ -31,7 +32,7 @@ describe('CalibrationsEdit', () => {
     const routes = [
       {
         path: 'calibrations/:rubricId/edit',
-        element: <CalibrationsEdit />
+        element: <CalibrationsEdit useRandom={false} />
       }
     ]
     const router = createMemoryRouter(routes, {
@@ -59,33 +60,34 @@ describe('CalibrationsEdit', () => {
     loggedInAs = { id: 2, displayName: 'Almost Root' }
     otherMember = { id: 5, displayName: 'Other User' }
 
-    calibrationForLoggedInAsWeight1 = { id: 555, value: 1.23, weightId: 8, profileId: 2 }
-    calibrationForLoggedInAsWeight2 = { id: 666, value: 5.67, weightId: 9, profileId: 2 }
-    calibrationForOtherMemberWeight1 = { id: 777, value: 1, weightId: 8, profileId: 5 }
-    calibrationForOtherMemberWeight2 = { id: 888, value: 98.0, weightId: 9, profileId: 5 }
+    profileWeightForLoggedInAsWeight1 = { id: 555, value: 0.33, weightId: 8, profileId: 2 }
+    profileWeightForLoggedInAsWeight2 = { id: 666, value: 0.47, weightId: 9, profileId: 2 }
+    profileWeightForLoggedInAsWeight3 = { id: 777, value: 0.2, weightId: 10, profileId: 2 }
 
     weight1 = {
       id: 8,
       name: 'Weight 1',
       description: 'Description 1',
-      profileWeights: [
-        calibrationForLoggedInAsWeight1, calibrationForOtherMemberWeight1
-      ]
+      profileWeights: [profileWeightForLoggedInAsWeight1]
     }
     weight2 = {
       id: 9,
       name: 'Weight 2',
       description: 'Description 2',
-      profileWeights: [
-        calibrationForLoggedInAsWeight2, calibrationForOtherMemberWeight2
-      ]
+      profileWeights: [profileWeightForLoggedInAsWeight2]
+    }
+    weight3 = {
+      id: 10,
+      name: 'Weight 3',
+      description: 'Description 3',
+      profileWeights: [profileWeightForLoggedInAsWeight3]
     }
 
     rubric = {
       id: 11,
       name: 'Calibrated Rubric',
       members: [loggedInAs, otherMember],
-      weights: [weight1, weight2],
+      weights: [weight1, weight2, weight3],
       authorId: loggedInAs.id
     }
 
@@ -113,65 +115,22 @@ describe('CalibrationsEdit', () => {
       })
     })
 
-    it('renders the calibrations for the logged in user', async () => {
-      const { findByText, findByLabelText } = render()
+    it('renders the first test logged in user', async () => {
+      const { findByText, findByLabelText, findByRole, queryByText } = render()
 
       expect(await findByText(`Calibrate ${rubric.name}`)).toBeInTheDocument()
 
-      const weight1Input = await findByLabelText(new RegExp(weight1.name))
-      expect(weight1Input).toHaveValue(calibrationForLoggedInAsWeight1.value.toString())
+      expect(await findByText(weight1.name)).toBeInTheDocument()
+      expect(await findByText(weight2.name)).toBeInTheDocument()
+      expect(queryByText(weight3.name)).not.toBeInTheDocument()
 
-      const weight2Input = await findByLabelText(new RegExp(weight2.name))
-      expect(weight2Input).toHaveValue(calibrationForLoggedInAsWeight2.value.toString())
-    })
-
-    describe('validations', () => {
-      it('validates a calibration value is a number', async () => {
-        const { user, findByLabelText, findByText, findByRole } = render()
-
-        expect(await findByRole('button')).not.toBeDisabled()
-
-        const input = await findByLabelText(new RegExp(weight1.name))
-        await user.clear(input)
-        await user.type(input, 'foobar')
-
-        expect(await findByText('Must be a number')).toBeInTheDocument()
-        expect(await findByRole('button')).toBeDisabled()
-      })
-
-      it('validates a calibration value is present', async () => {
-        const { user, findByLabelText, findByText, findByRole } = render()
-
-        expect(await findByRole('button')).not.toBeDisabled()
-
-        const input = await findByLabelText(new RegExp(weight1.name))
-        await user.clear(input)
-
-        expect(await findByText('Must have a value')).toBeInTheDocument()
-        expect(await findByRole('button')).toBeDisabled()
-      })
-
-      it('validates a calibration value is positive', async () => {
-        const { user, findByLabelText, findByText, findByRole } = render()
-
-        expect(await findByRole('button')).not.toBeDisabled()
-
-        const input = await findByLabelText(new RegExp(weight1.name))
-        await user.clear(input)
-        await user.type(input, '-1')
-
-        expect(await findByText('Must be >= 0')).toBeInTheDocument()
-        expect(await findByRole('button')).toBeDisabled()
-      })
+      expect(await findByLabelText('I favor')).toBeInTheDocument()
+      expect(await findByRole('button')).toBeInTheDocument()
     })
 
     describe('after updating values', () => {
-      it('notifies of the save', async () => {
-        const { user, findByLabelText, findByRole, findByText } = render()
-
-        const weight1Input = await findByLabelText(new RegExp(weight1.name))
-        await user.clear(weight1Input)
-        await user.type(weight1Input, '23.456')
+      it('notifies of the save and advances to the next test', async () => {
+        const { user, findByLabelText, findByRole, findByText, queryByText } = render()
 
         const putCalibrationsPromise = addStubToServer(server, {
           method: 'put',
@@ -179,16 +138,20 @@ describe('CalibrationsEdit', () => {
           json: {}
         })
 
-        const saveButton = await findByRole('button')
-        await user.click(saveButton)
+        const slider = await findByLabelText('I favor')
+        fireEvent.change(slider, { target: { value: 4 } }) // slider goes -8 to 8 and react converts it
 
-        expect(await findByText(/Saved at /)).toBeInTheDocument()
+        const button = await findByRole('button')
+        await user.click(button)
 
-        const putCalibrations = await putCalibrationsPromise as any
-        expect(putCalibrations.calibrations?.length).toEqual(1)
-        expect(putCalibrations.calibrations[0].profile_id).toEqual(loggedInAs.id)
-        expect(putCalibrations.calibrations[0].weight_id).toEqual(weight1.id)
-        expect(putCalibrations.calibrations[0].value).toEqual('23.456')
+        expect(await findByText(weight1.name)).toBeInTheDocument()
+        expect(await findByText(weight3.name)).toBeInTheDocument()
+        expect(queryByText(weight2.name)).not.toBeInTheDocument()
+
+        const putCalibration = await putCalibrationsPromise as any
+        expect(putCalibration.from_weight_id).toEqual(weight1.id)
+        expect(putCalibration.to_weight_id).toEqual(weight2.id)
+        expect(putCalibration.rating).toEqual(5.0)
       })
     })
   })

@@ -44,7 +44,7 @@ module Api
       end
 
       def serialize(rubric)
-        ::V1::RubricSerializer.new(rubric).serializable_hash[:data][:attributes]
+        ::V1::RubricSerializer.new(rubric, params: { current_profile: }).serializable_hash[:data][:attributes]
       end
     end
   end
