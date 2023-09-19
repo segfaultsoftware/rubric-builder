@@ -93,8 +93,14 @@ RSpec.describe Rubric do
     before do
       rubric.initialize_profile_weights!
       create(:calibration, rubric:, profile: author, from_weight: weight1, to_weight: weight2, rating: 4)
-      create(:calibration, rubric:, profile: author, from_weight: weight1, to_weight: weight3, rating: 1)
+      create(:calibration, rubric:, profile: author, from_weight: weight2, to_weight: weight1, rating: 1 / 4.0)
+
+      # These two are implicitly rating=1.0 by being absent
+      # create(:calibration, rubric:, profile: author, from_weight: weight1, to_weight: weight3, rating: 1)
+      # create(:calibration, rubric:, profile: author, from_weight: weight3, to_weight: weight1, rating: 1)
+
       create(:calibration, rubric:, profile: author, from_weight: weight2, to_weight: weight3, rating: 9)
+      create(:calibration, rubric:, profile: author, from_weight: weight3, to_weight: weight2, rating: 1 / 9.0)
     end
 
     it 'does not affect other user score weights' do

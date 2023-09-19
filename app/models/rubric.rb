@@ -63,17 +63,7 @@ class Rubric < ApplicationRecord
       weight_ids.each do |to_weight_id|
         row = calibrations_matrix[from_weight_id] ||= Hash.new(1.0)
         calibration = Calibration.find_by(rubric: self, profile:, from_weight_id:, to_weight_id:)
-        if calibration.present?
-          row[to_weight_id] = calibration.rating
-        else
-          flipped = Calibration.find_by(
-            rubric: self,
-            profile:,
-            from_weight_id: to_weight_id,
-            to_weight_id: from_weight_id
-          )
-          row[to_weight_id] = flipped.present? ? 1.0 / flipped.rating : 1.0
-        end
+        row[to_weight_id] = calibration.present? ? calibration.rating : 1.0
       end
     end
 
