@@ -1,13 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Link } from 'react-router-dom'
 
-import { useAppSelector } from './app/hooks'
+import { useAppDispatch, useAppSelector } from './app/hooks'
 import { selectLoggedInAs } from './features/profile/profileSlice'
 import RegisterPage from './features/profile/RegisterPage'
+import { fetchRubrics, selectRubrics } from './features/rubric/rubricSlice'
+import classNames from 'classnames'
 
 const HomePage = () => {
+  const dispatch = useAppDispatch()
   const loggedInAs = useAppSelector(selectLoggedInAs)
+  const rubrics = useAppSelector(selectRubrics)
+
+  const currentRubric = rubrics.length ? rubrics[0] : null
+  const hasWeights = currentRubric && currentRubric?.weights?.length > 0
+  const hasMembers = currentRubric && currentRubric.members.length > 1
+
+  useEffect(() => {
+    dispatch(fetchRubrics())
+  }, [])
 
   return (
     <div className='row align-items-center'>
@@ -16,12 +28,27 @@ const HomePage = () => {
         <div className='col-lg-10 fs-4'>
           Easy to use!
           <ol>
-            <li><Link to={'/register'}>Sign Up!</Link></li>
-            <li>Create a <Link to={'/rubrics/new'}>new Rubric</Link></li>
-            <li>Add Weights</li>
-            <li>Invite People</li>
-            <li>Record a Metric</li>
-            <li>View Comparisons of All Your Metrics in a Rubric</li>
+            <li className={classNames({ 'text-decoration-line-through': loggedInAs })}>
+              <Link to={'/register'}>Sign Up!</Link>
+            </li>
+            <li className={classNames({ 'text-decoration-line-through': rubrics.length })}>
+              Create a <Link to={'/rubrics/new'}>new Rubric</Link>
+            </li>
+            <li className={classNames({ 'text-decoration-line-through': hasWeights })}>
+              {currentRubric
+                ? (
+                <Link to={`/rubrics/${currentRubric.id}/edit`}>Add Weights</Link>
+                  )
+                : (
+                  <>Add Weights</>
+                  )}
+            </li>
+            <li className={classNames({ 'text-decoration-line-through': hasMembers })}>
+              Invite People
+            </li>
+            <li>Calibrate a Rubric</li>
+            <li>Score a Rubric</li>
+            <li>View Comparisons of All Your Scores in a Rubric</li>
           </ol>
         </div>
       </div>

@@ -21,6 +21,8 @@ by Heroku. To deploy, `git push heroku main`
 ## Feature TODOs
 1. ~~Finish styling with Bootstrap~~
 2. ~~Invite by email directly to a Rubric~~
-3. Make mobile friendly
-4. Decision making algorithm to better calibration
-5. Noun shuffling refactor (the words I use make a statistician cringe)
+3. ~~Make mobile friendly~~
+4. ~~Decision making algorithm to better calibration~~
+5. ~~Noun shuffling refactor (the words I use make a statistician cringe)~~
+
+Tracking in github now: https://github.com/users/utricularian/projects/1/views/1
