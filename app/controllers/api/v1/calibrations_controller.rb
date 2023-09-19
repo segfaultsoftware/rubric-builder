@@ -12,6 +12,8 @@ module Api
         calibration = Calibration.update_rating(rubric:, profile:, from_weight:, to_weight:, rating:)
 
         if calibration.errors.empty?
+          # TODO: delayed job
+          rubric.update_profile_weights_for_profile!(current_profile)
           render head: :ok
         else
           # TODO: Render calibration with errors

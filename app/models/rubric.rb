@@ -23,6 +23,56 @@ class Rubric < ApplicationRecord
     end
   end
 
+  # http://www.gitta.info/Suitability/en/html/Normalisatio_learningObject3.html
+  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+  def update_profile_weights_for_profile!(profile)
+    weight_ids = profile.profile_weights.map(&:weight_id)
+    calibrations_matrix = {}
+
+    weight_ids.each do |from_weight_id|
+      weight_ids.each do |to_weight_id|
+        row = calibrations_matrix[from_weight_id] ||= Hash.new(1.0)
+        calibration = Calibration.find_by(rubric: self, profile:, from_weight_id:, to_weight_id:)
+        if calibration.present?
+          row[to_weight_id] = calibration.rating
+        else
+          flipped = Calibration.find_by(
+            rubric: self,
+            profile:,
+            from_weight_id: to_weight_id,
+            to_weight_id: from_weight_id
+          )
+          row[to_weight_id] = flipped.present? ? 1.0 / flipped.rating : 1.0
+        end
+      end
+    end
+
+    column_sums = Hash.new(0.0)
+    weight_ids.each do |from_weight_id|
+      weight_ids.each do |to_weight_id|
+        column_sums[to_weight_id] += calibrations_matrix[from_weight_id][to_weight_id]
+      end
+    end
+
+    row_sums = Hash.new(0.0)
+    calibration_to_sum_matrix = {}
+    weight_ids.each do |from_weight_id|
+      weight_ids.each do |to_weight_id|
+        row = calibration_to_sum_matrix[from_weight_id] ||= Hash.new(0.0)
+        row[to_weight_id] = calibrations_matrix[from_weight_id][to_weight_id] / column_sums[to_weight_id]
+        row_sums[from_weight_id] += row[to_weight_id]
+      end
+    end
+
+    row_sums.each_key do |weight_id|
+      weighted_value = row_sums[weight_id] / row_sums.size
+      profile_weight = profile.profile_weights.find_by(weight_id:)
+      profile_weight.value = weighted_value
+      profile_weight.save!
+    end
+  end
+  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+
   def remove_member(profile)
     raise CannotRemoveAuthorFromRubricError if profile == author
 

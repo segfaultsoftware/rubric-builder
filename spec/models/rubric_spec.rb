@@ -1,6 +1,39 @@
 require 'rails_helper'
 
 RSpec.describe Rubric do
+  describe 'update_profile_weights_for_profile!' do
+    let(:member) { create(:profile) }
+    let(:author) { rubric.author }
+    let(:rubric) { create(:rubric, members: [member], weights: [weight1, weight2, weight3]) }
+    let(:weight1) { create(:weight) }
+    let(:weight2) { create(:weight) }
+    let(:weight3) { create(:weight) }
+
+    before do
+      rubric.initialize_profile_weights!
+      create(:calibration, rubric:, profile: author, from_weight: weight1, to_weight: weight2, rating: 4)
+      create(:calibration, rubric:, profile: author, from_weight: weight1, to_weight: weight3, rating: 1)
+      create(:calibration, rubric:, profile: author, from_weight: weight2, to_weight: weight3, rating: 9)
+    end
+
+    it 'does not affect other user score weights' do
+      rubric.update_profile_weights_for_profile!(author)
+
+      profile_weight_values = member.profile_weights.map(&:value).uniq
+      expect(profile_weight_values).to eq([1.0])
+    end
+
+    # rubocop:disable RSpec/MultipleExpectations
+    it 'recalculates and updates all score weights for a user' do
+      rubric.update_profile_weights_for_profile!(author)
+
+      expect(author.profile_weights.find_by(weight_id: weight1.id).value).to be_within(0.0000001).of(0.4393207437)
+      expect(author.profile_weights.find_by(weight_id: weight2.id).value).to be_within(0.0000001).of(0.3749817011)
+      expect(author.profile_weights.find_by(weight_id: weight3.id).value).to be_within(0.0000001).of(0.1856975553)
+    end
+    # rubocop:enable RSpec/MultipleExpectations
+  end
+
   describe '#remove_member' do
     let(:rubric) { create(:rubric, members: [member]) }
     let(:author) { rubric.author }
