@@ -10,6 +10,9 @@ import { type Rubric } from '../rubric/rubricSlice'
 
 describe('ScoreNew', () => {
   let rubric: Rubric
+  const scoreName1 = 'Score Name 1'
+  const scoreName2 = 'Score Name 2'
+  let scores: Record<string, Record<number, Record<number, number>>>
   let router: ReturnType<typeof createMemoryRouter>
   let server: ReturnType<typeof setupServerWithStubs>
   let stubs: ServerStub[]
@@ -54,6 +57,23 @@ describe('ScoreNew', () => {
         profileWeights: []
       }]
     }
+
+    scores = {
+      [scoreName1]: {
+        123: {
+          '-1': 1.0,
+          1: 0.5,
+          7: 0.5
+        }
+      },
+      [scoreName2]: {
+        123: {
+          '-1': 1.0,
+          1: 0.5,
+          7: 0.5
+        }
+      }
+    }
     const routes = [
       {
         path: '/rubrics/:rubricId/scores/new',
@@ -75,6 +95,14 @@ describe('ScoreNew', () => {
       method: 'get',
       url: `/api/v1/rubrics/${rubric.id}.json`,
       json: rubric
+    }
+  }
+
+  const getScoresStub = (): ServerStub => {
+    return {
+      method: 'get',
+      url: `/api/v1/rubrics/${rubric.id}/scores.json`,
+      json: scores
     }
   }
 
@@ -102,6 +130,7 @@ describe('ScoreNew', () => {
     describe('after the GET rubric resolves', () => {
       beforeEach(() => {
         stubs.push(getRubricStub())
+        stubs.push(getScoresStub())
       })
 
       it('renders the page', async () => {
@@ -117,8 +146,10 @@ describe('ScoreNew', () => {
 
           const postBodyPromise = addStubToServer(server, postScoreStub())
 
-          const scoreNameInput = await findByLabelText('Name for this Scoring')
+          const scoreNameInput = await findByLabelText(/Name for this Scoring/)
+          await user.clear(scoreNameInput)
           await user.type(scoreNameInput, '123 Main St')
+          await user.keyboard('{enter}')
 
           const weight1 = await findByText(/Weight 1/)
           await user.click(await within(weight1.parentElement!).findByLabelText('5'))

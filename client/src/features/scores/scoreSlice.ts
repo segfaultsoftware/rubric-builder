@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
 import { type RootState } from '../../app/store'
 
@@ -81,5 +81,12 @@ export const { clearCreateScoreStatus } = scoreSlice.actions
 
 export const selectCreateScoreStatus = (state: RootState) => state.score.createScoreStatus
 export const selectScoresForRubric = (state: RootState) => state.score.scores
+
+export const selectUniqueScoreNames = createSelector(
+  selectScoresForRubric,
+  (scores) => {
+    return Array.from(Object.keys(scores))
+  }
+)
 
 export default scoreSlice.reducer

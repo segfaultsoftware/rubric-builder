@@ -1,20 +1,36 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { fetchRubric, selectRubric, type Weight } from '../rubric/rubricSlice'
 import { selectLoggedInAs } from '../profile/profileSlice'
-import { clearCreateScoreStatus, createScore, type Score, type ScoreWeight, selectCreateScoreStatus } from './scoreSlice'
+import {
+  clearCreateScoreStatus,
+  createScore, fetchScoresForRubricId,
+  type Score,
+  type ScoreWeight,
+  selectCreateScoreStatus,
+  selectUniqueScoreNames
+} from './scoreSlice'
 import WeightScore from './WeightScore'
+import CreatableSelect from 'react-select/creatable'
+import { type SelectInstance } from 'react-select'
 
+interface SelectOption {
+  label: string
+  value: string
+}
 const ScoreNew = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const { rubricId } = useParams()
 
+  const selectRef = useRef<SelectInstance<SelectOption> | null>(null)
+
   const loggedInAs = useAppSelector(selectLoggedInAs)
   const rubric = useAppSelector(selectRubric)
   const createScoreStatus = useAppSelector(selectCreateScoreStatus)
+  const existingScores = useAppSelector(selectUniqueScoreNames)
 
   const [scoreName, setScoreName] = useState('')
   const [scores, setScores] = useState(new Map())
@@ -22,6 +38,7 @@ const ScoreNew = () => {
   useEffect(() => {
     if (rubricId) {
       dispatch(fetchRubric(rubricId))
+      dispatch(fetchScoresForRubricId(rubricId))
     }
   }, [rubricId])
 
@@ -86,13 +103,13 @@ const ScoreNew = () => {
       <form className='container text-center'>
         <header><h1>Score {rubric.name}</h1></header>
         <div className='col-md-6 offset-md-3'>
-          <label className='form-label w-100'>
+          <label className='form-label w-100' htmlFor={selectRef.current?.inputRef?.id}>
             Name for this Scoring
-            <input
-              type='text'
-              value={scoreName}
-              onChange={(e) => { setScoreName(e.target.value) }}
-              className='form-control'
+            <CreatableSelect
+              ref={selectRef}
+              isClearable
+              options={existingScores.map(score => ({ label: score, value: score }))}
+              onChange={(e) => { setScoreName(e?.value ?? '') }}
             />
           </label>
           {hasInvalidName && <div className='alert alert-warning'>Requires a score name</div>}
