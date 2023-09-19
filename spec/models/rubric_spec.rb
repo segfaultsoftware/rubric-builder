@@ -256,4 +256,36 @@ RSpec.describe Rubric do
       end
     end
   end
+
+  describe '#initialize_profile_weights!' do
+    let(:profile1) { create(:profile) }
+    let(:profile2) { create(:profile) }
+    let(:rubric) { create(:rubric, author: profile1, weights: [weight1, weight2], members: [profile1, profile2]) }
+    let(:weight1) { build(:weight) }
+    let(:weight2) { build(:weight) }
+
+    it 'creates all profile_weights for all members and weights' do
+      expect { rubric.initialize_profile_weights! }.to change(ProfileWeight, :count).by(4)
+    end
+
+    context 'when there already exists profile weights' do
+      before do
+        rubric.initialize_profile_weights!
+      end
+
+      it 'no ops' do
+        expect { rubric.initialize_profile_weights! }.not_to change(ProfileWeight, :count)
+      end
+
+      context 'when a new weight is added' do
+        before do
+          create(:weight, rubric:)
+        end
+
+        it 'adds the missing records' do
+          expect { rubric.reload.initialize_profile_weights! }.to change(ProfileWeight, :count).by(2)
+        end
+      end
+    end
+  end
 end

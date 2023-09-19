@@ -11,10 +11,10 @@ FactoryBot.define do
     after(:create) do |rubric, context|
       rubric.profiles << rubric.author
       context.members.each do |member|
-        rubric.profiles << member
+        rubric.profiles << member unless rubric.profiles.include?(member)
       end
       context.weights.each do |weight|
-        rubric.weights << weight
+        rubric.weights << weight unless rubric.weights.include?(weight)
         rubric.save!
       end
     end
