@@ -13,15 +13,17 @@ import {
   type Calibration, selectWeightByWeightId
 } from '../rubric/rubricSlice'
 import { selectLoggedInAs } from '../profile/profileSlice'
+import { shuffle } from 'lodash'
 
 interface CalibrationsEditProps {
   useRandom?: boolean
 }
 
 const calibrationsEditPropsDefaults: CalibrationsEditProps = {
-  useRandom: false
+  useRandom: true
 }
-const CalibrationsEdit = ({ useRandom }: CalibrationsEditProps = calibrationsEditPropsDefaults) => {
+const CalibrationsEdit = (options: CalibrationsEditProps) => {
+  const { useRandom } = { ...calibrationsEditPropsDefaults, ...options }
   const dispatch = useAppDispatch()
   const { rubricId } = useParams()
 
@@ -51,7 +53,7 @@ const CalibrationsEdit = ({ useRandom }: CalibrationsEditProps = calibrationsEdi
 
   useEffect(() => {
     if (rubric?.pairings?.length && pairings.length === 0) {
-      setPairings(rubric.pairings)
+      setPairings(useRandom ? shuffle(rubric.pairings) : rubric.pairings)
     } else if (rubric && pairings.length) {
       setFromWeight(weightsById.get(pairings[0][0]))
       setToWeight(weightsById.get(pairings[0][1]))
