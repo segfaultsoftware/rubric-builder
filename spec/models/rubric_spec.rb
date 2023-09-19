@@ -1,6 +1,109 @@
 require 'rails_helper'
 
 RSpec.describe Rubric do
+  describe '#generate_pairings_for_profile!' do
+    let(:profile1) { create(:profile) }
+    let(:profile2) { create(:profile) }
+
+    let(:rubric) { create(:rubric, weights:, members: [profile1, profile2]) }
+    let(:weights) { [weight1, weight2, weight3] }
+    let(:weight1) { build(:weight) }
+    let(:weight2) { build(:weight) }
+    let(:weight3) { build(:weight) }
+
+    context 'without calibrations' do
+      it 'generates all pairwise combinations of existing weights' do
+        rubric.generate_pairings_for_profile!(profile1)
+        expected = [
+          [weight1.id, weight2.id],
+          [weight1.id, weight3.id],
+          [weight2.id, weight3.id]
+        ]
+        expect(rubric.pairings_for_profile(profile1)).to match_array(expected)
+      end
+
+      context 'with only one weight' do
+        let(:weights) { [weight1] }
+
+        it 'generates an empty array' do
+          rubric.generate_pairings_for_profile!(profile1)
+          expect(rubric.pairings_for_profile(profile1)).to match_array([])
+        end
+      end
+    end
+
+    context 'with calibrations of identical iteration' do
+      before do
+        create(:calibration, rubric:, profile: profile1, from_weight: weight1, to_weight: weight2, iteration: 2)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight2, to_weight: weight1, iteration: 2)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight1, to_weight: weight3, iteration: 2)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight3, to_weight: weight1, iteration: 2)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight2, to_weight: weight3, iteration: 2)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight3, to_weight: weight2, iteration: 2)
+      end
+
+      it 'generates all pairwise combinations of existing weights' do
+        rubric.generate_pairings_for_profile!(profile1)
+        expected = [
+          [weight1.id, weight2.id],
+          [weight1.id, weight3.id],
+          [weight2.id, weight3.id]
+        ]
+        expect(rubric.pairings_for_profile(profile1)).to match_array(expected)
+      end
+    end
+
+    context 'with calibrations of varying iterations' do
+      before do
+        create(:calibration, rubric:, profile: profile1, from_weight: weight1, to_weight: weight2, iteration: 2)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight2, to_weight: weight1, iteration: 2)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight1, to_weight: weight3, iteration: 1)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight3, to_weight: weight1, iteration: 1)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight2, to_weight: weight3, iteration: 1)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight3, to_weight: weight2, iteration: 1)
+      end
+
+      it 'generates the pairwise combinations of all calibrations less than the max iteration' do
+        rubric.generate_pairings_for_profile!(profile1)
+        expected = [
+          [weight1.id, weight3.id],
+          [weight2.id, weight3.id]
+        ]
+        expect(rubric.pairings_for_profile(profile1)).to match_array(expected)
+      end
+    end
+
+    context 'with some calibrations missing' do
+      before do
+        create(:calibration, rubric:, profile: profile1, from_weight: weight1, to_weight: weight3, iteration: 1)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight3, to_weight: weight1, iteration: 1)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight2, to_weight: weight3, iteration: 1)
+        create(:calibration, rubric:, profile: profile1, from_weight: weight3, to_weight: weight2, iteration: 1)
+      end
+
+      it 'generates the pairwise combinations of all calibrations less than the max iteration' do
+        rubric.generate_pairings_for_profile!(profile1)
+        expected = [
+          [weight1.id, weight2.id]
+        ]
+        expect(rubric.pairings_for_profile(profile1)).to match_array(expected)
+      end
+    end
+
+    context 'with a neighbor' do
+      it 'does not collide with neighbor' do
+        rubric.generate_pairings_for_profile!(profile1)
+        rubric.generate_pairings_for_profile!(profile2)
+
+        expected = {
+          profile1.id.to_s => [[weight1.id, weight2.id], [weight1.id, weight3.id], [weight2.id, weight3.id]],
+          profile2.id.to_s => [[weight1.id, weight2.id], [weight1.id, weight3.id], [weight2.id, weight3.id]]
+        }
+        expect(rubric.computed['pairings']).to eq(expected)
+      end
+    end
+  end
+
   describe '#calculations' do
     let(:score_name1) { 'Score 1' }
     let(:score_name2) { 'Score 2' }

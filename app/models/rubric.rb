@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class Rubric < ApplicationRecord
   belongs_to :author, class_name: 'Profile'
 
@@ -100,9 +101,47 @@ class Rubric < ApplicationRecord
     rubric_profile.destroy if rubric_profile.present?
   end
 
+  def generate_pairings_for_profile!(profile)
+    to_calibrate = stale_calibrations_for_profile(profile)
+    pairings = set_pairings_for_profile(profile, to_calibrate)
+    save!
+    pairings
+  end
+
+  def pairings_for_profile(profile)
+    pairings = computed['pairings'] || {}
+    pairings[profile.id.to_s] || []
+  end
+
   class CannotRemoveAuthorFromRubricError < StandardError
     def message
       'Cannot remove the author from a rubric'
     end
   end
+
+  private
+
+  def stale_calibrations_for_profile(profile)
+    all_combinations = weights.map(&:id).combination(2).to_a
+    max_iteration = Calibration.where(rubric: self, profile:).maximum(:iteration)
+    current_calibrations = Calibration
+                           .where(rubric: self, profile:, iteration: max_iteration)
+                           .pluck(:from_weight_id, :to_weight_id)
+
+    to_calibrate = all_combinations - current_calibrations
+    to_calibrate = all_combinations if to_calibrate.empty?
+    to_calibrate
+  end
+
+  def set_pairings_for_profile(profile, to_calibrate)
+    computed_cache = computed.is_a?(String) ? JSON.parse(computed) : computed.clone
+    pairings = computed_cache['pairings'] || {}
+    pairings[profile.id] = to_calibrate
+    computed_cache['pairings'] = pairings
+
+    self.computed = computed_cache
+
+    to_calibrate
+  end
 end
+# rubocop:enable Metrics/ClassLength
