@@ -194,6 +194,12 @@ RSpec.describe Rubric do
     let(:weight3) { create(:weight) }
 
     before do
+      # make sure we're not calculating against a rogue rubric
+      weight21 = build(:weight)
+      weight22 = build(:weight)
+      other_rubric = create(:rubric, members: [author], weights: [weight21, weight22])
+      other_rubric.initialize_profile_weights!
+
       rubric.initialize_profile_weights!
       create(:calibration, rubric:, profile: author, from_weight: weight1, to_weight: weight2, rating: 4)
       create(:calibration, rubric:, profile: author, from_weight: weight2, to_weight: weight1, rating: 1 / 4.0)

@@ -57,7 +57,7 @@ class Rubric < ApplicationRecord
   # http://www.gitta.info/Suitability/en/html/Normalisatio_learningObject3.html
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
   def update_profile_weights_for_profile!(profile)
-    weight_ids = profile.profile_weights.map(&:weight_id)
+    weight_ids = ProfileWeight.joins(:weight).where(profile:, weight: { rubric_id: id }).pluck(&:weight_id)
     calibrations_matrix = {}
 
     weight_ids.each do |from_weight_id|
