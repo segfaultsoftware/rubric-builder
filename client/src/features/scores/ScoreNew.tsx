@@ -112,7 +112,7 @@ const ScoreNew = () => {
               onChange={(e) => { setScoreName(e?.value ?? '') }}
             />
           </label>
-          {hasInvalidName && <div className='alert alert-warning'>Requires a score name</div>}
+          {hasInvalidName && <div className='alert alert-warning'>Requires a {rubric.descriptor}</div>}
         </div>
         <header><h2>Weights</h2></header>
         {rubric.weights.map((weight) => (
