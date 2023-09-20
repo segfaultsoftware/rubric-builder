@@ -4,7 +4,14 @@ import { Link, useParams } from 'react-router-dom'
 import classNames from 'classnames'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { fetchRubric, type Rubric, selectRubric, selectSaveRubricState, updateRubric } from './rubricSlice'
+import {
+  fetchRubric,
+  resetRubricState,
+  type Rubric,
+  selectRubric,
+  selectSaveRubricState,
+  updateRubric
+} from './rubricSlice'
 import RubricForm from './RubricForm'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import RubricMembers from './RubricMembers'
@@ -28,6 +35,12 @@ const RubricEdit = () => {
     name: '', weights: [], members: []
   })
   const [notifications, setNotifications] = useState<Notification[]>([])
+
+  useEffect(() => {
+    return function cleanup () {
+      dispatch(resetRubricState())
+    }
+  }, [])
 
   useEffect(() => {
     if (rubricId) {

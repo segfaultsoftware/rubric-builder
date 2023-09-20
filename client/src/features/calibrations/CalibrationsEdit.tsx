@@ -8,7 +8,9 @@ import {
   selectRubric,
   updateCalibrationsForRubric,
   type Weight,
-  type Calibration, selectWeightByWeightId
+  type Calibration,
+  selectWeightByWeightId,
+  resetRubricState
 } from '../rubric/rubricSlice'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import { shuffle } from 'lodash'
@@ -35,6 +37,12 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
   const [pairings, setPairings] = useState<number[][]>([])
   const [fromWeight, setFromWeight] = useState<Weight | undefined>(undefined)
   const [toWeight, setToWeight] = useState<Weight | undefined>(undefined)
+
+  useEffect(() => {
+    return function cleanup () {
+      dispatch(resetRubricState())
+    }
+  }, [])
 
   useEffect(() => {
     if (rubricId) {

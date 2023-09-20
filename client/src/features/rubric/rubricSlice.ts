@@ -159,6 +159,13 @@ const rubricSlice = createSlice({
   name: 'rubric',
   initialState,
   reducers: {
+    resetRubricState: (state) => {
+      state.rubric = null
+      state.rubrics = []
+      state.saveRubricState = 'initial'
+      state.saveCalibrationsState = 'initial'
+      state.inviteMemberState = 'initial'
+    },
     clearInviteMemberStatus: (state) => {
       state.inviteMemberState = 'initial'
     },
@@ -262,6 +269,6 @@ export const selectRubricProfilesById = createSelector(
   }
 )
 
-export const { clearInviteMemberStatus, clearSaveCalibrationState } = rubricSlice.actions
+export const { clearInviteMemberStatus, clearSaveCalibrationState, resetRubricState } = rubricSlice.actions
 
 export default rubricSlice.reducer
