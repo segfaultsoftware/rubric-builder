@@ -157,6 +157,49 @@ describe('CalibrationsEdit', () => {
         expect(putCalibration.to_weight_id).toEqual(weight3.id)
         expect(putCalibration.rating).toEqual(5.0)
       })
+
+      describe('after exhausting all combinations', () => {
+        it('shows a restart prompt', async () => {
+          const { user, findByRole, findByText, queryByText, queryByLabelText } = render()
+          const buttonFn = async () => findByRole('button')
+
+          expect(queryByText(/Restart/)).not.toBeInTheDocument()
+          await user.click(await buttonFn())
+          await user.click(await buttonFn())
+
+          expect(await findByText(/Restart/)).toBeInTheDocument()
+          expect(queryByLabelText('I favor')).not.toBeInTheDocument()
+          expect(queryByText(weight1.name)).not.toBeInTheDocument()
+          expect(queryByText(weight2.name)).not.toBeInTheDocument()
+          expect(queryByText(weight3.name)).not.toBeInTheDocument()
+        })
+
+        describe('after clicking the restart prompt', () => {
+          it('starts over', async () => {
+            const { user, findByText, queryByText } = render()
+            const buttonFn = async () => findByText('Save')
+
+            addStubToServer(server, {
+              method: 'put',
+              url: `/api/v1/rubrics/${rubric.id}/calibrations.json`,
+              json: {}
+            })
+
+            expect(queryByText(/Restart/)).not.toBeInTheDocument()
+            await user.click(await buttonFn())
+            await user.click(await buttonFn())
+
+            const restartButton = await findByText(/Restart/)
+            await user.click(restartButton)
+
+            expect(await findByText('I favor')).toBeInTheDocument()
+            expect(await findByText(weight1.name)).toBeInTheDocument()
+            expect(queryByText(weight2.name)).not.toBeInTheDocument()
+            expect(await findByText(weight3.name)).toBeInTheDocument()
+            expect(queryByText(/Restart/)).not.toBeInTheDocument()
+          })
+        })
+      })
     })
   })
 })

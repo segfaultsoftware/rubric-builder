@@ -4,10 +4,8 @@ import { Link, useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import {
-  clearSaveCalibrationState,
   fetchRubric,
   selectRubric,
-  selectSaveCalibrationsState,
   updateCalibrationsForRubric,
   type Weight,
   type Calibration, selectWeightByWeightId
@@ -29,9 +27,10 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
 
   const rubric = useAppSelector(selectRubric)
   const loggedInAs = useAppSelector(selectLoggedInAs)
-  const saveState = useAppSelector(selectSaveCalibrationsState)
   const weightsById = useAppSelector(selectWeightByWeightId)
 
+  const [isStarting, setIsStarting] = useState<boolean>(true)
+  const [isAssigned, setIsAssigned] = useState<boolean>(false)
   const [rating, setRating] = useState<number>(0.0)
   const [pairings, setPairings] = useState<number[][]>([])
   const [fromWeight, setFromWeight] = useState<Weight | undefined>(undefined)
@@ -44,17 +43,10 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
   }, [rubricId])
 
   useEffect(() => {
-    if (rubric && saveState === 'saved') {
-      const newPairings = pairings.slice(1)
-      setPairings(newPairings)
-      dispatch(clearSaveCalibrationState())
-    }
-  }, [rubric, saveState])
-
-  useEffect(() => {
-    if (rubric?.pairings?.length && pairings.length === 0) {
+    if (rubric?.pairings?.length && pairings.length === 0 && isStarting) {
       setPairings(useRandom ? shuffle(rubric.pairings) : rubric.pairings)
-    } else if (rubric && pairings.length) {
+      setIsStarting(false)
+    } else if (rubric && pairings.length && !isAssigned) {
       const flipIt = !!useRandom && Math.floor(Math.random() * 10) % 2 === 1
 
       if (flipIt) {
@@ -65,14 +57,15 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
         setToWeight(weightsById.get(pairings[0][1]))
       }
       setRating(0)
+      setIsAssigned(true)
     }
-  }, [rubric, pairings])
+  }, [rubric, pairings, isStarting, isAssigned])
 
   const handleCalibrationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRating(parseFloat(e.target.value))
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (loggedInAs && rubric && fromWeight && toWeight) {
       const absRating = Math.abs(rating)
       const toNine = absRating + 1
@@ -81,11 +74,46 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const calibration: Calibration = { fromWeightId: fromWeight.id!, toWeightId: toWeight.id!, rating: normalized }
 
+      const newPairings = pairings.slice(1)
+      setPairings(newPairings)
+      setIsAssigned(false)
+
       dispatch(updateCalibrationsForRubric({ rubric, calibration }))
     }
   }
 
-  const isDisabled = saveState === 'pending'
+  const renderPicker = () => {
+    return (
+      <>
+        <div className='col'>{fromWeight?.name}</div>
+        <div className='col'>
+          <label className='mb-2' htmlFor='picker'>I favor</label>
+          <div className='w-100'>
+            <input
+              id='picker'
+              type='range'
+              min="-8"
+              max="8"
+              step="1"
+              value={rating}
+              onChange={handleCalibrationChange}
+              className='w-100'
+            />
+          </div>
+        </div>
+        <div className='col'>{toWeight?.name}</div>
+      </>
+    )
+  }
+
+  const renderRestart = () => {
+    return (
+      <button type='button' className='btn btn-link' onClick={() => { setIsStarting(true) }}>
+        Restart
+        <i className="bi bi-repeat"></i>
+      </button>
+    )
+  }
 
   return loggedInAs && rubric && fromWeight && toWeight
     ? (
@@ -100,27 +128,13 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
       <header><h1>Calibrate {rubric.name}</h1></header>
       <form>
         <div className='row mb-3'>
-          <div className='col'>{fromWeight.name}</div>
-          <div className='col'>
-            <label className='mb-2' htmlFor='picker'>I favor</label>
-            <div>
-              <input
-                id='picker'
-                type='range'
-                min="-8"
-                max="8"
-                step="1"
-                value={rating}
-                onChange={handleCalibrationChange}
-                disabled={isDisabled}
-              />
-            </div>
+          {pairings.length > 0 ? renderPicker() : renderRestart()}
+        </div>
+        {pairings.length > 0 && (
+          <div>
+            <button className='btn btn-primary' type='button' onClick={handleSave}>Save</button>
           </div>
-          <div className='col'>{toWeight.name}</div>
-        </div>
-        <div>
-          <button className='btn btn-primary' type='button' disabled={isDisabled} onClick={handleSave}>Save</button>
-        </div>
+        )}
       </form>
     </div>
       )
