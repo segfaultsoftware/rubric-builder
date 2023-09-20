@@ -78,7 +78,7 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
     if (loggedInAs && rubric && fromWeight && toWeight) {
       const absRating = Math.abs(rating)
       const toNine = absRating + 1
-      const normalized = rating >= 0 ? toNine : (1 / toNine)
+      const normalized = rating > 0 ? (1 / toNine) : toNine
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const calibration: Calibration = { fromWeightId: fromWeight.id!, toWeightId: toWeight.id!, rating: normalized }

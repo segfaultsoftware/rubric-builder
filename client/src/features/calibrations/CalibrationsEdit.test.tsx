@@ -155,7 +155,7 @@ describe('CalibrationsEdit', () => {
         const putCalibration = await putCalibrationsPromise as any
         expect(putCalibration.from_weight_id).toEqual(weight1.id)
         expect(putCalibration.to_weight_id).toEqual(weight3.id)
-        expect(putCalibration.rating).toEqual(5.0)
+        expect(putCalibration.rating).toEqual(1 / 5.0)
       })
 
       describe('after exhausting all combinations', () => {
