@@ -48,12 +48,10 @@ describe('ScoreNew', () => {
       weights: [{
         id: 1,
         name: 'Weight 1',
-        description: 'Weight 1 Description',
         profileWeights: []
       }, {
         id: 7,
         name: 'Weight 2',
-        description: 'Some other thing',
         profileWeights: []
       }]
     }

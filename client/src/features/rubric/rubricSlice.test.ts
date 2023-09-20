@@ -37,13 +37,11 @@ describe('rubricSlice', () => {
     weight1 = {
       id: 1,
       name: 'Weight 1',
-      description: '',
       profileWeights: [profileWeightUser1Weight1]
     }
     weight2 = {
       id: 2,
       name: 'Weight 2',
-      description: '',
       profileWeights: [profileWeightUser1Weight2]
     }
 

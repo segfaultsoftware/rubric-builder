@@ -34,9 +34,9 @@ describe('ScoreSummary', () => {
     profileById.set(3, { id: 3, displayName: 'User 3' })
 
     weightById = new Map<number, Weight>()
-    weightById.set(1, { id: 1, name: 'Weight 1', description: '', profileWeights: [] })
-    weightById.set(2, { id: 2, name: 'Weight 2', description: '', profileWeights: [] })
-    weightById.set(3, { id: 3, name: 'Weight 3', description: '', profileWeights: [] })
+    weightById.set(1, { id: 1, name: 'Weight 1', profileWeights: [] })
+    weightById.set(2, { id: 2, name: 'Weight 2', profileWeights: [] })
+    weightById.set(3, { id: 3, name: 'Weight 3', profileWeights: [] })
 
     calculationsByUserWeight = {}
     const calculationsByWeightForUser2: Record<string, number> = {}

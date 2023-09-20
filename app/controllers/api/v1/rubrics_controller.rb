@@ -40,7 +40,7 @@ module Api
         params.require(:rubric).permit(
           :name,
           weights_attributes: [
-            :id, :name, :description, :_destroy
+            :id, :name, :_destroy
           ]
         )
       end

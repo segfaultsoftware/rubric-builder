@@ -55,14 +55,12 @@ describe('RubricEdit', () => {
     weight1 = {
       id: 915478,
       name: 'SQFT',
-      description: 'Interior Square Footage',
       profileWeights: []
     }
 
     weight2 = {
       id: 1948191,
       name: 'Lighting',
-      description: 'Natural Light',
       profileWeights: []
     }
 
@@ -122,19 +120,10 @@ describe('RubricEdit', () => {
         expect(nameInputs.length).toEqual(3) // weight x 2 + new weight
 
         const newName = 'Newly Added Weight'
-        const newDescription = 'Newly Added Description'
         await user.type(nameInputs[2], newName)
 
         nameInputs = await findAllByPlaceholderText('Weight Name')
         expect(nameInputs[2]).toHaveValue(newName)
-
-        let descInputs = await findAllByPlaceholderText('Weight Description')
-        expect(descInputs.length).toEqual(3) // weight x2 + new weight
-
-        await user.type(descInputs[2], newDescription)
-
-        descInputs = await findAllByPlaceholderText('Weight Description')
-        expect(descInputs[2]).toHaveValue(newDescription)
 
         const putRubricBodyPromise = addStubToServer(server, {
           method: 'put',
@@ -147,7 +136,6 @@ describe('RubricEdit', () => {
               {
                 id: 9184819,
                 name: newName,
-                description: newDescription,
                 profileWeights: []
               }
             ]
@@ -166,7 +154,6 @@ describe('RubricEdit', () => {
         const weightAttributes = putRubricBody.weights_attributes as Array<Record<any, any>>
         expect(weightAttributes.length).toEqual(3)
         expect(weightAttributes[2].name).toEqual(newName)
-        expect(weightAttributes[2].description).toEqual(newDescription)
         expect(weightAttributes[2]).not.toHaveProperty('id')
         expect(weightAttributes[2]).not.toHaveProperty('_destroy')
       })

@@ -67,19 +67,16 @@ describe('CalibrationsEdit', () => {
     weight1 = {
       id: 8,
       name: 'Weight 1',
-      description: 'Description 1',
       profileWeights: [profileWeightForLoggedInAsWeight1]
     }
     weight2 = {
       id: 9,
       name: 'Weight 2',
-      description: 'Description 2',
       profileWeights: [profileWeightForLoggedInAsWeight2]
     }
     weight3 = {
       id: 10,
       name: 'Weight 3',
-      description: 'Description 3',
       profileWeights: [profileWeightForLoggedInAsWeight3]
     }
 

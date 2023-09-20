@@ -89,7 +89,6 @@ describe('RubricNew', () => {
             weights: [{
               id: 234,
               name: 'My New Weight',
-              description: '',
               profileWeights: []
             }],
             members: [loggedInAs]
@@ -106,7 +105,6 @@ describe('RubricNew', () => {
         const weightAttributes = createRubricBody.weights_attributes as Array<Record<any, any>>
         expect(weightAttributes.length).toEqual(1)
         expect(weightAttributes[0].name).toEqual('My New Weight')
-        expect(weightAttributes[0].description).toEqual('')
         expect(weightAttributes[0]).not.toHaveProperty('id')
         expect(weightAttributes[0]).not.toHaveProperty('_destroy')
       })

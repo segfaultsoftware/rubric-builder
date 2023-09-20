@@ -35,8 +35,8 @@
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint src --ext .ts --ext .tsx --ext .js -c .eslintrc.js",
-    "lintci": "eslint src --ext .ts --ext .tsx --ext .js-c .eslintrc.js -o ../junit.xml --format junit"
+    "lint": "yarn tsc && eslint src --ext .ts --ext .tsx --ext .js -c .eslintrc.js",
+    "lintci": "yarn tsc && eslint src --ext .ts --ext .tsx --ext .js-c .eslintrc.js -o ../junit.xml --format junit"
   },
   "eslintConfig": {
     "extends": [

@@ -49,7 +49,6 @@ const RubricForm = ({
     const emptyWeight: Weight = {
       id: incrementor++,
       name: '',
-      description: '',
       profileWeights: [],
       _new: true
     }
@@ -102,10 +101,9 @@ const RubricForm = ({
       <h3>Weights</h3>
       {rubric.weights.map((weight) => {
         const nameId = `weight:name:${weight.id}`
-        const descriptionId = `weight:description:${weight.id}`
         return (
           <div className='row mb-2' key={weight.id}>
-            <div className='col-lg-6'>
+            <div className='col-lg-12'>
               <input
                 id={nameId}
                 type='text'
@@ -113,17 +111,6 @@ const RubricForm = ({
                 className='form-control'
                 placeholder='Weight Name'
                 value={weight.name}
-                onChange={(e) => { handleWeightChange(weight, e) }}
-              />
-            </div>
-            <div className='col-lg-6'>
-              <input
-                id={descriptionId}
-                type='text'
-                name='description'
-                className='form-control'
-                placeholder='Weight Description'
-                value={weight.description}
                 onChange={(e) => { handleWeightChange(weight, e) }}
               />
             </div>

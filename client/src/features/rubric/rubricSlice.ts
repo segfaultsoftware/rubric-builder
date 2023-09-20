@@ -21,7 +21,6 @@ export interface ProfileWeight {
 export interface Weight {
   id?: number
   name: string
-  description: string
   profileWeights: ProfileWeight[]
   _destroy?: boolean
   _new?: boolean

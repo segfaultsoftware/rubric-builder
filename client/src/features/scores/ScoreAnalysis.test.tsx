@@ -54,13 +54,11 @@ describe('ScoreAnalysis', () => {
     weight1 = {
       id: 5,
       name: 'ABC',
-      description: '',
       profileWeights: []
     }
     weight2 = {
       id: 7,
       name: 'XYZ',
-      description: '',
       profileWeights: []
     }
 

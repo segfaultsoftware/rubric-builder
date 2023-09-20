@@ -32,7 +32,6 @@ describe('RubricForm', () => {
       weights: [{
         id: 1,
         name: 'Weight 1',
-        description: 'Some Weight Description',
         profileWeights: []
       }],
       members: []
@@ -43,7 +42,6 @@ describe('RubricForm', () => {
     const { findByDisplayValue } = render()
     expect(await findByDisplayValue('Some Rubric')).toBeInTheDocument()
     expect(await findByDisplayValue('Weight 1')).toBeInTheDocument()
-    expect(await findByDisplayValue('Some Weight Description')).toBeInTheDocument()
   })
 
   it('handles rubric name change', async () => {
@@ -75,7 +73,6 @@ describe('RubricForm', () => {
     const newWeight = upboundRubric.weights[1]
     expect(newWeight.id).toBeGreaterThan(0)
     expect(newWeight.name).toEqual('')
-    expect(newWeight.description).toEqual('')
     expect(newWeight.profileWeights).toEqual([])
     expect(newWeight._new).toEqual(true)
   })
@@ -84,13 +81,11 @@ describe('RubricForm', () => {
     const weight2: Weight = {
       id: 8481,
       name: 'Weight 2',
-      description: 'Description',
       profileWeights: []
     }
     const weight3: Weight = {
       id: 91048,
       name: 'Weight 3',
-      description: 'Description',
       profileWeights: []
     }
     rubric.weights.push(weight2)
@@ -116,42 +111,6 @@ describe('RubricForm', () => {
       ]
     })
   })
-  it('handles updating a weight description', async () => {
-    const weight2: Weight = {
-      id: 8481,
-      name: 'Weight 2',
-      description: 'Description',
-      profileWeights: []
-    }
-    const weight3: Weight = {
-      id: 91048,
-      name: 'Weight 3',
-      description: 'Description',
-      profileWeights: []
-    }
-    rubric.weights.push(weight2)
-    rubric.weights.push(weight3)
-
-    const { user, findAllByPlaceholderText } = render()
-
-    const descriptionInputs = await findAllByPlaceholderText('Weight Description')
-    expect(descriptionInputs.length).toEqual(3) // 3 weights
-    const middleWeightDescriptionInput = descriptionInputs[1]
-
-    await user.type(middleWeightDescriptionInput, 'X')
-
-    expect(onRubricChange).toHaveBeenCalledWith({
-      ...rubric,
-      weights: [
-        rubric.weights[0],
-        {
-          ...rubric.weights[1],
-          description: `${rubric.weights[1].description}X`
-        },
-        rubric.weights[2]
-      ]
-    })
-  })
 
   describe('on submit', () => {
     it('validates presence of name', async () => {
@@ -172,7 +131,6 @@ describe('RubricForm', () => {
       rubric.weights.push({
         id: 748291041,
         name: 'Newly Created Weight',
-        description: 'Description',
         profileWeights: [],
         _new: true
       })
@@ -189,7 +147,6 @@ describe('RubricForm', () => {
           rubric.weights[0],
           {
             name: rubric.weights[1].name,
-            description: rubric.weights[1].description,
             profileWeights: [],
             _new: true
           }
