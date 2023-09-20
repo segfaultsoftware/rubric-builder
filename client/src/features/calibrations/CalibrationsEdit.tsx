@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
+import { shuffle } from 'lodash'
+import ProgressBar from '@ramonak/react-progress-bar'
 import { Link, useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
@@ -13,7 +15,6 @@ import {
   resetRubricState
 } from '../rubric/rubricSlice'
 import { selectLoggedInAs } from '../profile/profileSlice'
-import { shuffle } from 'lodash'
 
 interface CalibrationsEditProps {
   useRandom?: boolean
@@ -90,6 +91,9 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
     }
   }
 
+  const totalCombinations = rubric ? (rubric.weights.length * (rubric.weights.length - 1)) / 2 : 1
+  const percentCompleted = (1 - pairings.length / totalCombinations) * 100
+
   const renderPicker = () => {
     return (
       <>
@@ -139,9 +143,19 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
           {pairings.length > 0 ? renderPicker() : renderRestart()}
         </div>
         {pairings.length > 0 && (
-          <div>
-            <button className='btn btn-primary' type='button' onClick={handleSave}>Save</button>
-          </div>
+          <>
+            <div>
+              <button className='btn btn-primary' type='button' onClick={handleSave}>Save</button>
+            </div>
+            <div className='w-100 fixed-bottom'>
+              <ProgressBar
+                completed={percentCompleted}
+                height={'10px'}
+                isLabelVisible={false}
+                borderRadius={'0'}
+              />
+            </div>
+          </>
         )}
       </form>
     </div>
