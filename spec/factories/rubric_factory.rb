@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :rubric do
     sequence(:name) { |n| "Rubric #{n}" }
+    descriptor { 'Address' }
     author { association :profile }
 
     transient do

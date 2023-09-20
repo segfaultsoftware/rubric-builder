@@ -44,6 +44,7 @@ const ScoreAnalysis = () => {
           profileById={profileById}
           scoreName={scoreName}
           weightById={weightById}
+          rubric={rubric}
         />
       ))}
     </div>

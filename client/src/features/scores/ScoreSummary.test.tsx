@@ -5,13 +5,14 @@ import userEvent from '@testing-library/user-event'
 
 import ScoreSummary from './ScoreSummary'
 import { type Profile } from '../profile/profileSlice'
-import { type Weight } from '../rubric/rubricSlice'
+import { type Rubric, type Weight } from '../rubric/rubricSlice'
 
 describe('ScoreSummary', () => {
   const scoreName = '555 Some Pl'
   let calculationsByUserWeight: Record<string, Record<string, number>>
   let profileById: Map<number, Profile>
   let weightById: Map<number, Weight>
+  let rubric: Rubric
 
   const renderPlease = () => {
     return {
@@ -22,12 +23,21 @@ describe('ScoreSummary', () => {
           profileById={profileById}
           scoreName={scoreName}
           weightById={weightById}
+          rubric={rubric}
         />)
 
     }
   }
 
   beforeEach(() => {
+    rubric = {
+      id: 123,
+      name: 'Test Rubric',
+      descriptor: 'Job Offer',
+      members: [],
+      weights: []
+    }
+
     profileById = new Map<number, Profile>()
     profileById.set(1, { id: 1, displayName: 'User 1' })
     profileById.set(2, { id: 2, displayName: 'User 2' })
@@ -58,7 +68,7 @@ describe('ScoreSummary', () => {
   it('displays high level stats', async () => {
     const { findByText, queryByText } = renderPlease()
 
-    expect(await findByText(`Scores for ${scoreName}`)).toBeInTheDocument()
+    expect(await findByText(`Scores for Job Offer: ${scoreName}`)).toBeInTheDocument()
     expect(await findByText('Total for User 2: 20')).toBeInTheDocument()
     expect(await findByText('Total for User 3: 22')).toBeInTheDocument()
     expect(queryByText('Total for User 1')).not.toBeInTheDocument()
@@ -70,7 +80,7 @@ describe('ScoreSummary', () => {
   it('shows details on click', async () => {
     const { user, findByText, queryByText } = renderPlease()
 
-    const header = await findByText(`Scores for ${scoreName}`)
+    const header = await findByText(`Scores for Job Offer: ${scoreName}`)
     const scoreSection = header.parentElement!.parentElement!
     const chevron = await within(scoreSection).findByRole('button')
     await user.click(chevron)

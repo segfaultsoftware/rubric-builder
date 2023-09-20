@@ -32,7 +32,10 @@ const RubricEdit = () => {
 
   const [hasFetched, setHasFetched] = useState(false)
   const [rubric, setRubric] = useState<Rubric>({
-    name: '', weights: [], members: []
+    name: '',
+    descriptor: 'Address',
+    weights: [],
+    members: []
   })
   const [notifications, setNotifications] = useState<Notification[]>([])
 

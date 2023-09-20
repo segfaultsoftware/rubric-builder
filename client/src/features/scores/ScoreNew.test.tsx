@@ -44,6 +44,7 @@ describe('ScoreNew', () => {
     rubric = {
       id: 7,
       name: 'Test Rubric',
+      descriptor: 'Address',
       members: [],
       weights: [{
         id: 1,
@@ -144,7 +145,7 @@ describe('ScoreNew', () => {
 
           const postBodyPromise = addStubToServer(server, postScoreStub())
 
-          const scoreNameInput = await findByLabelText(/Name for this Scoring/)
+          const scoreNameInput = await findByLabelText(new RegExp(`${rubric.descriptor} for this Scoring`))
           await user.clear(scoreNameInput)
           await user.type(scoreNameInput, '123 Main St')
           await user.keyboard('{enter}')

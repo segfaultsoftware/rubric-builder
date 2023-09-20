@@ -39,6 +39,7 @@ module Api
       def rubric_params
         params.require(:rubric).permit(
           :name,
+          :descriptor,
           weights_attributes: [
             :id, :name, :_destroy
           ]

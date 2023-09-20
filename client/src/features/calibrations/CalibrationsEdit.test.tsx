@@ -83,6 +83,7 @@ describe('CalibrationsEdit', () => {
     rubric = {
       id: 11,
       name: 'Calibrated Rubric',
+      descriptor: 'Address',
       members: [loggedInAs, otherMember],
       weights: [weight1, weight2, weight3],
       authorId: loggedInAs.id,

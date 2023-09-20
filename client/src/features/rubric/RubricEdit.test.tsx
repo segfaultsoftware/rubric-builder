@@ -67,6 +67,7 @@ describe('RubricEdit', () => {
     rubric = {
       id: 1841,
       name: 'My Rubric',
+      descriptor: 'Address',
       authorId: 567,
       weights: [weight1, weight2],
       members: [loggedInAs]
@@ -103,6 +104,9 @@ describe('RubricEdit', () => {
         expect(await findByText('Edit a Rubric')).toBeInTheDocument()
         const nameInput = await findByLabelText('Name')
         expect(nameInput).toHaveValue(rubric.name)
+
+        const descriptorInput = await findByLabelText('Descriptor')
+        expect(descriptorInput).toHaveValue(rubric.descriptor)
 
         const weightNameInputs = await findAllByPlaceholderText('Weight Name')
         expect(weightNameInputs.length).toEqual(2)

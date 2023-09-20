@@ -14,6 +14,7 @@ class Rubric < ApplicationRecord
   default_scope { order(id: :asc) }
 
   validates :name, presence: true, uniqueness: true
+  validates :descriptor, presence: true
 
   # for every member of the rubric, for every weight of the rubric, create a profile_weight
   def initialize_profile_weights!

@@ -48,6 +48,7 @@ describe('rubricSlice', () => {
     rubric = {
       id: 1,
       name: 'Test Rubric',
+      descriptor: 'Address',
       weights: [weight1, weight2],
       members: []
     }

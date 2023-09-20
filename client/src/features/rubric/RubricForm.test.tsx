@@ -29,6 +29,7 @@ describe('RubricForm', () => {
   beforeEach(() => {
     rubric = {
       name: 'Some Rubric',
+      descriptor: 'Address',
       weights: [{
         id: 1,
         name: 'Weight 1',
@@ -41,6 +42,7 @@ describe('RubricForm', () => {
   it('renders the existing rubric name and weight info', async () => {
     const { findByDisplayValue } = render()
     expect(await findByDisplayValue('Some Rubric')).toBeInTheDocument()
+    expect(await findByDisplayValue('Address')).toBeInTheDocument()
     expect(await findByDisplayValue('Weight 1')).toBeInTheDocument()
   })
 
@@ -55,6 +57,20 @@ describe('RubricForm', () => {
     expect(onRubricChange).toHaveBeenCalledWith({
       ...rubric,
       name: 'Some Rubric!'
+    })
+  })
+
+  it('handles rubric descriptor change', async () => {
+    const { user, findAllByLabelText } = render()
+
+    const descriptorInputs = await findAllByLabelText('Descriptor')
+    const rubricDescriptorInput = descriptorInputs[0]
+
+    await user.type(rubricDescriptorInput, '!')
+
+    expect(onRubricChange).toHaveBeenCalledWith({
+      ...rubric,
+      descriptor: 'Address!'
     })
   })
 
@@ -115,6 +131,20 @@ describe('RubricForm', () => {
   describe('on submit', () => {
     it('validates presence of name', async () => {
       rubric.name = ''
+
+      const { user, findAllByRole } = render()
+      const alertMock = jest.spyOn(window, 'alert').mockImplementation()
+
+      const buttons = await findAllByRole('button')
+      expect(buttons.length).toEqual(2)
+
+      const submitButton = buttons[1]
+      await user.click(submitButton)
+      expect(alertMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('validates presence of descriptor', async () => {
+      rubric.descriptor = ''
 
       const { user, findAllByRole } = render()
       const alertMock = jest.spyOn(window, 'alert').mockImplementation()

@@ -77,6 +77,9 @@ describe('RubricNew', () => {
         const nameInput = await findByLabelText('Name')
         await user.type(nameInput, 'My New Rubric')
 
+        const descriptorInput = await findByLabelText('Descriptor')
+        await user.type(descriptorInput, 'Address')
+
         const weightNameInput = await findByPlaceholderText('Weight Name')
         await user.type(weightNameInput, 'My New Weight')
 
@@ -86,6 +89,7 @@ describe('RubricNew', () => {
           json: {
             id: 123,
             name: 'My New Rubric',
+            descriptor: 'Address',
             weights: [{
               id: 234,
               name: 'My New Weight',
@@ -102,6 +106,8 @@ describe('RubricNew', () => {
 
         const createRubricBody = await createRubricBodyPromise as any
         expect(createRubricBody.name).toEqual('My New Rubric')
+        expect(createRubricBody.descriptor).toEqual('Address')
+
         const weightAttributes = createRubricBody.weights_attributes as Array<Record<any, any>>
         expect(weightAttributes.length).toEqual(1)
         expect(weightAttributes[0].name).toEqual('My New Weight')

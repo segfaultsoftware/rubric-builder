@@ -64,6 +64,8 @@ const RubricForm = ({
 
     if (!rubric.name) {
       alert('Rubric needs a name')
+    } else if (!rubric.descriptor) {
+      alert('Rubric needs a descriptor')
     } else {
       const fixedWeights = rubric.weights.map((weight) => {
         if (weight._new) {
@@ -94,6 +96,21 @@ const RubricForm = ({
             placeholder='Rubric Name'
             required
             value={rubric.name}
+            onChange={handleRubricChange}
+          />
+        </div>
+      </div>
+      <div className='row mb-3'>
+        <label className='col-lg-2 col-form-label' htmlFor='rubric:descriptor'>Descriptor</label>
+        <div className='col-lg-10'>
+          <input
+            id='rubric:descriptor'
+            className='form-control'
+            type='text'
+            name='descriptor'
+            placeholder='Descriptor (e.g. "Address" for a Homebuying Rubric)'
+            required
+            value={rubric.descriptor}
             onChange={handleRubricChange}
           />
         </div>

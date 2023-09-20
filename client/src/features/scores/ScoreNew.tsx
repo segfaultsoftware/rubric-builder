@@ -104,7 +104,7 @@ const ScoreNew = () => {
         <header><h1>Score {rubric.name}</h1></header>
         <div className='col-md-6 offset-md-3'>
           <label className='form-label w-100' htmlFor={selectRef.current?.inputRef?.id}>
-            Name for this Scoring
+            {rubric.descriptor} for this Scoring
             <CreatableSelect
               ref={selectRef}
               isClearable

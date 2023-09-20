@@ -13,12 +13,14 @@ describe('RubricIndex', () => {
   const rubric1: Rubric = {
     id: 9,
     name: 'Rubric 1',
+    descriptor: 'Address',
     members: [],
     weights: []
   }
   const rubric2: Rubric = {
     id: 111,
     name: 'Rubric 2',
+    descriptor: 'Address',
     members: [],
     weights: []
   }

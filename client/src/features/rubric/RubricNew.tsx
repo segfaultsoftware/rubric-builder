@@ -15,6 +15,7 @@ const RubricNew = () => {
 
   const [rubric, setRubric] = useState<Rubric>({
     name: '',
+    descriptor: '',
     weights: [{
       id: 0,
       name: '',

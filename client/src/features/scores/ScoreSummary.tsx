@@ -3,25 +3,27 @@ import React, { useState } from 'react'
 import classNames from 'classnames'
 
 import { type Profile } from '../profile/profileSlice'
-import { type Weight } from '../rubric/rubricSlice'
+import { type Rubric, type Weight } from '../rubric/rubricSlice'
 import { round } from 'lodash'
 
 interface ScoreSummaryProps {
   calculationsByUserWeight: Record<string, Record<string, number>>
   profileById: Map<number, Profile>
   scoreName: string
+  rubric: Rubric
   weightById: Map<number, Weight>
 }
 
 const ScoreSummary = ({
   calculationsByUserWeight,
   scoreName,
+  rubric,
   profileById,
   weightById
 }: ScoreSummaryProps) => {
   const [isShowingDetails, setIsShowingDetails] = useState(false)
 
-  const header = `Scores for ${scoreName}`
+  const header = `Scores for ${rubric.descriptor}: ${scoreName}`
   const userIds = Array.from(Object.keys(calculationsByUserWeight))
   const weightIds = Array.from(weightById.keys())
 

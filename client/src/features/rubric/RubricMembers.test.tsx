@@ -53,6 +53,7 @@ describe('RubricMembers', () => {
       id: 7,
       authorId: profile1.id,
       name: 'Rubric w Members',
+      descriptor: 'Address',
       weights: [],
       members: [profile1, profile2]
     }

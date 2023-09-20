@@ -65,6 +65,7 @@ describe('ScoreAnalysis', () => {
     rubric = {
       id: 23,
       name: 'Rubric',
+      descriptor: 'Address',
       members: [user1, user2],
       weights: [weight1, weight2],
       authorId: user1.id
@@ -127,13 +128,13 @@ describe('ScoreAnalysis', () => {
     it('displays a list of score names with high level stats', async () => {
       const { findByText } = render()
 
-      const scoreName1Header = await findByText(`Scores for ${scoreName1}`)
+      const scoreName1Header = await findByText(`Scores for ${rubric.descriptor}: ${scoreName1}`)
       const scoreName1Section = scoreName1Header.parentElement!.parentElement!
 
       expect(await within(scoreName1Section).findByText(`Total for ${user1.displayName}: 6.8`)).toBeInTheDocument()
       expect(await within(scoreName1Section).findByText(`Total for ${user2.displayName}: 1.2`)).toBeInTheDocument()
 
-      const scoreName2Header = await findByText(`Scores for ${scoreName2}`)
+      const scoreName2Header = await findByText(`Scores for ${rubric.descriptor}: ${scoreName2}`)
       const scoreName2Section = scoreName2Header.parentElement!.parentElement!
 
       expect(await within(scoreName2Section).findByText(`Total for ${user2.displayName}: 2.5`)).toBeInTheDocument()

@@ -28,6 +28,7 @@ export interface Weight {
 export interface Rubric {
   id?: number | null
   name: string
+  descriptor: string
   authorId?: number | null
   weights: Weight[]
   members: Profile[]
@@ -268,6 +269,10 @@ export const selectRubricProfilesById = createSelector(
   }
 )
 
-export const { clearInviteMemberStatus, clearSaveCalibrationState, resetRubricState } = rubricSlice.actions
+export const {
+  clearInviteMemberStatus,
+  clearSaveCalibrationState,
+  resetRubricState
+} = rubricSlice.actions
 
 export default rubricSlice.reducer
