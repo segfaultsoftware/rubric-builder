@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resource :browser_subscription, only: [:show, :update]
+
       resources :rubrics, only: [:index, :create, :show, :update, :destroy] do
         resources :invites, only: [:create]
         resources :profiles, only: [:destroy]

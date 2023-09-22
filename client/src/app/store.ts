@@ -3,12 +3,14 @@ import profileReducer from '../features/profile/profileSlice'
 import rubricReducer from '../features/rubric/rubricSlice'
 import scoreReducer from '../features/scores/scoreSlice'
 import invitationsReducer from '../features/invites/invitationsSlice'
+import browserReducer from '../features/browser/browserSlice'
 
 const rootReducer = combineReducers({
+  browser: browserReducer,
+  invitations: invitationsReducer,
   profile: profileReducer,
   rubric: rubricReducer,
-  score: scoreReducer,
-  invitations: invitationsReducer
+  score: scoreReducer
 })
 
 export const setupStore = (preloadedState?: PreloadedState<RootState>) => {

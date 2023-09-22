@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_20_195358) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_21_181348) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,6 +28,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_195358) do
     t.index ["profile_id"], name: "index_calibrations_on_profile_id"
     t.index ["rubric_id"], name: "index_calibrations_on_rubric_id"
     t.index ["to_weight_id"], name: "index_calibrations_on_to_weight_id"
+  end
+
+  create_table "profile_subscriptions", force: :cascade do |t|
+    t.bigint "profile_id"
+    t.string "endpoint", null: false
+    t.string "auth", null: false
+    t.string "p256dh", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["profile_id"], name: "index_profile_subscriptions_on_profile_id"
   end
 
   create_table "profile_weights", force: :cascade do |t|

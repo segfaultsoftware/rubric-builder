@@ -29,15 +29,16 @@ module Users
       [raw_invitation_token, invitation_accepted]
     end
 
+    # rubocop:disable Metrics/AbcSize
     def prepare_invitation_accepted
       resource.after_database_authentication
       sign_in(resource_name, resource)
       resource.profile.rubrics.each do |rubric|
-        rubric.initialize_profile_weights!
-        rubric.generate_all_pairings!
+        rubric.accept_invitation!(resource.profile)
       end
       UserSerializer.new(resource).serializable_hash[:data][:attributes]
     end
+    # rubocop:enable Metrics/AbcSize
 
     def prepare_invitation_not_accepted(raw_invitation_token)
       resource.invitation_token = raw_invitation_token

@@ -8,6 +8,7 @@ class Profile < ApplicationRecord
   has_many :rubrics, through: :rubric_profiles
 
   has_many :calibrations, dependent: :destroy
+  has_many :profile_subscriptions, dependent: :destroy
 
   default_scope { order(id: :asc) }
 

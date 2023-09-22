@@ -16,11 +16,25 @@ class Rubric < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :descriptor, presence: true
 
+  def accept_invitation!(profile)
+    initialize_profile_weights!
+    generate_all_pairings!
+    push_request_to_update!(except: profile)
+  end
+
   # for every member of the rubric, for every weight of the rubric, create a profile_weight
   def initialize_profile_weights!
     profiles.each do |profile|
       weights.each do |weight|
         ProfileWeight.find_or_create_by(profile:, weight:)
+      end
+    end
+  end
+
+  def push_request_to_update!(except:)
+    profiles.excluding(except).each do |profile|
+      profile.profile_subscriptions.each do |subscription|
+        send_webpush(subscription)
       end
     end
   end
@@ -127,6 +141,25 @@ class Rubric < ApplicationRecord
   end
 
   private
+
+  def send_webpush(subscription)
+    Webpush.payload_send(
+      endpoint: subscription.endpoint,
+      message: { action: 'update', type: 'Rubric', id: }.to_json,
+      p256dh: subscription.p256dh,
+      auth: subscription.auth,
+      ttl: 24 * 60 * 60,
+      vapid:
+    )
+  end
+
+  def vapid
+    {
+      subject: 'mailto:samuel.j.serrano@gmail.com',
+      public_key: Rails.application.secrets.vapid_public_key,
+      private_key: Rails.application.secrets.vapid_private_key
+    }
+  end
 
   def stale_calibrations_for_profile(profile)
     all_combinations = weights.map(&:id).combination(2).to_a
