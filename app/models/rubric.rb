@@ -143,7 +143,7 @@ class Rubric < ApplicationRecord
   private
 
   def send_webpush(subscription)
-    Webpush.payload_send(
+    WebPush.payload_send(
       endpoint: subscription.endpoint,
       message: { action: 'update', type: 'Rubric', id: }.to_json,
       p256dh: subscription.p256dh,
