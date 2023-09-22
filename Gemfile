@@ -8,11 +8,12 @@ gem 'devise'
 gem 'devise_invitable', '~> 2.0.0'
 gem 'devise-jwt'
 gem 'jsonapi-serializer'
+gem 'openssl', '3.1.0'
 gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.0'
 gem 'rack-cors'
 gem 'rails', '~> 7.0.7', '>= 7.0.7.2'
-gem 'webpush'
+gem 'web-push', '~> 3.0'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
