@@ -76,7 +76,7 @@ describe('RubricMembers', () => {
 
     const invitesRequestBodyPromise = addStubToServer(server, {
       method: 'post',
-      url: '/api/v1/rubrics/:rubricId/invites.json',
+      url: '/api/v1/invites.json',
       json: {}
     })
     addStubToServer(server, {

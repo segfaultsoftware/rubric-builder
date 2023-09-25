@@ -12,6 +12,15 @@ export interface Invitation {
   passwordConfirmation?: string
 }
 
+export const sendInvite = createAsyncThunk(
+  'invitations/sendInvite',
+  async (email: string) => {
+    return await fetchWrapper.post('/api/v1/invites.json', {
+      body: { email }
+    })
+  }
+)
+
 export const getInvitation = createAsyncThunk(
   'invitations/getInvitation',
   async (invitation: string) => {

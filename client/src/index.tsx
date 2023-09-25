@@ -19,6 +19,7 @@ import RegisterPage from './features/profile/RegisterPage'
 import LoginPage from './features/profile/LoginPage'
 import AuthenticationProtected from './AuthenticationProtected'
 import AcceptInvitation from './features/invites/AcceptInvitation'
+import Invite from './features/invites/Invite'
 
 import './index.css'
 
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />
+      },
+      {
+        path: 'invite',
+        element: <AuthenticationProtected><Invite /></AuthenticationProtected>
       },
       {
         path: 'calibrations/:rubricId/edit',

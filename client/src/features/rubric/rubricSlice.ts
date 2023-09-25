@@ -92,8 +92,11 @@ interface InviteMemberToRubricProperties {
 export const inviteMemberToRubric = createAsyncThunk(
   'rubric/inviteMemberToRubric',
   async ({ email, rubric }: InviteMemberToRubricProperties) => {
-    await fetchWrapper.post(`/api/v1/rubrics/${rubric.id}/invites.json`, {
-      body: { email }
+    await fetchWrapper.post('/api/v1/invites.json', {
+      body: {
+        rubric_id: rubric.id,
+        email
+      }
     })
     return callFetchRubric(rubric.id)
   }

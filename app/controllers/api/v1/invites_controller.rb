@@ -2,14 +2,18 @@ module Api
   module V1
     class InvitesController < ApplicationController
       def create
-        current_profile.invite_to_rubric(params[:email], rubric)
+        rubric.present? ? current_profile.invite_to_rubric(email, rubric) : current_profile.invite_to_platform(email)
         render head: :created
       end
 
       private
 
+      def email
+        params[:email]
+      end
+
       def rubric
-        current_profile.rubrics.find(params[:rubric_id])
+        params[:rubric_id].present? ? current_profile.rubrics.find(params[:rubric_id]) : nil
       end
     end
   end

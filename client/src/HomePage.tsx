@@ -46,8 +46,19 @@ const HomePage = () => {
             <li className={classNames({ 'text-decoration-line-through': hasMembers })}>
               Invite People
             </li>
-            <li>Calibrate a Rubric</li>
-            <li>Score a Rubric</li>
+            <li>
+              <span>Calibrate a Rubric</span>
+              <div className='fs-6 text'>
+                Playing this minigame will tell the algorithm how important certain weights are compared to each other.
+              </div>
+            </li>
+            <li>
+              <span>Score a Rubric</span>
+              <div className='fs-6 text'>
+                Now it&apos;s time to score something. You should be scoring a specific instance of whatever your Rubric
+                is about. (ie a new home, a model of car, a job offer)
+              </div>
+            </li>
             <li>View Comparisons of All Your Scores in a Rubric</li>
           </ol>
         </div>

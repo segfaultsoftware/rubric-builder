@@ -18,9 +18,13 @@ class Profile < ApplicationRecord
     )
   }
 
-  def invite_to_rubric(email, rubric)
+  def invite_to_platform(email)
     invited_user = find_and_invite_user_by_email(email)
-    invited_profile = invited_user.profile || invited_user.create_profile!(display_name: email)
+    invited_user.profile || invited_user.create_profile!(display_name: email)
+  end
+
+  def invite_to_rubric(email, rubric)
+    invited_profile = invite_to_platform(email)
     rubric.profiles << invited_profile unless rubric.profiles.include?(invited_profile)
     rubric.initialize_profile_weights!
   end
