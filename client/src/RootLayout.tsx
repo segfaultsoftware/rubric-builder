@@ -46,19 +46,23 @@ const RootLayout = () => {
 
       const hasBeenTriggered = triggered.current
       if (!hasBeenTriggered) {
-        triggered.current = true
-        registration.pushManager.subscribe(subscribeOptions).then((recentSubscription) => {
-          dispatch(updateBrowserSubscription(recentSubscription))
-        }).catch((error) => {
-          console.error('Error subscribing', error)
-        })
-        navigator.serviceWorker.addEventListener('message', (message) => {
-          const data = JSON.parse(message.data)
-          if (data.type === 'push') {
-            const { type, action, id } = data.event
-            dispatch(dispatchFromServerPush({ id, type, action }))
-          }
-        })
+        if (registration.pushManager) {
+          registration.pushManager.subscribe(subscribeOptions).then((recentSubscription) => {
+            dispatch(updateBrowserSubscription(recentSubscription))
+          }).catch((error) => {
+            console.error('Error subscribing', error)
+          })
+          triggered.current = true
+          navigator.serviceWorker.addEventListener('message', (message) => {
+            const data = JSON.parse(message.data)
+            if (data.type === 'push') {
+              const { type, action, id } = data.event
+              dispatch(dispatchFromServerPush({ id, type, action }))
+            }
+          })
+        } else {
+          console.warn('registration.pushManager is null')
+        }
       }
     }
   }, [registration, vapidPublicKey])
