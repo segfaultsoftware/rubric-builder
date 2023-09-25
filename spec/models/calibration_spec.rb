@@ -79,12 +79,52 @@ RSpec.describe Calibration do
           expect(new_record.iteration).to eq(1)
         end
       end
+
+      context 'when the calibration is far behind in iteration' do
+        before do
+          other_from_weight = create(:weight, rubric:)
+          other_to_weight = create(:weight, rubric:)
+          create(:calibration, rubric:, profile:, from_weight: other_from_weight, to_weight: other_to_weight,
+                               iteration: 10)
+          create(:calibration, rubric:, profile:, from_weight: other_to_weight, to_weight: other_from_weight,
+                               iteration: 10)
+        end
+
+        it 'creates two new records' do
+          expect { update_rating }.to change(Calibration, :count).by(2)
+        end
+
+        describe 'the first record' do
+          let(:new_record) { update_rating.first }
+
+          it 'saves the rating' do
+            expect(new_record.rating).to eq(rating)
+          end
+
+          it 'fast forwards the iteration' do
+            expect(new_record.iteration).to eq(10)
+          end
+        end
+
+        describe 'the second record' do
+          let(:new_record) { update_rating.last }
+
+          it 'saves the rating' do
+            expect(new_record.rating).to eq(1.0 / rating)
+          end
+
+          it 'fast forwards the iteration' do
+            expect(new_record.iteration).to eq(10)
+          end
+        end
+      end
     end
 
     context 'when the calibration already exists' do
       before do
-        create(:calibration, rubric:, profile:, from_weight:, to_weight:, rating: 2)
-        create(:calibration, rubric:, profile:, from_weight: to_weight, to_weight: from_weight, rating: 1.0 / 2)
+        create(:calibration, rubric:, profile:, from_weight:, to_weight:, rating: 2, iteration: 1)
+        create(:calibration, rubric:, profile:, from_weight: to_weight, to_weight: from_weight, rating: 1.0 / 2,
+                             iteration: 1)
       end
 
       it 'does not create a new record' do
@@ -116,6 +156,22 @@ RSpec.describe Calibration do
 
         it 'increments the iteration' do
           expect(updated_record.iteration).to eq(2)
+        end
+      end
+
+      context 'when the calibration is far behind in iteration' do
+        before do
+          other_from_weight = create(:weight, rubric:)
+          other_to_weight = create(:weight, rubric:)
+          create(:calibration, rubric:, profile:, from_weight: other_from_weight, to_weight: other_to_weight,
+                               iteration: 10)
+          create(:calibration, rubric:, profile:, from_weight: other_to_weight, to_weight: other_from_weight,
+                               iteration: 10)
+        end
+
+        it 'fast forwards the iteration' do
+          records = update_rating
+          expect(records.map(&:iteration)).to eq([10, 10])
         end
       end
     end

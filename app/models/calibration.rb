@@ -16,8 +16,7 @@ class Calibration < ApplicationRecord
     calibration.rating = rating
     inverse.rating = 1.0 / rating
 
-    calibration.iteration += 1 unless calibration.new_record?
-    inverse.iteration += 1 unless inverse.new_record?
+    update_iteration(rubric, profile, calibration, inverse)
 
     calibration.save
     inverse.save
@@ -26,6 +25,19 @@ class Calibration < ApplicationRecord
   end
 
   private
+
+  def self.update_iteration(rubric, profile, calibration, inverse)
+    max_iteration = Calibration.where(rubric:, profile:).maximum(:iteration)
+
+    if max_iteration.present? && calibration.iteration < max_iteration
+      calibration.iteration = max_iteration
+      inverse.iteration = max_iteration
+    elsif max_iteration.present?
+      calibration.iteration = max_iteration + 1
+      inverse.iteration = max_iteration + 1
+    end
+  end
+  private_class_method :update_iteration
 
   def profile_is_member_of_rubric
     errors.add(:profile, 'is not a member of the rubric') unless rubric.profiles.include?(profile)
