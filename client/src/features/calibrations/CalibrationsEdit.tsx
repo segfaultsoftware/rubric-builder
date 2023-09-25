@@ -97,9 +97,11 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
   const renderPicker = () => {
     return (
       <>
-        <div className='col'>{fromWeight?.name}</div>
-        <div className='col'>
-          <label className='mb-2' htmlFor='picker'>I favor</label>
+        <div className='row'>
+          <div className='col-4'>{fromWeight?.name}</div>
+          <div className='col-4 offset-4'>{toWeight?.name}</div>
+        </div>
+        <div className='col-md-6 offset-md-3'>
           <div className='w-100'>
             <input
               id='picker'
@@ -112,8 +114,8 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
               className='w-100'
             />
           </div>
+          <label className='mb-2' htmlFor='picker'>Choose</label>
         </div>
-        <div className='col'>{toWeight?.name}</div>
       </>
     )
   }

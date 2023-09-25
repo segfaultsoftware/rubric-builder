@@ -126,7 +126,7 @@ describe('CalibrationsEdit', () => {
       expect(await findByText(weight3.name)).toBeInTheDocument()
       expect(queryByText(weight2.name)).not.toBeInTheDocument()
 
-      expect(await findByLabelText('I favor')).toBeInTheDocument()
+      expect(await findByLabelText('Choose')).toBeInTheDocument()
       expect(await findByRole('button')).toBeInTheDocument()
     })
 
@@ -140,7 +140,7 @@ describe('CalibrationsEdit', () => {
           json: {}
         })
 
-        const slider = await findByLabelText('I favor')
+        const slider = await findByLabelText('Choose')
         fireEvent.change(slider, { target: { value: 4 } }) // slider goes -8 to 8 and react converts it
 
         const button = await findByRole('button')
@@ -166,7 +166,7 @@ describe('CalibrationsEdit', () => {
           await user.click(await buttonFn())
 
           expect(await findByText(/Restart/)).toBeInTheDocument()
-          expect(queryByLabelText('I favor')).not.toBeInTheDocument()
+          expect(queryByLabelText('Choose')).not.toBeInTheDocument()
           expect(queryByText(weight1.name)).not.toBeInTheDocument()
           expect(queryByText(weight2.name)).not.toBeInTheDocument()
           expect(queryByText(weight3.name)).not.toBeInTheDocument()
@@ -190,7 +190,7 @@ describe('CalibrationsEdit', () => {
             const restartButton = await findByText(/Restart/)
             await user.click(restartButton)
 
-            expect(await findByText('I favor')).toBeInTheDocument()
+            expect(await findByText('Choose')).toBeInTheDocument()
             expect(await findByText(weight1.name)).toBeInTheDocument()
             expect(queryByText(weight2.name)).not.toBeInTheDocument()
             expect(await findByText(weight3.name)).toBeInTheDocument()
