@@ -145,20 +145,18 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
           {pairings.length > 0 ? renderPicker() : renderRestart()}
         </div>
         {pairings.length > 0 && (
-          <>
-            <div>
-              <button className='btn btn-primary' type='button' onClick={handleSave}>Save</button>
-            </div>
-            <div className='w-100 fixed-bottom'>
-              <ProgressBar
-                completed={percentCompleted}
-                height={'10px'}
-                isLabelVisible={false}
-                borderRadius={'0'}
-              />
-            </div>
-          </>
+          <div>
+            <button className='btn btn-primary' type='button' onClick={handleSave}>Save</button>
+          </div>
         )}
+        <div className='w-100 fixed-bottom'>
+          <ProgressBar
+            completed={percentCompleted}
+            height={'10px'}
+            isLabelVisible={false}
+            borderRadius={'0'}
+          />
+        </div>
       </form>
     </div>
       )
