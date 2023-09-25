@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
-import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
+import { camelCaseKeys, FetchNotOkError, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
 import { type RootState } from '../../app/store'
 import { type Profile } from '../profile/profileSlice'
 
@@ -33,21 +33,34 @@ export const getInvitation = createAsyncThunk(
 
 export const acceptInvitation = createAsyncThunk(
   'invitations/acceptInvitation',
-  async (invitation: Invitation) => {
-    const json = await fetchWrapper.put('/invitation.json', {
-      body: { user: snakeCaseKeys(invitation) },
-      useJIT: false
-    })
-    return camelCaseKeys(json) as Profile
+  async (invitation: Invitation, { rejectWithValue }) => {
+    try {
+      const json = await fetchWrapper.put('/invitation.json', {
+        body: { user: snakeCaseKeys(invitation) },
+        useJIT: false
+      })
+      return camelCaseKeys(json) as Profile
+    } catch (err) {
+      if (err instanceof FetchNotOkError) {
+        return rejectWithValue(err.payload.message as Record<string, string[]>)
+      }
+      return rejectWithValue({
+        errors: {
+          AcceptInvitation: [`had unhandled error ${JSON.stringify(err)}`]
+        }
+      })
+    }
   }
 )
 
 export interface InvitationsState {
+  acceptErrors: string[]
   acceptStatus: null | 'processing' | 'processed' | 'error'
   invitation: null | Invitation
 }
 
 const initialState: InvitationsState = {
+  acceptErrors: [],
   acceptStatus: null,
   invitation: null
 }
@@ -57,6 +70,7 @@ export const invitationsSlice = createSlice({
   initialState,
   reducers: {
     clearAcceptInvitationState: (state) => {
+      state.acceptErrors = []
       state.acceptStatus = null
     }
   },
@@ -70,9 +84,15 @@ export const invitationsSlice = createSlice({
       })
       .addCase(acceptInvitation.pending, (state) => {
         state.acceptStatus = 'processing'
+        state.acceptErrors = []
       })
       .addCase(acceptInvitation.fulfilled, (state) => {
         state.acceptStatus = 'processed'
+      })
+      .addCase(acceptInvitation.rejected, (state, action) => {
+        const fromRails = action.payload as Record<string, string[]>
+        console.error('acceptInvitation.rejected action', fromRails)
+        state.acceptErrors = fromRails.errors
       })
   }
 })
@@ -80,6 +100,7 @@ export const invitationsSlice = createSlice({
 export const { clearAcceptInvitationState } = invitationsSlice.actions
 
 export const selectAcceptInvitationStatus = (state: RootState) => state.invitations.acceptStatus
+export const selectAcceptInvitationErrors = (state: RootState) => state.invitations.acceptErrors
 export const selectInvitation = (state: RootState) => state.invitations.invitation
 
 export default invitationsSlice.reducer

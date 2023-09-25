@@ -13,20 +13,19 @@ module Users
     end
 
     def update
-      raw_invitation_token, invitation_accepted = accept_invitation
+      invitation_accepted = accept_invitation
 
-      json = invitation_accepted ? prepare_invitation_accepted : prepare_invitation_not_accepted(raw_invitation_token)
+      json = invitation_accepted ? prepare_invitation_accepted : prepare_invitation_not_accepted
 
-      render json:
+      render json:, status: invitation_accepted ? :created : :unprocessable_entity
     end
 
     private
 
     def accept_invitation
-      raw_invitation_token = update_resource_params[:invitation_token]
+      update_resource_params[:invitation_token]
       self.resource = accept_resource
-      invitation_accepted = resource.errors.empty?
-      [raw_invitation_token, invitation_accepted]
+      resource.errors.empty?
     end
 
     # rubocop:disable Metrics/AbcSize
@@ -40,9 +39,10 @@ module Users
     end
     # rubocop:enable Metrics/AbcSize
 
-    def prepare_invitation_not_accepted(raw_invitation_token)
-      resource.invitation_token = raw_invitation_token
-      ::V1::InvitationSerializer.new(resource).serializable_hash[:data][:attributes]
+    def prepare_invitation_not_accepted
+      {
+        errors: resource.errors.full_messages
+      }
     end
 
     def update_resource_params
