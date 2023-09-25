@@ -6,7 +6,8 @@ import {
   type ProfileAuthentication,
   register,
   selectLoggedInAs,
-  selectRegistrationErrors
+  selectRegistrationErrors,
+  setRegistrationError
 } from './profileSlice'
 import { useNavigate } from 'react-router-dom'
 import ProfileForm from './ProfileForm'
@@ -42,7 +43,13 @@ const RegisterPage = ({ isEmbedded }: RegisterPageProps) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch(register(profile))
+    if (profile.password.length < 12) {
+      dispatch(setRegistrationError('Password must be at least 12 characters long.'))
+    } else if (profile.password !== profile.passwordConfirmation) {
+      dispatch(setRegistrationError('Passwords do not match'))
+    } else {
+      dispatch(register(profile))
+    }
   }
 
   return isEmbedded

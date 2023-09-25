@@ -86,6 +86,9 @@ export const profileSlice = createSlice({
     clearAuthenticationErrors: (state) => {
       state.registerErrors = []
       state.loginError = undefined
+    },
+    setRegistrationError: (state, action) => {
+      state.registerErrors = [action.payload]
     }
   },
   extraReducers: (builder) => {
@@ -134,7 +137,7 @@ export const profileSlice = createSlice({
   }
 })
 
-export const { clearAuthenticationErrors } = profileSlice.actions
+export const { clearAuthenticationErrors, setRegistrationError } = profileSlice.actions
 
 export const selectLoggedInAs = (state: RootState) => state.profile.loggedInAs
 
