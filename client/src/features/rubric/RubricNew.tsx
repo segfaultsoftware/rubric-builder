@@ -6,7 +6,7 @@ import { createRubric } from './rubricSlice'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import RubricForm from './RubricForm'
-import { type Rubric } from '../../types/Rubric'
+import { type Rubric, RubricVisibility } from '../../types/Rubric'
 
 const RubricNew = () => {
   const dispatch = useAppDispatch()
@@ -17,6 +17,7 @@ const RubricNew = () => {
   const [rubric, setRubric] = useState<Rubric>({
     name: '',
     descriptor: '',
+    visibility: RubricVisibility.MembersOnly,
     weights: [{
       id: 0,
       name: '',

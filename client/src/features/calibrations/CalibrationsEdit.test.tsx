@@ -10,6 +10,10 @@ import { type Rubric } from '../../types/Rubric'
 import { type Weight } from '../../types/Weight'
 import { type ProfileWeight } from '../../types/ProfileWeight'
 import { type Profile } from '../../types/Profile'
+import ProfileFactory from '../../factories/ProfileFactory'
+import ProfileWeightFactory from '../../factories/ProfileWeightFactory'
+import WeightFactory from '../../factories/WeightFactory'
+import RubricFactory from '../../factories/RubricFactory'
 
 describe('CalibrationsEdit', () => {
   let rubric: Rubric
@@ -59,33 +63,39 @@ describe('CalibrationsEdit', () => {
   }
 
   beforeEach(() => {
-    loggedInAs = { id: 2, displayName: 'Almost Root' }
-    otherMember = { id: 5, displayName: 'Other User' }
+    loggedInAs = ProfileFactory.build()
+    otherMember = ProfileFactory.build()
 
-    profileWeightForLoggedInAsWeight1 = { id: 555, value: 0.33, weightId: 8, profileId: 2 }
-    profileWeightForLoggedInAsWeight2 = { id: 666, value: 0.47, weightId: 9, profileId: 2 }
-    profileWeightForLoggedInAsWeight3 = { id: 777, value: 0.2, weightId: 10, profileId: 2 }
+    profileWeightForLoggedInAsWeight1 = ProfileWeightFactory.build({
+      value: 0.33,
+      weightId: 8,
+      profileId: loggedInAs.id
+    })
+    profileWeightForLoggedInAsWeight2 = ProfileWeightFactory.build({
+      value: 0.47,
+      weightId: 9,
+      profileId: loggedInAs.id
+    })
+    profileWeightForLoggedInAsWeight3 = ProfileWeightFactory.build({
+      value: 0.2,
+      weightId: 10,
+      profileId: loggedInAs.id
+    })
 
-    weight1 = {
+    weight1 = WeightFactory.build({
       id: 8,
-      name: 'Weight 1',
       profileWeights: [profileWeightForLoggedInAsWeight1]
-    }
-    weight2 = {
+    })
+    weight2 = WeightFactory.build({
       id: 9,
-      name: 'Weight 2',
       profileWeights: [profileWeightForLoggedInAsWeight2]
-    }
-    weight3 = {
+    })
+    weight3 = WeightFactory.build({
       id: 10,
-      name: 'Weight 3',
       profileWeights: [profileWeightForLoggedInAsWeight3]
-    }
+    })
 
-    rubric = {
-      id: 11,
-      name: 'Calibrated Rubric',
-      descriptor: 'Address',
+    rubric = RubricFactory.build({
       members: [loggedInAs, otherMember],
       weights: [weight1, weight2, weight3],
       authorId: loggedInAs.id,
@@ -93,7 +103,7 @@ describe('CalibrationsEdit', () => {
         [weight1.id!, weight3.id!],
         [weight2.id!, weight3.id!]
       ]
-    }
+    })
 
     serverStubs = []
   })

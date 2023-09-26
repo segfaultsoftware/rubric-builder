@@ -7,6 +7,8 @@ import { addStubToServer, renderWithProviders, setupServerWithStubs } from '../.
 import RubricMembers from './RubricMembers'
 import { type Rubric } from '../../types/Rubric'
 import { type Profile } from '../../types/Profile'
+import ProfileFactory from '../../factories/ProfileFactory'
+import RubricFactory from '../../factories/RubricFactory'
 
 describe('RubricMembers', () => {
   let rubric: Rubric
@@ -46,17 +48,13 @@ describe('RubricMembers', () => {
   }
 
   beforeEach(() => {
-    profile1 = { id: 8, displayName: 'Profile1' }
-    profile2 = { id: 9, displayName: 'Profile2' }
-    profile3 = { id: 10, displayName: 'Profile3' }
-    rubric = {
-      id: 7,
+    profile1 = ProfileFactory.build()
+    profile2 = ProfileFactory.build()
+    profile3 = ProfileFactory.build()
+    rubric = RubricFactory.build({
       authorId: profile1.id,
-      name: 'Rubric w Members',
-      descriptor: 'Address',
-      weights: [],
       members: [profile1, profile2]
-    }
+    })
   })
 
   afterEach(() => {

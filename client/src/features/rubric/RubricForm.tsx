@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { type Rubric } from '../../types/Rubric'
+import { type Rubric, RubricVisibility } from '../../types/Rubric'
 import { type Weight } from '../../types/Weight'
 import { type Profile } from '../../types/Profile'
 
@@ -60,6 +60,37 @@ const RubricForm = ({
     })
   }
 
+  const handleCheckIsTemplate = () => {
+    let newVisibility: RubricVisibility
+    if (rubric.visibility === RubricVisibility.Template || rubric.visibility === RubricVisibility.SystemTemplate) {
+      newVisibility = RubricVisibility.MembersOnly
+    } else {
+      newVisibility = RubricVisibility.Template
+    }
+
+    onRubricChange({
+      ...rubric,
+      visibility: newVisibility
+    })
+  }
+
+  const handleCheckIsSystemTemplate = () => {
+    let newVisibility: RubricVisibility
+
+    if (rubric.visibility === RubricVisibility.SystemTemplate) {
+      newVisibility = RubricVisibility.Template
+    } else if (rubric.visibility === RubricVisibility.Template) {
+      newVisibility = RubricVisibility.SystemTemplate
+    } else {
+      newVisibility = RubricVisibility.MembersOnly
+    }
+
+    onRubricChange({
+      ...rubric,
+      visibility: newVisibility
+    })
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -84,11 +115,47 @@ const RubricForm = ({
     }
   }
 
+  const renderTemplateCheckboxes = () => {
+    return (
+      <>
+        <div className='row mb-3 text-end'>
+          <label className='col-6 col-md-3 form-check-label' htmlFor='rubric:isTemplate'>Is Template?</label>
+          <div className='col-1 text-start'>
+            <input
+              id='rubric:isTemplate'
+              className='form-check-input'
+              type='checkbox'
+              name='isTemplate'
+              checked={rubric.visibility === RubricVisibility.Template || rubric.visibility === RubricVisibility.SystemTemplate}
+              onChange={handleCheckIsTemplate}
+            />
+          </div>
+          {author.isAdmin && (
+            <>
+              <label className='col-6 col-md-4 form-check-label' htmlFor='rubric:isSystemTemplate'>Is System Template?</label>
+              <div className='col-1 text-start'>
+                <input
+                  id='rubric:isSystemTemplate'
+                  className='form-check-input'
+                  type='checkbox'
+                  name='isSystemTemplate'
+                  checked={rubric.visibility === RubricVisibility.SystemTemplate}
+                  disabled={rubric.visibility === RubricVisibility.MembersOnly}
+                  onChange={handleCheckIsSystemTemplate}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </>
+    )
+  }
+
   return (
     <form onSubmit={handleSubmit}>
-      <div className='row mb-3'>
-        <label className='col-lg-2 col-form-label' htmlFor='rubric:name'>Name</label>
-        <div className='col-lg-10'>
+      <div className='row mb-3 text-md-end'>
+        <label className='col-lg-3 col-form-label' htmlFor='rubric:name'>Name</label>
+        <div className='col-lg-9'>
           <input
             id='rubric:name'
             className='form-control'
@@ -101,9 +168,9 @@ const RubricForm = ({
           />
         </div>
       </div>
-      <div className='row mb-3'>
-        <label className='col-lg-2 col-form-label' htmlFor='rubric:descriptor'>Descriptor</label>
-        <div className='col-lg-10'>
+      <div className='row mb-3 text-md-end'>
+        <label className='col-lg-3 col-form-label' htmlFor='rubric:descriptor'>Descriptor</label>
+        <div className='col-lg-9'>
           <input
             id='rubric:descriptor'
             className='form-control'
@@ -116,6 +183,7 @@ const RubricForm = ({
           />
         </div>
       </div>
+      {renderTemplateCheckboxes()}
       <h3>Weights</h3>
       {rubric.weights.map((weight) => {
         const nameId = `weight:name:${weight.id}`

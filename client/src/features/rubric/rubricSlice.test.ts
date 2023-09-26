@@ -6,6 +6,10 @@ import { type Rubric } from '../../types/Rubric'
 import { type Weight } from '../../types/Weight'
 import { type ProfileWeight } from '../../types/ProfileWeight'
 import { type Profile } from '../../types/Profile'
+import ProfileFactory from '../../factories/ProfileFactory'
+import ProfileWeightFactory from '../../factories/ProfileWeightFactory'
+import WeightFactory from '../../factories/WeightFactory'
+import RubricFactory from '../../factories/RubricFactory'
 
 describe('rubricSlice', () => {
   let user1: Profile
@@ -19,39 +23,31 @@ describe('rubricSlice', () => {
   let rubric: Rubric
 
   beforeEach(() => {
-    user1 = { id: 1, displayName: 'Barbie' }
+    user1 = ProfileFactory.build()
 
-    profileWeightUser1Weight1 = {
-      id: 1,
+    profileWeightUser1Weight1 = ProfileWeightFactory.build({
       weightId: 1,
       profileId: user1.id,
       value: 1
-    }
-    profileWeightUser1Weight2 = {
-      id: 2,
+    })
+    profileWeightUser1Weight2 = ProfileWeightFactory.build({
       weightId: 2,
       profileId: user1.id,
       value: 2
-    }
+    })
 
-    weight1 = {
+    weight1 = WeightFactory.build({
       id: 1,
-      name: 'Weight 1',
       profileWeights: [profileWeightUser1Weight1]
-    }
-    weight2 = {
+    })
+    weight2 = WeightFactory.build({
       id: 2,
-      name: 'Weight 2',
       profileWeights: [profileWeightUser1Weight2]
-    }
+    })
 
-    rubric = {
-      id: 1,
-      name: 'Test Rubric',
-      descriptor: 'Address',
-      weights: [weight1, weight2],
-      members: []
-    }
+    rubric = RubricFactory.build({
+      weights: [weight1, weight2]
+    })
   })
 
   describe('selectors', () => {

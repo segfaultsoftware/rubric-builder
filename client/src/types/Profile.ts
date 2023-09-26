@@ -1,6 +1,7 @@
 export interface Profile {
   id: number
   displayName: string
+  isAdmin: boolean
 }
 
 export interface ProfileAuthentication {

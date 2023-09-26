@@ -4,15 +4,14 @@ import userEvent from '@testing-library/user-event'
 
 import { renderWithProviders } from '../../utils/test-utils'
 import RubricForm from './RubricForm'
-import { type Rubric } from '../../types/Rubric'
+import { type Rubric, RubricVisibility } from '../../types/Rubric'
 import { type Weight } from '../../types/Weight'
-import { type Profile } from '../../types/Profile'
+import RubricFactory from '../../factories/RubricFactory'
+import WeightFactory from '../../factories/WeightFactory'
+import ProfileFactory from '../../factories/ProfileFactory'
 
 describe('RubricForm', () => {
-  const author: Profile = {
-    id: 100,
-    displayName: 'Supervisor'
-  }
+  const author = ProfileFactory.build()
   let rubric: Rubric
 
   const onRubricChange = jest.fn()
@@ -28,16 +27,8 @@ describe('RubricForm', () => {
   }
 
   beforeEach(() => {
-    rubric = {
-      name: 'Some Rubric',
-      descriptor: 'Address',
-      weights: [{
-        id: 1,
-        name: 'Weight 1',
-        profileWeights: []
-      }],
-      members: []
-    }
+    rubric = RubricFactory.build({ name: 'Some Rubric' })
+    rubric.weights = [WeightFactory.build()]
   })
 
   it('renders the existing rubric name and weight info', async () => {
@@ -126,6 +117,125 @@ describe('RubricForm', () => {
         },
         rubric.weights[2]
       ]
+    })
+  })
+
+  describe('template checkboxes', () => {
+    it('handles the "Is Template?" checkbox', async () => {
+      const { user, findByLabelText, queryByLabelText } = render()
+
+      const isTemplateCheckbox = await findByLabelText('Is Template?')
+      expect(queryByLabelText('Is System Template?')).not.toBeInTheDocument()
+
+      await user.click(isTemplateCheckbox)
+
+      expect(onRubricChange).toHaveBeenCalledWith({
+        ...rubric,
+        visibility: RubricVisibility.Template
+      })
+    })
+
+    describe('when the user is an admin', () => {
+      beforeEach(() => {
+        author.isAdmin = true
+      })
+
+      it('handles the "Is Template?" checkbox', async () => {
+        const { user, findByLabelText } = render()
+
+        const isTemplateCheckbox = await findByLabelText('Is Template?')
+        const isSystemTemplateCheckbox = await findByLabelText('Is System Template?')
+        expect(isTemplateCheckbox).not.toBeChecked()
+        expect(isSystemTemplateCheckbox).toBeDisabled()
+        expect(isSystemTemplateCheckbox).not.toBeChecked()
+
+        await user.click(isTemplateCheckbox)
+
+        expect(onRubricChange).toHaveBeenCalledWith({
+          ...rubric,
+          visibility: RubricVisibility.Template
+        })
+      })
+
+      describe('after the Is System Template is checked', () => {
+        beforeEach(() => {
+          rubric.visibility = RubricVisibility.SystemTemplate
+        })
+
+        it('handles unchecking Template', async () => {
+          const { user, findByLabelText } = render()
+
+          const isTemplateCheckbox = await findByLabelText('Is Template?')
+          const isSystemTemplateCheckbox = await findByLabelText('Is System Template?')
+          expect(isTemplateCheckbox).toBeChecked()
+          expect(isSystemTemplateCheckbox).not.toBeDisabled()
+          expect(isSystemTemplateCheckbox).toBeChecked()
+
+          await user.click(isTemplateCheckbox)
+
+          expect(onRubricChange).toHaveBeenCalledWith({
+            ...rubric,
+            visibility: RubricVisibility.MembersOnly
+          })
+        })
+
+        it('handles unchecking System Template', async () => {
+          const { user, findByLabelText } = render()
+
+          const isTemplateCheckbox = await findByLabelText('Is Template?')
+          const isSystemTemplateCheckbox = await findByLabelText('Is System Template?')
+          expect(isTemplateCheckbox).toBeChecked()
+          expect(isSystemTemplateCheckbox).not.toBeDisabled()
+          expect(isSystemTemplateCheckbox).toBeChecked()
+
+          await user.click(isSystemTemplateCheckbox)
+
+          expect(onRubricChange).toHaveBeenCalledWith({
+            ...rubric,
+            visibility: RubricVisibility.Template
+          })
+        })
+      })
+
+      describe('after the Is Template is checked', () => {
+        beforeEach(() => {
+          rubric.visibility = RubricVisibility.Template
+        })
+
+        it('handles unchecking template', async () => {
+          const { user, findByLabelText } = render()
+
+          const isTemplateCheckbox = await findByLabelText('Is Template?')
+          const isSystemTemplateCheckbox = await findByLabelText('Is System Template?')
+          expect(isTemplateCheckbox).toBeChecked()
+          expect(isSystemTemplateCheckbox).not.toBeDisabled()
+          expect(isSystemTemplateCheckbox).not.toBeChecked()
+
+          await user.click(isTemplateCheckbox)
+
+          expect(onRubricChange).toHaveBeenCalledWith({
+            ...rubric,
+            visibility: RubricVisibility.MembersOnly
+          })
+        })
+
+        it('handles the "Is System Template?" checkbox', async () => {
+          const { user, findByLabelText } = render()
+
+          const isTemplateCheckbox = await findByLabelText('Is Template?')
+          const isSystemTemplateCheckbox = await findByLabelText('Is System Template?')
+          expect(isTemplateCheckbox).toBeChecked()
+          expect(isSystemTemplateCheckbox).not.toBeDisabled()
+          expect(isSystemTemplateCheckbox).not.toBeChecked()
+
+          await user.click(isSystemTemplateCheckbox)
+
+          expect(onRubricChange).toHaveBeenCalledWith({
+            ...rubric,
+            visibility: RubricVisibility.SystemTemplate
+          })
+        })
+      })
     })
   })
 

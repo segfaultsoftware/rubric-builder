@@ -7,6 +7,8 @@ import ScoreSummary from './ScoreSummary'
 import { type Rubric } from '../../types/Rubric'
 import { type Weight } from '../../types/Weight'
 import { type Profile } from '../../types/Profile'
+import RubricFactory from '../../factories/RubricFactory'
+import ProfileFactory from '../../factories/ProfileFactory'
 
 describe('ScoreSummary', () => {
   const scoreName = '555 Some Pl'
@@ -31,18 +33,12 @@ describe('ScoreSummary', () => {
   }
 
   beforeEach(() => {
-    rubric = {
-      id: 123,
-      name: 'Test Rubric',
-      descriptor: 'Job Offer',
-      members: [],
-      weights: []
-    }
+    rubric = RubricFactory.build({ descriptor: 'Job Offer' })
 
     profileById = new Map<number, Profile>()
-    profileById.set(1, { id: 1, displayName: 'User 1' })
-    profileById.set(2, { id: 2, displayName: 'User 2' })
-    profileById.set(3, { id: 3, displayName: 'User 3' })
+    profileById.set(1, ProfileFactory.build({ id: 1, displayName: 'User 1' }))
+    profileById.set(2, ProfileFactory.build({ id: 2, displayName: 'User 2' }))
+    profileById.set(3, ProfileFactory.build({ id: 3, displayName: 'User 3' }))
 
     weightById = new Map<number, Weight>()
     weightById.set(1, { id: 1, name: 'Weight 1', profileWeights: [] })

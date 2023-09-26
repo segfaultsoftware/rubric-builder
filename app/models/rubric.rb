@@ -13,8 +13,15 @@ class Rubric < ApplicationRecord
 
   default_scope { order(id: :asc) }
 
+  enum visibility: {
+    members_only: 0,
+    template: 1,
+    system_template: 2
+  }
+
   validates :name, presence: true, uniqueness: true
   validates :descriptor, presence: true
+  validate :system_template_only_for_admins
 
   def accept_invitation!(profile)
     initialize_profile_weights!
@@ -182,6 +189,10 @@ class Rubric < ApplicationRecord
     self.computed = computed_cache
 
     to_calibrate
+  end
+
+  def system_template_only_for_admins
+    errors.add(:visibility, 'system template is only available for admins') if system_template? && !author.is_admin?
   end
 end
 # rubocop:enable Metrics/ClassLength

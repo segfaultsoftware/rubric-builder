@@ -8,8 +8,12 @@ import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithS
 import ScoreNew from './ScoreNew'
 
 import { type Rubric } from '../../types/Rubric'
+import RubricFactory from '../../factories/RubricFactory'
+import WeightFactory from '../../factories/WeightFactory'
+import ProfileFactory from '../../factories/ProfileFactory'
 
 describe('ScoreNew', () => {
+  const loggedInAs = ProfileFactory.build()
   let rubric: Rubric
   const scoreName1 = 'Score Name 1'
   const scoreName2 = 'Score Name 2'
@@ -28,10 +32,7 @@ describe('ScoreNew', () => {
     {
       preloadedState: {
         profile: {
-          loggedInAs: {
-            id: 123,
-            displayName: 'The Author'
-          },
+          loggedInAs,
           loginError: undefined,
           registerErrors: []
         }
@@ -42,21 +43,13 @@ describe('ScoreNew', () => {
   }
 
   beforeEach(() => {
-    rubric = {
-      id: 7,
+    rubric = RubricFactory.build({
       name: 'Test Rubric',
-      descriptor: 'Address',
-      members: [],
-      weights: [{
-        id: 1,
-        name: 'Weight 1',
-        profileWeights: []
-      }, {
-        id: 7,
-        name: 'Weight 2',
-        profileWeights: []
-      }]
-    }
+      weights: [
+        WeightFactory.build({ name: 'Weight 1' }),
+        WeightFactory.build({ name: 'Weight 2' })
+      ]
+    })
 
     scores = {
       [scoreName1]: {
@@ -166,7 +159,7 @@ describe('ScoreNew', () => {
 
           const postBody = await postBodyPromise as any
           expect(postBody.name).toEqual('123 Main St')
-          expect(postBody.profile_id).toEqual(123)
+          expect(postBody.profile_id).toEqual(loggedInAs.id)
           expect(postBody.rubric_id).toEqual(rubric.id)
 
           const scoreWeights = postBody.score_weights_attributes

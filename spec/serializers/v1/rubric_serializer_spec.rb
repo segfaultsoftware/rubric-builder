@@ -1,6 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe V1::RubricSerializer do
+  describe '#visibility' do
+    it 'stringifies visibility' do
+      current_profile = create(:profile)
+      rubric = create(:rubric, visibility: :members_only)
+      json = V1::RubricSerializer.new(rubric, params: { current_profile: }).serializable_hash[:data][:attributes]
+      expect(json[:visibility]).to eq('members_only')
+    end
+  end
+
   describe '#weights' do
     it 'only includes profile weights of the current user' do
       current_profile = create(:profile)

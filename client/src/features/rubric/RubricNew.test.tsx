@@ -5,10 +5,10 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 
 import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import RubricNew from './RubricNew'
-import { type Profile } from '../../types/Profile'
+import ProfileFactory from '../../factories/ProfileFactory'
 
 describe('RubricNew', () => {
-  const loggedInAs: Profile = { id: 123, displayName: 'Foo Bar' }
+  const loggedInAs = ProfileFactory.build()
   let server: ReturnType<typeof setupServerWithStubs>
   let serverStubs: ServerStub[]
 

@@ -40,6 +40,7 @@ module Api
         params.require(:rubric).permit(
           :name,
           :descriptor,
+          :visibility,
           weights_attributes: [
             :id, :name, :_destroy
           ]

@@ -7,23 +7,12 @@ import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithS
 import RubricIndex from './RubricIndex'
 import { type Rubric } from '../../types/Rubric'
 import { type Profile } from '../../types/Profile'
+import RubricFactory from '../../factories/RubricFactory'
 
 describe('RubricIndex', () => {
   const loggedInAs: Profile | null = null
-  const rubric1: Rubric = {
-    id: 9,
-    name: 'Rubric 1',
-    descriptor: 'Address',
-    members: [],
-    weights: []
-  }
-  const rubric2: Rubric = {
-    id: 111,
-    name: 'Rubric 2',
-    descriptor: 'Address',
-    members: [],
-    weights: []
-  }
+  const rubric1: Rubric = RubricFactory.build()
+  const rubric2: Rubric = RubricFactory.build()
   let router: ReturnType<typeof createMemoryRouter>
   let server: ReturnType<typeof setupServerWithStubs>
   const stubs: ServerStub[] = [
@@ -76,8 +65,8 @@ describe('RubricIndex', () => {
     it('displays all the rubrics from the backend', async () => {
       const { findByText } = render()
 
-      expect(await findByText('Rubric 1')).not.toBeEmptyDOMElement()
-      expect(await findByText('Rubric 2')).not.toBeEmptyDOMElement()
+      expect(await findByText(rubric1.name)).not.toBeEmptyDOMElement()
+      expect(await findByText(rubric2.name)).not.toBeEmptyDOMElement()
     })
 
     describe('deleting a Rubric', () => {
@@ -92,8 +81,8 @@ describe('RubricIndex', () => {
 
         fireEvent.click(deleteButtons[1])
 
-        await waitForElementToBeRemoved(() => queryByText('Rubric 2'))
-        expect(await findByText('Rubric 1')).not.toBeEmptyDOMElement()
+        await waitForElementToBeRemoved(() => queryByText(rubric2.name))
+        expect(await findByText(rubric1.name)).not.toBeEmptyDOMElement()
       })
     })
   })

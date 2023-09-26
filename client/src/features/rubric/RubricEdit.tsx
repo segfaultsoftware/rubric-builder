@@ -4,19 +4,13 @@ import { Link, useParams } from 'react-router-dom'
 import classNames from 'classnames'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import {
-  fetchRubric,
-  resetRubricState,
-  selectRubric,
-  selectSaveRubricState,
-  updateRubric
-} from './rubricSlice'
+import { fetchRubric, resetRubricState, selectRubric, selectSaveRubricState, updateRubric } from './rubricSlice'
 import RubricForm from './RubricForm'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import RubricMembers from './RubricMembers'
 
 import styles from './RubricEdit.module.scss'
-import { type Rubric } from '../../types/Rubric'
+import { type Rubric, RubricVisibility } from '../../types/Rubric'
 
 interface Notification {
   id: number
@@ -34,6 +28,7 @@ const RubricEdit = () => {
   const [rubric, setRubric] = useState<Rubric>({
     name: '',
     descriptor: 'Address',
+    visibility: RubricVisibility.MembersOnly,
     weights: [],
     members: []
   })

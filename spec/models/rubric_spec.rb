@@ -1,6 +1,50 @@
 require 'rails_helper'
 
 RSpec.describe Rubric do
+  describe 'validations' do
+    describe 'visibility' do
+      let(:rubric) { build(:rubric, author: author) }
+
+      context 'when the author is not an admin' do
+        let(:author) { create(:profile) }
+
+        it 'allows to set members_only' do
+          rubric.visibility = :members_only
+          expect(rubric).to be_valid
+        end
+
+        it 'allows to set template' do
+          rubric.visibility = :template
+          expect(rubric).to be_valid
+        end
+
+        it 'does not allow to set to system template' do
+          rubric.visibility = :system_template
+          expect(rubric).not_to be_valid
+        end
+      end
+
+      context 'when the author is an admin' do
+        let(:author) { create(:profile, is_admin: true) }
+
+        it 'allows to set members_only' do
+          rubric.visibility = :members_only
+          expect(rubric).to be_valid
+        end
+
+        it 'allows to set template' do
+          rubric.visibility = :template
+          expect(rubric).to be_valid
+        end
+
+        it 'does not allow to set to system template' do
+          rubric.visibility = :system_template
+          expect(rubric).to be_valid
+        end
+      end
+    end
+  end
+
   describe '#generate_pairings_for_profile!' do
     let(:profile1) { create(:profile) }
     let(:profile2) { create(:profile) }

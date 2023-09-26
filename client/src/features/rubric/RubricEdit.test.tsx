@@ -7,13 +7,12 @@ import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithS
 import RubricEdit from './RubricEdit'
 import { type Rubric } from '../../types/Rubric'
 import { type Weight } from '../../types/Weight'
-import { type Profile } from '../../types/Profile'
+import ProfileFactory from '../../factories/ProfileFactory'
+import WeightFactory from '../../factories/WeightFactory'
+import RubricFactory from '../../factories/RubricFactory'
 
 describe('RubricEdit', () => {
-  const loggedInAs: Profile = {
-    id: 567,
-    displayName: 'John Doe'
-  }
+  const loggedInAs = ProfileFactory.build()
   let rubric: Rubric
   let weight1: Weight
   let weight2: Weight
@@ -53,26 +52,14 @@ describe('RubricEdit', () => {
 
   beforeEach(() => {
     serverStubs = []
-    weight1 = {
-      id: 915478,
-      name: 'SQFT',
-      profileWeights: []
-    }
+    weight1 = WeightFactory.build()
+    weight2 = WeightFactory.build()
 
-    weight2 = {
-      id: 1948191,
-      name: 'Lighting',
-      profileWeights: []
-    }
-
-    rubric = {
-      id: 1841,
-      name: 'My Rubric',
-      descriptor: 'Address',
-      authorId: 567,
+    rubric = RubricFactory.build({
+      authorId: loggedInAs.id,
       weights: [weight1, weight2],
       members: [loggedInAs]
-    }
+    })
   })
 
   afterEach(() => {

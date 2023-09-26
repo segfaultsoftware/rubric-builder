@@ -9,6 +9,9 @@ import ScoreAnalysis from './ScoreAnalysis'
 import { type Rubric } from '../../types/Rubric'
 import { type Weight } from '../../types/Weight'
 import { type Profile } from '../../types/Profile'
+import ProfileFactory from '../../factories/ProfileFactory'
+import WeightFactory from '../../factories/WeightFactory'
+import RubricFactory from '../../factories/RubricFactory'
 
 describe('ScoreAnalysis', () => {
   let rubric: Rubric
@@ -49,28 +52,17 @@ describe('ScoreAnalysis', () => {
   }
 
   beforeEach(() => {
-    user1 = { id: 1, displayName: 'Sam' }
-    user2 = { id: 2, displayName: 'Francis' }
+    user1 = ProfileFactory.build({ displayName: 'Sam' })
+    user2 = ProfileFactory.build({ displayName: 'Francis' })
 
-    weight1 = {
-      id: 5,
-      name: 'ABC',
-      profileWeights: []
-    }
-    weight2 = {
-      id: 7,
-      name: 'XYZ',
-      profileWeights: []
-    }
+    weight1 = WeightFactory.build({ name: 'ABC' })
+    weight2 = WeightFactory.build({ name: 'XYZ' })
 
-    rubric = {
-      id: 23,
-      name: 'Rubric',
-      descriptor: 'Address',
+    rubric = RubricFactory.build({
       members: [user1, user2],
       weights: [weight1, weight2],
       authorId: user1.id
-    }
+    })
 
     scoreName1 = '123 Mangrum'
     scoreName2 = '425 1st St Unit 1006'

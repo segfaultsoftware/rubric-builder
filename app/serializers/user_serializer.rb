@@ -14,4 +14,8 @@ class UserSerializer
   attribute :created_at do |user|
     user.profile.created_at
   end
+
+  attribute :is_admin do |user|
+    user.profile.is_admin?
+  end
 end
