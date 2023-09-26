@@ -1,6 +1,8 @@
 module Api
   module V1
     class RubricsController < ApplicationController
+      skip_before_action :authenticate_user!, only: [:show]
+
       def index
         json = current_profile.rubrics.map do |rubric|
           serialize(rubric)
@@ -9,7 +11,8 @@ module Api
       end
 
       def show
-        rubric = current_profile.rubrics.find(params[:id])
+        rubric = Rubric.find(params[:id])
+        rubric = current_profile.rubrics.find(params[:id]) if rubric.members_only?
         render json: serialize(rubric)
       end
 
