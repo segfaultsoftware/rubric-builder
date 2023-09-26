@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { createRubric } from './rubricSlice'
+import { createRubric, fetchRubric, resetRubricState, selectRubric } from './rubricSlice'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import RubricForm from './RubricForm'
@@ -11,8 +11,10 @@ import { type Rubric, RubricVisibility } from '../../types/Rubric'
 const RubricNew = () => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const author = useAppSelector(selectLoggedInAs)
+  const copyFrom = useAppSelector(selectRubric)
 
   const [rubric, setRubric] = useState<Rubric>({
     name: '',
@@ -26,6 +28,34 @@ const RubricNew = () => {
     }],
     members: []
   })
+
+  useEffect(() => {
+    return function clearRubric () {
+      dispatch(resetRubricState())
+    }
+  }, [])
+
+  useEffect(() => {
+    const copyFromId = searchParams.get('copyFromId')
+    if (copyFromId) {
+      dispatch(fetchRubric(copyFromId))
+    }
+  }, [searchParams])
+
+  useEffect(() => {
+    if (copyFrom) {
+      const {
+        id,
+        author,
+        authorId,
+        ...copy
+      } = copyFrom
+      copy.name = `Copy of ${copy.name}`
+      copy.visibility = RubricVisibility.MembersOnly
+      copy.weights = copy.weights.map((weight) => ({ ...weight, _new: true }))
+      setRubric(copy)
+    }
+  }, [copyFrom])
 
   const handleSubmit = async (newRubric: Rubric) => {
     const response = await dispatch(createRubric(newRubric))

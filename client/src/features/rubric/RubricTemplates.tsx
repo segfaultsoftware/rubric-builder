@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { fetchTemplates, selectTemplates } from './rubricSlice'
 import { Link } from 'react-router-dom'
-import { type Rubric, RubricVisibility } from '../../types/Rubric'
+import { RubricVisibility } from '../../types/Rubric'
 import { selectLoggedInAs } from '../profile/profileSlice'
 
 const RubricTemplates = () => {
@@ -15,10 +15,6 @@ const RubricTemplates = () => {
   useEffect(() => {
     dispatch(fetchTemplates())
   }, [])
-
-  const handleCopy = (rubric: Rubric) => {
-
-  }
 
   return (
     <div className='text-center col-md-6 offset-md-3'>
@@ -34,16 +30,7 @@ const RubricTemplates = () => {
                 <small className='text-body-secondary'>by {author}</small>
               </div>
               <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/view`}>View</Link>
-              {loggedInAs && (
-                <button
-                  className='btn btn-link p-1 d-none d-md-inline'
-                  type='button'
-                  title='Copy'
-                  onClick={() => { handleCopy(rubric) }}
-                >
-                  Copy
-                </button>
-              )}
+              {loggedInAs && <Link className='btn btn-link p-1' to={`/rubrics/new?copyFromId=${rubric.id}`}>Copy</Link>}
             </li>
           )
         })}
