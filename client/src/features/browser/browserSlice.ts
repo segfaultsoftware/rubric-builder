@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { type RootState } from '../../app/store'
 import { fetchWrapper } from '../../api/FetchWrapper'
 import { fetchRubric } from '../rubric/rubricSlice'
+import { type ServerPush } from '../../types/ServerPush'
 
 export interface BrowserState {
   pushSubscription: undefined | any // TODO
@@ -11,12 +12,6 @@ export interface BrowserState {
 const initialState: BrowserState = {
   pushSubscription: undefined,
   vapidPublicKey: undefined
-}
-
-export interface ServerPush {
-  id: number
-  type: 'Rubric'
-  action: 'update'
 }
 
 export const dispatchFromServerPush = createAsyncThunk(

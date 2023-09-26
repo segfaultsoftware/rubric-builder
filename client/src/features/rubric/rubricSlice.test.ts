@@ -1,11 +1,11 @@
 import {
-  type ProfileWeight,
-  type Rubric,
   selectProfileWeightByWeightId,
-  selectWeightByWeightId,
-  type Weight
+  selectWeightByWeightId
 } from './rubricSlice'
-import { type Profile } from '../profile/profileSlice'
+import { type Rubric } from '../../types/Rubric'
+import { type Weight } from '../../types/Weight'
+import { type ProfileWeight } from '../../types/ProfileWeight'
+import { type Profile } from '../../types/Profile'
 
 describe('rubricSlice', () => {
   let user1: Profile

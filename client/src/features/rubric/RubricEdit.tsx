@@ -7,7 +7,6 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import {
   fetchRubric,
   resetRubricState,
-  type Rubric,
   selectRubric,
   selectSaveRubricState,
   updateRubric
@@ -17,6 +16,7 @@ import { selectLoggedInAs } from '../profile/profileSlice'
 import RubricMembers from './RubricMembers'
 
 import styles from './RubricEdit.module.scss'
+import { type Rubric } from '../../types/Rubric'
 
 interface Notification {
   id: number

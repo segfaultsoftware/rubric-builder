@@ -2,19 +2,20 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { fetchRubric, selectRubric, type Weight } from '../rubric/rubricSlice'
+import { fetchRubric, selectRubric } from '../rubric/rubricSlice'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import {
   clearCreateScoreStatus,
   createScore, fetchScoresForRubricId,
-  type Score,
-  type ScoreWeight,
   selectCreateScoreStatus,
   selectUniqueScoreNames
 } from './scoreSlice'
 import WeightScore from './WeightScore'
 import CreatableSelect from 'react-select/creatable'
 import { type SelectInstance } from 'react-select'
+import { type Weight } from '../../types/Weight'
+import { type Score } from '../../types/Score'
+import { type ScoreWeight } from '../../types/ScoreWeight'
 
 interface SelectOption {
   label: string

@@ -6,12 +6,12 @@ import {
   getInvitation,
   clearAcceptInvitationState,
   selectAcceptInvitationStatus,
-  type Invitation,
   selectInvitation,
   acceptInvitation,
   selectAcceptInvitationErrors
 } from './invitationsSlice'
 import NavBar from '../../NavBar'
+import { type Invitation } from '../../types/Invitation'
 
 const AcceptInvitation = () => {
   const dispatch = useAppDispatch()

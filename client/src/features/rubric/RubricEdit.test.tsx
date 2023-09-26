@@ -3,10 +3,11 @@ import React from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 
-import { type Profile } from '../profile/profileSlice'
-import { type Rubric, type Weight } from './rubricSlice'
 import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import RubricEdit from './RubricEdit'
+import { type Rubric } from '../../types/Rubric'
+import { type Weight } from '../../types/Weight'
+import { type Profile } from '../../types/Profile'
 
 describe('RubricEdit', () => {
   const loggedInAs: Profile = {

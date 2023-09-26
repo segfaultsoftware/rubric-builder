@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Link } from 'react-router-dom'
 
-import { type Profile } from './profileSlice'
+import { type Profile } from '../../types/Profile'
 
 interface AuthenticatedControlsProps {
   loggedInAs: Profile

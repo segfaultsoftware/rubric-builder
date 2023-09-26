@@ -8,7 +8,8 @@ import {
   selectInviteMemberToRubricState,
   selectRubric
 } from './rubricSlice'
-import { type Profile } from '../profile/profileSlice'
+
+import { type Profile } from '../../types/Profile'
 
 interface RubricMembersProps {
   onAddNotification: (message: string) => void

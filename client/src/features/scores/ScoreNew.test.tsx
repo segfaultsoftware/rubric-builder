@@ -6,7 +6,8 @@ import userEvent from '@testing-library/user-event'
 
 import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import ScoreNew from './ScoreNew'
-import { type Rubric } from '../rubric/rubricSlice'
+
+import { type Rubric } from '../../types/Rubric'
 
 describe('ScoreNew', () => {
   let rubric: Rubric

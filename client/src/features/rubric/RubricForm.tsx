@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { type Rubric, type Weight } from './rubricSlice'
-import { type Profile } from '../profile/profileSlice'
+import { type Rubric } from '../../types/Rubric'
+import { type Weight } from '../../types/Weight'
+import { type Profile } from '../../types/Profile'
 
 interface RubricFormProperties {
   author: Profile

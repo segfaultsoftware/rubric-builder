@@ -6,12 +6,12 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import {
   clearAuthenticationErrors,
   login,
-  type ProfileAuthentication,
   selectLoggedInAs,
   selectLoginError
 } from './profileSlice'
 import ProfileForm from './ProfileForm'
 import NavBar from '../../NavBar'
+import { type ProfileAuthentication } from '../../types/Profile'
 
 const LoginPage = () => {
   const dispatch = useAppDispatch()

@@ -1,17 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { type RootState } from '../../app/store'
 import { camelCaseKeys, FetchNotOkError, fetchWrapper } from '../../api/FetchWrapper'
-
-export interface Profile {
-  id: number
-  displayName: string
-}
-
-export interface ProfileAuthentication {
-  email: string
-  password: string
-  passwordConfirmation?: string
-}
+import { type Profile, type ProfileAuthentication } from '../../types/Profile'
 
 export interface ProfileState {
   loggedInAs: Profile | null

@@ -1,20 +1,7 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
 import { type RootState } from '../../app/store'
-
-export interface ScoreWeight {
-  id?: number
-  weightId: number
-  value: number
-}
-
-export interface Score {
-  id?: number
-  name: string
-  profileId: number
-  rubricId: number
-  scoreWeights: ScoreWeight[]
-}
+import { type Score } from '../../types/Score'
 
 const prepareScoreForServer = (score: Score) => {
   const railsReady = {

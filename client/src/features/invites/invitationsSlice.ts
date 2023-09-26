@@ -2,15 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import { camelCaseKeys, FetchNotOkError, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
 import { type RootState } from '../../app/store'
-import { type Profile } from '../profile/profileSlice'
-
-export interface Invitation {
-  id: number
-  invitationToken: string
-  email: string
-  password?: string
-  passwordConfirmation?: string
-}
+import { type Invitation } from '../../types/Invitation'
+import { type Profile } from '../../types/Profile'
 
 export const sendInvite = createAsyncThunk(
   'invitations/sendInvite',

@@ -1,5 +1,6 @@
 import React from 'react'
-import { type ProfileAuthentication } from './profileSlice'
+
+import { type ProfileAuthentication } from '../../types/Profile'
 
 interface ProfileFormProps {
   errors: string[]

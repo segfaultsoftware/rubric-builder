@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 
 import classNames from 'classnames'
 
-import { type Profile } from '../profile/profileSlice'
-import { type Rubric, type Weight } from '../rubric/rubricSlice'
 import { round } from 'lodash'
+import { type Rubric } from '../../types/Rubric'
+import { type Weight } from '../../types/Weight'
+import { type Profile } from '../../types/Profile'
 
 interface ScoreSummaryProps {
   calculationsByUserWeight: Record<string, Record<string, number>>

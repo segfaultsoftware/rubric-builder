@@ -4,8 +4,9 @@ import { render, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import ScoreSummary from './ScoreSummary'
-import { type Profile } from '../profile/profileSlice'
-import { type Rubric, type Weight } from '../rubric/rubricSlice'
+import { type Rubric } from '../../types/Rubric'
+import { type Weight } from '../../types/Weight'
+import { type Profile } from '../../types/Profile'
 
 describe('ScoreSummary', () => {
   const scoreName = '555 Some Pl'

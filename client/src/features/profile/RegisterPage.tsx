@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import {
   clearAuthenticationErrors,
-  type ProfileAuthentication,
   register,
   selectLoggedInAs,
   selectRegistrationErrors,
@@ -12,6 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import ProfileForm from './ProfileForm'
 import NavBar from '../../NavBar'
+import { type ProfileAuthentication } from '../../types/Profile'
 
 interface RegisterPageProps {
   isEmbedded?: boolean

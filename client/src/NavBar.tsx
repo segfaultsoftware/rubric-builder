@@ -6,7 +6,8 @@ import ProfileBadge from './features/profile/ProfileBadge'
 
 import styles from './NavBar.module.scss'
 import classNames from 'classnames'
-import { type Profile } from './features/profile/profileSlice'
+
+import { type Profile } from './types/Profile'
 
 interface NavBarProps {
   isAuthenticationFlow?: boolean

@@ -3,10 +3,10 @@ import React from 'react'
 import { fireEvent, waitForElementToBeRemoved } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 
-import { type Rubric } from './rubricSlice'
 import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
-import { type Profile } from '../profile/profileSlice'
 import RubricIndex from './RubricIndex'
+import { type Rubric } from '../../types/Rubric'
+import { type Profile } from '../../types/Profile'
 
 describe('RubricIndex', () => {
   const loggedInAs: Profile | null = null

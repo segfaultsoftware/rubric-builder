@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { deleteRubric, fetchRubrics, type Rubric, selectRubrics } from './rubricSlice'
+import { deleteRubric, fetchRubrics, selectRubrics } from './rubricSlice'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { type Rubric } from '../../types/Rubric'
 
 const RubricIndex = () => {
   const dispatch = useAppDispatch()

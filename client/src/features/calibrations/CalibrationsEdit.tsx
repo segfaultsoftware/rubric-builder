@@ -9,12 +9,12 @@ import {
   fetchRubric,
   selectRubric,
   updateCalibrationsForRubric,
-  type Weight,
-  type Calibration,
   selectWeightByWeightId,
   resetRubricState
 } from '../rubric/rubricSlice'
 import { selectLoggedInAs } from '../profile/profileSlice'
+import { type Weight } from '../../types/Weight'
+import { type Calibration } from '../../types/Calibration'
 
 interface CalibrationsEditProps {
   useRandom?: boolean

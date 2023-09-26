@@ -1,39 +1,13 @@
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
-import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
-import { type RootState } from '../../app/store'
-import { type Profile } from '../profile/profileSlice'
 import { flatten } from 'lodash'
 
-export interface Calibration {
-  fromWeightId: number
-  toWeightId: number
-  rating: number
-}
-
-export interface ProfileWeight {
-  id?: number
-  profileId: number
-  weightId: number
-  value: number
-  error?: string | null | undefined
-}
-
-export interface Weight {
-  id?: number
-  name: string
-  profileWeights: ProfileWeight[]
-  _destroy?: boolean
-  _new?: boolean
-}
-export interface Rubric {
-  id?: number | null
-  name: string
-  descriptor: string
-  authorId?: number | null
-  weights: Weight[]
-  members: Profile[]
-  pairings?: number[][]
-}
+import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
+import { type RootState } from '../../app/store'
+import { type Rubric } from '../../types/Rubric'
+import { type Weight } from '../../types/Weight'
+import { type ProfileWeight } from '../../types/ProfileWeight'
+import { type Calibration } from '../../types/Calibration'
+import { type Profile } from '../../types/Profile'
 
 export interface RubricState {
   rubrics: Rubric[]

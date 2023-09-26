@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 
 import { useNavigate } from 'react-router-dom'
 
-import { createRubric, type Rubric } from './rubricSlice'
+import { createRubric } from './rubricSlice'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { selectLoggedInAs } from '../profile/profileSlice'
 import RubricForm from './RubricForm'
+import { type Rubric } from '../../types/Rubric'
 
 const RubricNew = () => {
   const dispatch = useAppDispatch()

@@ -3,11 +3,13 @@ import React from 'react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 
-import { type ProfileWeight, type Rubric, type Weight } from '../rubric/rubricSlice'
-import { type Profile } from '../profile/profileSlice'
 import { addStubToServer, renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import CalibrationsEdit from './CalibrationsEdit'
 import { fireEvent } from '@testing-library/react'
+import { type Rubric } from '../../types/Rubric'
+import { type Weight } from '../../types/Weight'
+import { type ProfileWeight } from '../../types/ProfileWeight'
+import { type Profile } from '../../types/Profile'
 
 describe('CalibrationsEdit', () => {
   let rubric: Rubric

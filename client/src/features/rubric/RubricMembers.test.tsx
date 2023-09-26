@@ -3,10 +3,10 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { waitForElementToBeRemoved } from '@testing-library/react'
 
-import { type Rubric } from './rubricSlice'
-import { type Profile } from '../profile/profileSlice'
 import { addStubToServer, renderWithProviders, setupServerWithStubs } from '../../utils/test-utils'
 import RubricMembers from './RubricMembers'
+import { type Rubric } from '../../types/Rubric'
+import { type Profile } from '../../types/Profile'
 
 describe('RubricMembers', () => {
   let rubric: Rubric

@@ -4,10 +4,11 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
 import { within } from '@testing-library/react'
 
-import { type Rubric, type Weight } from '../rubric/rubricSlice'
-import { type Profile } from '../profile/profileSlice'
 import { renderWithProviders, type ServerStub, setupServerWithStubs } from '../../utils/test-utils'
 import ScoreAnalysis from './ScoreAnalysis'
+import { type Rubric } from '../../types/Rubric'
+import { type Weight } from '../../types/Weight'
+import { type Profile } from '../../types/Profile'
 
 describe('ScoreAnalysis', () => {
   let rubric: Rubric
