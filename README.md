@@ -2,9 +2,7 @@
 
 Visit Me! http://rubric-me.com
 
-Reference project: https://github.com/utricularian/the-recipe-spreadsheet
-Which follows: https://bennierobinson.com/programming/2020/12/01/react-rails-setup.html
-For authentication: https://dakotaleemartinez.com/tutorials/devise-jwt-api-only-mode-for-authentication/
+Tracking in github now: https://github.com/orgs/segfaultsoftware/projects/1/views/1
 
 ## Emails in Local Dev
 1. `brew install openssl`
@@ -18,11 +16,8 @@ For authentication: https://dakotaleemartinez.com/tutorials/devise-jwt-api-only-
 Hosted via Heroku and Cloudflare for DNS. SSL certs should be automatically managed
 by Heroku. To deploy, `git push heroku main`
 
-## Feature TODOs
-1. ~~Finish styling with Bootstrap~~
-2. ~~Invite by email directly to a Rubric~~
-3. ~~Make mobile friendly~~
-4. ~~Decision making algorithm to better calibration~~
-5. ~~Noun shuffling refactor (the words I use make a statistician cringe)~~
+## Credits
 
-Tracking in github now: https://github.com/users/utricularian/projects/1/views/1
+Reference project: https://github.com/utricularian/the-recipe-spreadsheet <br/>
+...which follows: https://bennierobinson.com/programming/2020/12/01/react-rails-setup.html <br/>
+...for authentication: https://dakotaleemartinez.com/tutorials/devise-jwt-api-only-mode-for-authentication/
