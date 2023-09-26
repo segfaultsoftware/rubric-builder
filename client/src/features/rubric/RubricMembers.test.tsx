@@ -37,6 +37,7 @@ describe('RubricMembers', () => {
             rubric: {
               rubric,
               rubrics: [],
+              templates: [],
               saveRubricState: 'initial',
               saveCalibrationsState: 'initial',
               inviteMemberState: 'initial'

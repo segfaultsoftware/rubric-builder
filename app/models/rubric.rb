@@ -13,10 +13,14 @@ class Rubric < ApplicationRecord
 
   default_scope { order(id: :asc) }
 
+  MEMBERS_ONLY = 0
+  TEMPLATE = 1
+  SYSTEM_TEMPLATE = 2
+
   enum visibility: {
-    members_only: 0,
-    template: 1,
-    system_template: 2
+    members_only: MEMBERS_ONLY,
+    template: TEMPLATE,
+    system_template: SYSTEM_TEMPLATE
   }
 
   validates :name, presence: true, uniqueness: true

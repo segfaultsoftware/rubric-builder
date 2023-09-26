@@ -20,8 +20,10 @@ import LoginPage from './features/profile/LoginPage'
 import AuthenticationProtected from './AuthenticationProtected'
 import AcceptInvitation from './features/invites/AcceptInvitation'
 import Invite from './features/invites/Invite'
+import RubricViewOnly from './features/rubric/RubricViewOnly'
 
 import './index.css'
+import RubricTemplates from './features/rubric/RubricTemplates'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const container = document.getElementById('root')!
@@ -60,12 +62,20 @@ const router = createBrowserRouter([
         element: <AuthenticationProtected><RubricIndex /></AuthenticationProtected>
       },
       {
+        path: 'templates',
+        element: <RubricTemplates />
+      },
+      {
         path: 'rubrics/new',
         element: <AuthenticationProtected><RubricNew /></AuthenticationProtected>
       },
       {
         path: 'rubrics/:rubricId/edit',
         element: <AuthenticationProtected><RubricEdit /></AuthenticationProtected>
+      },
+      {
+        path: 'rubrics/:rubricId/view',
+        element: <RubricViewOnly />
       },
       {
         path: 'rubrics/:rubricId/scores/new',

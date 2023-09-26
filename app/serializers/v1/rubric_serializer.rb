@@ -21,5 +21,9 @@ module V1
     attribute :pairings do |rubric, params|
       rubric.pairings_for_profile(params[:current_profile])
     end
+
+    attribute :author do |rubric|
+      ::V1::ProfileSerializer.new(rubric.author).serializable_hash[:data][:attributes]
+    end
   end
 end

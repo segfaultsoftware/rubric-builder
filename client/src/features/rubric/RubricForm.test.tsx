@@ -13,6 +13,7 @@ import ProfileFactory from '../../factories/ProfileFactory'
 describe('RubricForm', () => {
   const author = ProfileFactory.build()
   let rubric: Rubric
+  let isViewOnly: boolean = false
 
   const onRubricChange = jest.fn()
   const onSubmit = jest.fn()
@@ -21,12 +22,19 @@ describe('RubricForm', () => {
     return {
       user: userEvent.setup(),
       ...renderWithProviders(
-        <RubricForm rubric={rubric} author={author} onRubricChange={onRubricChange} onSubmit={onSubmit} />
+        <RubricForm
+          rubric={rubric}
+          author={author}
+          onRubricChange={onRubricChange}
+          onSubmit={onSubmit}
+          isViewOnly={isViewOnly}
+        />
       )
     }
   }
 
   beforeEach(() => {
+    isViewOnly = false
     rubric = RubricFactory.build({ name: 'Some Rubric' })
     rubric.weights = [WeightFactory.build()]
   })
@@ -294,6 +302,30 @@ describe('RubricForm', () => {
         ],
         authorId: author.id
       })
+    })
+  })
+
+  describe('in view only mode', () => {
+    beforeEach(() => {
+      isViewOnly = true
+    })
+
+    it('disables all inputs', async () => {
+      const { findByLabelText, findByPlaceholderText } = render()
+
+      expect(await findByLabelText('Name')).toBeDisabled()
+      expect(await findByLabelText('Descriptor')).toBeDisabled()
+      expect(await findByPlaceholderText('Weight Name')).toBeDisabled()
+    })
+
+    it('does not render action items', async () => {
+      const { findByLabelText, queryByLabelText, queryByText } = render()
+
+      expect(await findByLabelText('Name')).toBeInTheDocument()
+      expect(queryByLabelText('Is Template?')).not.toBeInTheDocument()
+      expect(queryByLabelText('Is System Template?')).not.toBeInTheDocument()
+      expect(queryByText(/Add Weight/)).not.toBeInTheDocument()
+      expect(queryByText(/Save Rubric/)).not.toBeInTheDocument()
     })
   })
 })

@@ -8,12 +8,18 @@ export enum RubricVisibility {
 
 }
 
+interface RubricAuthor {
+  id: number
+  displayName: string
+}
+
 export interface Rubric {
   id?: number | null
   name: string
   descriptor: string
   visibility: RubricVisibility
   authorId?: number | null
+  author?: RubricAuthor
   weights: Weight[]
   members: Profile[]
   pairings?: number[][]

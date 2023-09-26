@@ -25,7 +25,12 @@ const NavBar = (params: NavBarProps) => {
   return (
     <header className="row mb-3 align-items-center justify-content-between">
       <div className='col-3'>
-        {loggedInAs && <Link to={'rubrics'}>Your Rubrics</Link>}
+        {loggedInAs && (
+          <>
+            <Link className='btn btn-link p-1' to={'/rubrics'}>Your Rubrics</Link>
+            <Link className='btn btn-link p-1 d-none d-md-inline' to={'/templates'}>Templates</Link>
+          </>
+        )}
       </div>
 
       <div className={classNames(styles.logo, 'col-6')}>

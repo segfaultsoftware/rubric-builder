@@ -3,13 +3,14 @@ import { flatten } from 'lodash'
 
 import { camelCaseKeys, fetchWrapper, snakeCaseKeys } from '../../api/FetchWrapper'
 import { type RootState } from '../../app/store'
-import { type Rubric } from '../../types/Rubric'
+import { type Rubric, RubricVisibility } from '../../types/Rubric'
 import { type Weight } from '../../types/Weight'
 import { type ProfileWeight } from '../../types/ProfileWeight'
 import { type Calibration } from '../../types/Calibration'
 import { type Profile } from '../../types/Profile'
 
 export interface RubricState {
+  templates: Rubric[]
   rubrics: Rubric[]
   rubric: Rubric | null
   saveRubricState: 'initial' | 'pending' | 'saved'
@@ -18,6 +19,7 @@ export interface RubricState {
 }
 
 const initialState: RubricState = {
+  templates: [],
   rubrics: [],
   rubric: null,
   saveRubricState: 'initial',
@@ -96,6 +98,14 @@ export const fetchRubrics = createAsyncThunk(
   }
 )
 
+export const fetchTemplates = createAsyncThunk(
+  'rubric/fetchTemplates',
+  async () => {
+    const templates = await fetchWrapper.get('/api/v1/templates.json')
+    return templates.map((rubric: any) => camelCaseKeys(rubric)) as Rubric[]
+  }
+)
+
 export const fetchRubric = createAsyncThunk(
   'rubric/fetchRubric',
   async (id: string) => {
@@ -162,6 +172,9 @@ const rubricSlice = createSlice({
       .addCase(fetchRubrics.fulfilled, (state, action) => {
         state.rubrics = action.payload
       })
+      .addCase(fetchTemplates.fulfilled, (state, action) => {
+        state.templates = action.payload
+      })
       .addCase(updateRubric.pending, (state) => {
         state.saveRubricState = 'pending'
       })
@@ -196,6 +209,27 @@ const rubricSlice = createSlice({
   }
 })
 
+export const selectAllTemplates = (state: RootState) => state.rubric.templates
+export const selectTemplates = createSelector(
+  selectAllTemplates,
+  (templates) => {
+    const sorted: Rubric[] = []
+
+    templates.forEach((template) => {
+      if (template.visibility === RubricVisibility.SystemTemplate) {
+        sorted.push(template)
+      }
+    })
+
+    templates.forEach((template) => {
+      if (template.visibility !== RubricVisibility.SystemTemplate) {
+        sorted.push(template)
+      }
+    })
+
+    return sorted
+  }
+)
 export const selectRubrics = (state: RootState) => state.rubric.rubrics
 export const selectRubric = (state: RootState) => state.rubric.rubric
 export const selectSaveRubricState = (state: RootState) => state.rubric.saveRubricState

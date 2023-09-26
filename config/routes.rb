@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       resource :browser_subscription, only: [:show, :update]
       resources :invites, only: [:create]
 
+      resources :templates, only: [:index]
       resources :rubrics, only: [:index, :create, :show, :update, :destroy] do
         resources :profiles, only: [:destroy]
         resources :scores, only: [:index, :create]

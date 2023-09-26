@@ -5,25 +5,29 @@ import { type Weight } from '../../types/Weight'
 import { type Profile } from '../../types/Profile'
 
 interface RubricFormProperties {
-  author: Profile
+  author?: Profile
+  isViewOnly?: boolean
   rubric: Rubric
-  onRubricChange: (rubric: Rubric) => void
-  onSubmit: (rubric: Rubric) => void
+  onRubricChange?: (rubric: Rubric) => void
+  onSubmit?: (rubric: Rubric) => void
 }
 
 let incrementor = new Date().getTime()
 
 const RubricForm = ({
   author,
+  isViewOnly,
   rubric,
   onRubricChange,
   onSubmit
 }: RubricFormProperties) => {
+  isViewOnly = !!isViewOnly
+
   const handleRubricChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const field = e.target.name
     const value = e.target.value
 
-    onRubricChange({
+    onRubricChange && onRubricChange({
       ...rubric,
       [field]: value
     })
@@ -40,7 +44,7 @@ const RubricForm = ({
       [field]: value
     }]).concat(existingWeights.slice(index + 1))
 
-    onRubricChange({
+    onRubricChange && onRubricChange({
       ...rubric,
       weights: slicedWeights
     })
@@ -54,7 +58,7 @@ const RubricForm = ({
       _new: true
     }
 
-    onRubricChange({
+    onRubricChange && onRubricChange({
       ...rubric,
       weights: rubric.weights.concat([emptyWeight])
     })
@@ -68,7 +72,7 @@ const RubricForm = ({
       newVisibility = RubricVisibility.Template
     }
 
-    onRubricChange({
+    onRubricChange && onRubricChange({
       ...rubric,
       visibility: newVisibility
     })
@@ -85,7 +89,7 @@ const RubricForm = ({
       newVisibility = RubricVisibility.MembersOnly
     }
 
-    onRubricChange({
+    onRubricChange && onRubricChange({
       ...rubric,
       visibility: newVisibility
     })
@@ -107,10 +111,10 @@ const RubricForm = ({
           return weight
         }
       })
-      onSubmit({
+      onSubmit && onSubmit({
         ...rubric,
         weights: fixedWeights,
-        authorId: author.id
+        authorId: author?.id
       })
     }
   }
@@ -130,7 +134,7 @@ const RubricForm = ({
               onChange={handleCheckIsTemplate}
             />
           </div>
-          {author.isAdmin && (
+          {author?.isAdmin && (
             <>
               <label className='col-6 col-md-4 form-check-label' htmlFor='rubric:isSystemTemplate'>Is System Template?</label>
               <div className='col-1 text-start'>
@@ -165,6 +169,7 @@ const RubricForm = ({
             required
             value={rubric.name}
             onChange={handleRubricChange}
+            disabled={isViewOnly}
           />
         </div>
       </div>
@@ -180,10 +185,11 @@ const RubricForm = ({
             required
             value={rubric.descriptor}
             onChange={handleRubricChange}
+            disabled={isViewOnly}
           />
         </div>
       </div>
-      {renderTemplateCheckboxes()}
+      {!isViewOnly && renderTemplateCheckboxes()}
       <h3>Weights</h3>
       {rubric.weights.map((weight) => {
         const nameId = `weight:name:${weight.id}`
@@ -198,24 +204,29 @@ const RubricForm = ({
                 placeholder='Weight Name'
                 value={weight.name}
                 onChange={(e) => { handleWeightChange(weight, e) }}
+                disabled={isViewOnly}
               />
             </div>
           </div>
         )
       })}
-      <div className='row mb-2'>
-        <div className='col-lg-12'>
-          <button className='btn btn-primary' type='button' onClick={handleAddWeight}>
-            <span>Add Weight</span>
-            <i className="ms-2 bi bi-plus-circle-fill"></i>
-          </button>
-        </div>
-      </div>
-      <div className='row mb-3'>
-        <div className='col-lg-12'>
-          <button className='btn btn-primary' type='submit'>Save Rubric</button>
-        </div>
-      </div>
+      {!isViewOnly && (
+        <>
+          <div className='row mb-2'>
+            <div className='col-lg-12'>
+              <button className='btn btn-primary' type='button' onClick={handleAddWeight}>
+                <span>Add Weight</span>
+                <i className="ms-2 bi bi-plus-circle-fill"></i>
+              </button>
+            </div>
+          </div>
+          <div className='row mb-3'>
+            <div className='col-lg-12'>
+              <button className='btn btn-primary' type='submit'>Save Rubric</button>
+            </div>
+          </div>
+        </>
+      )}
     </form>
   )
 }
