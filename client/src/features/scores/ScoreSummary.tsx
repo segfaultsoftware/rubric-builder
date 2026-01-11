@@ -40,11 +40,24 @@ const ScoreSummary = ({
           </thead>
           <tbody>
             {[-1, ...weightIds].map((weightId) => {
-              const weightName = weightById.get(weightId)?.name ?? 'Total'
+              const weight = weightById.get(weightId)
+              const weightName = weight?.name ?? 'Total'
+              const weightImageUrl = weight?.imageUrl
 
               return (
                 <tr key={weightId}>
-                  <td>{weightName}</td>
+                  <td>
+                    <div className='d-flex align-items-center gap-2'>
+                      {weightImageUrl && (
+                        <img
+                          src={weightImageUrl}
+                          alt={weightName}
+                          style={{ maxWidth: '30px', maxHeight: '30px', objectFit: 'contain' }}
+                        />
+                      )}
+                      <span>{weightName}</span>
+                    </div>
+                  </td>
                   {userIds.map((userId) => {
                     const calculation = round(calculationsByUserWeight[userId][weightId], 3)
                     return <td key={userId}>{calculation}</td>

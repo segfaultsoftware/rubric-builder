@@ -1,7 +1,7 @@
 module V1
   class WeightSerializer
     include JSONAPI::Serializer
-    attributes :id, :name
+    attributes :id, :name, :image_url
 
     attribute :profile_weights do |weight, params|
       current_profile = params[:current_profile]

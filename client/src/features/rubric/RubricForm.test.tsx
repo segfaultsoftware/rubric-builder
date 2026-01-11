@@ -128,6 +128,34 @@ describe('RubricForm', () => {
     })
   })
 
+  it('handles updating a weight image URL', async () => {
+    const { user, findAllByPlaceholderText } = render()
+
+    const imageUrlInputs = await findAllByPlaceholderText('Image URL (optional)')
+    expect(imageUrlInputs.length).toEqual(1)
+    const imageUrlInput = imageUrlInputs[0]
+
+    await user.type(imageUrlInput, 'https://example.com/image.jpg')
+
+    expect(onRubricChange).toHaveBeenCalledWith({
+      ...rubric,
+      weights: [
+        {
+          ...rubric.weights[0],
+          imageUrl: 'https://example.com/image.jpg'
+        }
+      ]
+    })
+  })
+
+  it('renders existing image URL in the input', async () => {
+    rubric.weights[0].imageUrl = 'https://example.com/existing.jpg'
+
+    const { findByDisplayValue } = render()
+
+    expect(await findByDisplayValue('https://example.com/existing.jpg')).toBeInTheDocument()
+  })
+
   describe('template checkboxes', () => {
     it('handles the "Is Template?" checkbox', async () => {
       const { user, findByLabelText, queryByLabelText } = render()

@@ -97,9 +97,28 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
   const renderPicker = () => {
     return (
       <>
-        <div className='row'>
-          <div className='col-4'>{fromWeight?.name}</div>
-          <div className='col-4 offset-4'>{toWeight?.name}</div>
+        <div className='row align-items-center'>
+          <div className='col-2 text-end'>
+            {fromWeight?.imageUrl && (
+              <img
+                src={fromWeight.imageUrl}
+                alt={fromWeight.name}
+                style={{ maxWidth: '100%', maxHeight: '100px', objectFit: 'contain' }}
+              />
+            )}
+          </div>
+          <div className='col-3 text-start'>{fromWeight?.name}</div>
+          <div className='col-2'></div>
+          <div className='col-3 text-end'>{toWeight?.name}</div>
+          <div className='col-2 text-start'>
+            {toWeight?.imageUrl && (
+              <img
+                src={toWeight.imageUrl}
+                alt={toWeight.name}
+                style={{ maxWidth: '100%', maxHeight: '100px', objectFit: 'contain' }}
+              />
+            )}
+          </div>
         </div>
         <div className='col-md-6 offset-md-3'>
           <div className='w-100'>
