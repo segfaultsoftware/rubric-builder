@@ -4,6 +4,7 @@ FactoryBot.define do
 
     sequence(:name) { |n| "Weight #{n}" }
     sequence(:description) { |n| "Description #{n}" }
+    image_url { nil }
 
     transient do
       profile_weights { [] }

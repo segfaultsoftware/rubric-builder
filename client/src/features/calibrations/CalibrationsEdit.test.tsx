@@ -84,11 +84,13 @@ describe('CalibrationsEdit', () => {
 
     weight1 = WeightFactory.build({
       id: 8,
-      profileWeights: [profileWeightForLoggedInAsWeight1]
+      profileWeights: [profileWeightForLoggedInAsWeight1],
+      imageUrl: 'https://example.com/weight1.jpg'
     })
     weight2 = WeightFactory.build({
       id: 9,
-      profileWeights: [profileWeightForLoggedInAsWeight2]
+      profileWeights: [profileWeightForLoggedInAsWeight2],
+      imageUrl: 'https://example.com/weight2.jpg'
     })
     weight3 = WeightFactory.build({
       id: 10,
@@ -140,6 +142,16 @@ describe('CalibrationsEdit', () => {
 
       expect(await findByLabelText('Choose')).toBeInTheDocument()
       expect(await findByRole('button')).toBeInTheDocument()
+    })
+
+    it('renders images for weights that have imageUrl', async () => {
+      const { findByAltText, queryByAltText } = render()
+
+      const weight1Image = await findByAltText(weight1.name)
+      expect(weight1Image).toBeInTheDocument()
+      expect(weight1Image).toHaveAttribute('src', weight1.imageUrl)
+
+      expect(queryByAltText(weight3.name)).not.toBeInTheDocument()
     })
 
     describe('after updating values', () => {

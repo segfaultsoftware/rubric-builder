@@ -193,9 +193,10 @@ const RubricForm = ({
       <h3>Weights</h3>
       {rubric.weights.map((weight) => {
         const nameId = `weight:name:${weight.id}`
+        const imageUrlId = `weight:imageUrl:${weight.id}`
         return (
           <div className='row mb-2' key={weight.id}>
-            <div className='col-lg-12'>
+            <div className='col-lg-6'>
               <input
                 id={nameId}
                 type='text'
@@ -203,6 +204,18 @@ const RubricForm = ({
                 className='form-control'
                 placeholder='Weight Name'
                 value={weight.name}
+                onChange={(e) => { handleWeightChange(weight, e) }}
+                disabled={isViewOnly}
+              />
+            </div>
+            <div className='col-lg-6'>
+              <input
+                id={imageUrlId}
+                type='text'
+                name='imageUrl'
+                className='form-control'
+                placeholder='Image URL (optional)'
+                value={weight.imageUrl ?? ''}
                 onChange={(e) => { handleWeightChange(weight, e) }}
                 disabled={isViewOnly}
               />
