@@ -22,7 +22,7 @@
     "jest": "cd client && yarn test --watchAll=false",
     "preflight": "yarn run lint && yarn run test",
     "rspec": "bundle exec rspec",
-    "rubocop": "bundle exec rubocop -A",
+    "rubocop": "bundle exec rubocop",
     "start": "heroku local -f Procfile.dev",
     "test": "yarn run rspec && yarn run jest"
   }
