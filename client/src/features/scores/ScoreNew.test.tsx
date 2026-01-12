@@ -145,10 +145,10 @@ describe('ScoreNew', () => {
           await user.keyboard('{enter}')
 
           const weight1 = await findByText(/Weight 1/)
-          await user.click(await within(weight1.parentElement!).findByLabelText('5'))
+          await user.click(await within(weight1.parentElement!.parentElement!).findByLabelText('5'))
 
           const weight2 = await findByText(/Weight 2/)
-          await user.click(await within(weight2.parentElement!).findByLabelText('1'))
+          await user.click(await within(weight2.parentElement!.parentElement!).findByLabelText('1'))
 
           const button = await findByText('Save')
           await user.click(button)
