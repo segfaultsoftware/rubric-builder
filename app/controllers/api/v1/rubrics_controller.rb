@@ -39,16 +39,16 @@ module Api
 
       private
 
-            def rubric_params
-              params.require(:rubric).permit(
-                :name,
-                :descriptor,
-                :visibility,
-                weights_attributes: [
-                  :id, :name, :image_url, :_destroy
-                ]
-              )
-            end
+      def rubric_params
+        params.require(:rubric).permit(
+          :name,
+          :descriptor,
+          :visibility,
+          weights_attributes: [
+            :id, :name, :image_url, :_destroy
+          ]
+        )
+      end
 
       def serialize(rubric)
         ::V1::RubricSerializer.new(rubric, params: { current_profile: }).serializable_hash[:data][:attributes]
