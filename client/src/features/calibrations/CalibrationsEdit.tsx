@@ -4,6 +4,7 @@ import { shuffle } from 'lodash'
 import ProgressBar from '@ramonak/react-progress-bar'
 import { Link, useParams } from 'react-router-dom'
 
+import styles from './CalibrationsEdit.module.scss'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import {
   fetchRubric,
@@ -103,8 +104,7 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
               <img
                 src={fromWeight.imageUrl}
                 alt={fromWeight.name}
-                style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
-                className='mb-2'
+                className={`${styles.weightImage} mb-2`}
               />
             )}
             <div>{fromWeight?.name}</div>
@@ -115,8 +115,7 @@ const CalibrationsEdit = (options: CalibrationsEditProps) => {
               <img
                 src={toWeight.imageUrl}
                 alt={toWeight.name}
-                style={{ maxWidth: '100%', maxHeight: '200px', objectFit: 'contain' }}
-                className='mb-2'
+                className={`${styles.weightImage} mb-2`}
               />
             )}
             <div>{toWeight?.name}</div>

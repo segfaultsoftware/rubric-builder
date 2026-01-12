@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import classNames from 'classnames'
 
 import { round } from 'lodash'
+import styles from './ScoreSummary.module.scss'
 import { type Rubric } from '../../types/Rubric'
 import { type Weight } from '../../types/Weight'
 import { type Profile } from '../../types/Profile'
@@ -52,8 +53,7 @@ const ScoreSummary = ({
                         <img
                           src={weightImageUrl}
                           alt={weightName}
-                          style={{ maxWidth: '80px', maxHeight: '80px', objectFit: 'contain' }}
-                          className='mb-1'
+                          className={`${styles.weightImage} mb-1`}
                         />
                       )}
                       <div>{weightName}</div>
