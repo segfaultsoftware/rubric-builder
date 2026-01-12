@@ -47,15 +47,16 @@ const ScoreSummary = ({
               return (
                 <tr key={weightId}>
                   <td>
-                    <div className='d-flex align-items-center gap-2'>
+                    <div className='text-center'>
                       {weightImageUrl && (
                         <img
                           src={weightImageUrl}
                           alt={weightName}
-                          style={{ maxWidth: '30px', maxHeight: '30px', objectFit: 'contain' }}
+                          style={{ maxWidth: '80px', maxHeight: '80px', objectFit: 'contain' }}
+                          className='mb-1'
                         />
                       )}
-                      <span>{weightName}</span>
+                      <div>{weightName}</div>
                     </div>
                   </td>
                   {userIds.map((userId) => {

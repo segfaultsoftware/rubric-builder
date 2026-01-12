@@ -14,15 +14,16 @@ const WeightScore = ({ weight, rating, onChange }: WeightScoreProps) => {
 
   return (
     <div>
-      <div className='mb-1 d-flex align-items-center justify-content-center gap-2'>
+      <div className='mb-1 text-center'>
         {weight.imageUrl && (
           <img
             src={weight.imageUrl}
             alt={weight.name}
-            style={{ maxWidth: '50px', maxHeight: '50px', objectFit: 'contain' }}
+            style={{ maxWidth: '100%', maxHeight: '150px', objectFit: 'contain' }}
+            className='mb-2'
           />
         )}
-        <span>{weight.name}</span>
+        <div>{weight.name}</div>
       </div>
       <div className='row mb-3'>
         <div className='col-md-3'></div>
