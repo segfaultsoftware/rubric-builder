@@ -1,5 +1,6 @@
 import React from 'react'
 
+import styles from './WeightScore.module.scss'
 import { type Weight } from '../../types/Weight'
 
 interface WeightScoreProps {
@@ -19,8 +20,7 @@ const WeightScore = ({ weight, rating, onChange }: WeightScoreProps) => {
           <img
             src={weight.imageUrl}
             alt={weight.name}
-            style={{ maxWidth: '100%', maxHeight: '150px', objectFit: 'contain' }}
-            className='mb-2'
+            className={`${styles.weightImage} mb-2`}
           />
         )}
         <div>{weight.name}</div>
