@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Rubric do
   describe 'validations' do
     describe 'visibility' do
-      let(:rubric) { build(:rubric, author: author) }
+      let(:rubric) { build(:rubric, author:) }
 
       context 'when the author is not an admin' do
         let(:author) { create(:profile) }
