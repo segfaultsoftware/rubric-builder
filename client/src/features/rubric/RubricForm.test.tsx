@@ -135,14 +135,14 @@ describe('RubricForm', () => {
     expect(imageUrlInputs.length).toEqual(1)
     const imageUrlInput = imageUrlInputs[0]
 
-    await user.type(imageUrlInput, 'https://example.com/image.jpg')
+    await user.type(imageUrlInput, 'X')
 
     expect(onRubricChange).toHaveBeenCalledWith({
       ...rubric,
       weights: [
         {
           ...rubric.weights[0],
-          imageUrl: 'https://example.com/image.jpg'
+          imageUrl: 'X'
         }
       ]
     })
