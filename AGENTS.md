@@ -71,3 +71,39 @@ yarn test --watchAll=false
 # Lint checks
 yarn lint
 ```
+
+## Heroku Deployment
+
+### App Information
+
+- **App name:** `rubric-builder-app`
+- **Live URL:** https://rubric-builder-app-ac07bbe4f852.herokuapp.com/
+
+### Deploying to Heroku
+
+The default `git push heroku main` command will get stuck waiting for username/password authentication. To deploy successfully:
+
+1. **Install Heroku CLI** (if not already installed):
+   ```bash
+   curl https://cli-assets.heroku.com/install.sh | sh
+   ```
+
+2. **Add the Heroku remote** (if not already added):
+   ```bash
+   heroku git:remote -a rubric-builder-app
+   ```
+
+3. **Configure git authentication** using the API key:
+   ```bash
+   git remote set-url heroku "https://heroku:${HEROKU_API_KEY}@git.heroku.com/rubric-builder-app.git"
+   ```
+
+4. **Deploy:**
+   ```bash
+   git push heroku main
+   ```
+
+The deployment will automatically:
+- Build the Node.js frontend (via `heroku-postbuild` script)
+- Install Ruby dependencies
+- Run database migrations (via the `release` command in Procfile)
