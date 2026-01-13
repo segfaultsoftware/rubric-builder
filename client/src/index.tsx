@@ -21,6 +21,7 @@ import AuthenticationProtected from './AuthenticationProtected'
 import AcceptInvitation from './features/invites/AcceptInvitation'
 import Invite from './features/invites/Invite'
 import RubricViewOnly from './features/rubric/RubricViewOnly'
+import CalibrationResults from './features/calibrationResults/CalibrationResults'
 
 import './index.css'
 import RubricTemplates from './features/rubric/RubricTemplates'
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
       {
         path: 'rubrics/:rubricId/scores',
         element: <AuthenticationProtected><ScoreAnalysis /></AuthenticationProtected>
+      },
+      {
+        path: 'rubrics/:rubricId/calibration-results',
+        element: <AuthenticationProtected><CalibrationResults /></AuthenticationProtected>
       }
     ]
   }

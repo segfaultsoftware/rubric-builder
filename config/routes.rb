@@ -27,6 +27,7 @@ Rails.application.routes.draw do
         resources :scores, only: [:index, :create]
 
         resource :calibrations, only: [:show, :update]
+        resources :calibration_results, only: [:index]
       end
     end
   end
