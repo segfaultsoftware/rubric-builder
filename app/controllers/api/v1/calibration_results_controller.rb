@@ -49,7 +49,7 @@ module Api
         ProfileWeight
           .joins(:weight)
           .where(profile: target_profile, weight: { rubric_id: rubric.id })
-          .order(value: :desc)
+          .reorder(value: :desc)
       end
 
       def serialize_profile_weight(profile_weight)
