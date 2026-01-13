@@ -103,7 +103,7 @@ describe('RubricEdit', () => {
       })
 
       it('saves new weights to the backend', async () => {
-        const { user, findByText, findAllByRole, findAllByPlaceholderText } = render()
+        const { user, findByText, findAllByPlaceholderText } = render()
 
         const addButton = await findByText(/Add Weight/)
         await user.click(addButton)
@@ -134,10 +134,7 @@ describe('RubricEdit', () => {
           }
         })
 
-        const buttons = await findAllByRole('button')
-        expect(buttons.length).toEqual(3) // Add, Submit, Member
-
-        const submitButton = buttons[1]
+        const submitButton = await findByText(/Save Rubric/)
         await user.click(submitButton)
 
         expect(await findByText(/Saved at /)).toBeInTheDocument()
