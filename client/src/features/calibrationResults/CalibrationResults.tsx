@@ -69,7 +69,6 @@ const CalibrationResults = () => {
           <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores/new`}>Score</Link>
           <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores`}>Analyze</Link>
           <Link className='btn btn-link p-1' to={`/calibrations/${rubric.id}/edit`}>Calibrate</Link>
-          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/calibration-results`}>Calibration Results</Link>
           <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/edit`}>Edit</Link>
         </div>
       </div>

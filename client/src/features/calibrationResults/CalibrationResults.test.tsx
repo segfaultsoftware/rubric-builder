@@ -151,12 +151,12 @@ describe('CalibrationResults', () => {
         expect(await findByText('0.4')).toBeInTheDocument()
       })
 
-      it('displays navigation links', async () => {
-        const { findByText } = render()
+      it('displays navigation links but not a link to itself', async () => {
+        const { findByText, queryByText } = render()
         expect(await findByText('Score')).toBeInTheDocument()
         expect(await findByText('Analyze')).toBeInTheDocument()
         expect(await findByText('Calibrate')).toBeInTheDocument()
-        expect(await findByText('Calibration Results')).toBeInTheDocument()
+        expect(queryByText('Calibration Results')).not.toBeInTheDocument()
         expect(await findByText('Edit')).toBeInTheDocument()
       })
     })
