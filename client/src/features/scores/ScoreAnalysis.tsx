@@ -33,7 +33,7 @@ const ScoreAnalysis = () => {
         <div className='col'>
           <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/scores/new`}>Score</Link>
           <Link className='btn btn-link p-1' to={`/calibrations/${rubric.id}/edit`}>Calibrate</Link>
-          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/calibration-results`}>Results</Link>
+          <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/calibration-results`}>Calibration Results</Link>
           <Link className='btn btn-link p-1' to={`/rubrics/${rubric.id}/edit`} title='Edit'>Edit</Link>
         </div>
       </div>

@@ -133,6 +133,11 @@ describe('ScoreNew', () => {
         expect(await findByText(/Weight 2/)).not.toBeEmptyDOMElement()
       })
 
+      it('displays the Calibration Results navigation link', async () => {
+        const { findByText } = render()
+        expect(await findByText('Calibration Results')).toBeInTheDocument()
+      })
+
       describe('adjusting a score and submitting', () => {
         it('redirects', async () => {
           const { user, findByLabelText, findByText, queryByText } = render()
