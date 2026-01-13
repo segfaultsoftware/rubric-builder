@@ -78,20 +78,26 @@ RSpec.describe 'Api::V1::CalibrationResults' do
           end
 
           context 'with profile weights' do
-            let!(:pw1) { create(:profile_weight, profile:, weight: weight1, value: 0.5) }
-            let!(:pw2) { create(:profile_weight, profile:, weight: weight2, value: 0.3) }
-            let!(:pw3) { create(:profile_weight, profile:, weight: weight3, value: 0.2) }
+            # Create weights in non-sorted order to properly test sorting
+            let!(:weight4) { create(:weight, rubric:, name: 'Weight D') }
+            let!(:weight5) { create(:weight, rubric:, name: 'Weight E') }
+            let!(:weight6) { create(:weight, rubric:, name: 'Weight F') }
+
+            let!(:pw1) { create(:profile_weight, profile:, weight: weight1, value: 0.15) }
+            let!(:pw2) { create(:profile_weight, profile:, weight: weight2, value: 0.45) }
+            let!(:pw3) { create(:profile_weight, profile:, weight: weight3, value: 0.10) }
+            let!(:pw4) { create(:profile_weight, profile:, weight: weight4, value: 0.25) }
+            let!(:pw5) { create(:profile_weight, profile:, weight: weight5, value: 0.05) }
+            let!(:pw6) { create(:profile_weight, profile:, weight: weight6, value: 0.35) }
 
             it 'returns profile weights sorted by value descending' do
               get("/api/v1/rubrics/#{rubric.id}/calibration_results.json", headers:)
 
               json = response.parsed_body
               profile_weights = json['profile_weights']
+              values = profile_weights.pluck('value')
 
-              expect(profile_weights.length).to eq(3)
-              expect(profile_weights[0]['value']).to eq(0.5)
-              expect(profile_weights[1]['value']).to eq(0.3)
-              expect(profile_weights[2]['value']).to eq(0.2)
+              expect(values).to eq([0.45, 0.35, 0.25, 0.15, 0.10, 0.05])
             end
 
             it 'includes weight details in profile weights' do
@@ -100,9 +106,10 @@ RSpec.describe 'Api::V1::CalibrationResults' do
               json = response.parsed_body
               first_weight = json['profile_weights'][0]['weight']
 
+              # First weight should be Weight B (value 0.45)
               expect(first_weight).to include(
-                'id' => weight1.id,
-                'name' => 'Weight A'
+                'id' => weight2.id,
+                'name' => 'Weight B'
               )
             end
           end
