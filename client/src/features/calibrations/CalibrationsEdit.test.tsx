@@ -144,6 +144,11 @@ describe('CalibrationsEdit', () => {
       expect(await findByRole('button')).toBeInTheDocument()
     })
 
+    it('displays the Calibration Results navigation link', async () => {
+      const { findByText } = render()
+      expect(await findByText('Calibration Results')).toBeInTheDocument()
+    })
+
     it('renders images for weights that have imageUrl', async () => {
       const { findByAltText, queryByAltText } = render()
 

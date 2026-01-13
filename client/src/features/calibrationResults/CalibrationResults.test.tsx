@@ -156,6 +156,7 @@ describe('CalibrationResults', () => {
         expect(await findByText('Score')).toBeInTheDocument()
         expect(await findByText('Analyze')).toBeInTheDocument()
         expect(await findByText('Calibrate')).toBeInTheDocument()
+        expect(await findByText('Calibration Results')).toBeInTheDocument()
         expect(await findByText('Edit')).toBeInTheDocument()
       })
     })
