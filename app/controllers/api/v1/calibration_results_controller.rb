@@ -1,6 +1,8 @@
 module Api
   module V1
     class CalibrationResultsController < ApplicationController
+      rescue_from ActiveRecord::RecordNotFound, with: :not_found
+
       def index
         render json: {
           profile: serialize_profile(target_profile),
@@ -10,6 +12,10 @@ module Api
       end
 
       private
+
+      def not_found
+        render json: { error: 'Not found' }, status: :not_found
+      end
 
       def rubric
         @rubric ||= current_profile.rubrics.find(params[:rubric_id])
@@ -61,7 +67,8 @@ module Api
       end
 
       def serialize_profile(profile)
-        ::V1::ProfileSerializer.new(profile).serializable_hash[:data][:attributes]
+        result = ::V1::ProfileSerializer.new(profile).serializable_hash
+        result[:data]&.dig(:attributes)
       end
     end
   end
