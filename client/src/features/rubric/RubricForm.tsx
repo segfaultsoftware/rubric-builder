@@ -1,8 +1,61 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import { type Rubric, RubricVisibility } from '../../types/Rubric'
 import { type Weight } from '../../types/Weight'
 import { type Profile } from '../../types/Profile'
+
+interface ImportedWeight {
+  name: string
+  imageUrl?: string
+}
+
+const ALLOWED_URL_PROTOCOLS = ['http:', 'https:']
+
+const isValidUrl = (urlString: string): boolean => {
+  try {
+    const url = new URL(urlString)
+    return ALLOWED_URL_PROTOCOLS.includes(url.protocol)
+  } catch {
+    return false
+  }
+}
+
+const validateImportedWeights = (data: unknown): { weights: ImportedWeight[], error: string | null } => {
+  if (!Array.isArray(data)) {
+    return { weights: [], error: 'JSON must be an array of weight objects' }
+  }
+
+  const weights: ImportedWeight[] = []
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i]
+    if (typeof item !== 'object' || item === null) {
+      return { weights: [], error: `Item at index ${i} must be an object` }
+    }
+
+    const obj = item as Record<string, unknown>
+    if (typeof obj.name !== 'string' || obj.name.trim() === '') {
+      return { weights: [], error: `Item at index ${i} must have a non-empty "name" field` }
+    }
+
+    const weight: ImportedWeight = { name: obj.name }
+
+    if (obj.imageUrl !== undefined) {
+      if (typeof obj.imageUrl !== 'string') {
+        return { weights: [], error: `Item at index ${i} has an invalid "imageUrl" field` }
+      }
+      if (obj.imageUrl.trim() !== '' && !isValidUrl(obj.imageUrl)) {
+        return { weights: [], error: `Item at index ${i} has an unsafe or invalid URL in "imageUrl"` }
+      }
+      if (obj.imageUrl.trim() !== '') {
+        weight.imageUrl = obj.imageUrl
+      }
+    }
+
+    weights.push(weight)
+  }
+
+  return { weights, error: null }
+}
 
 interface RubricFormProperties {
   author?: Profile
@@ -22,6 +75,54 @@ const RubricForm = ({
   onSubmit
 }: RubricFormProperties) => {
   isViewOnly = !!isViewOnly
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const content = event.target?.result
+      if (typeof content !== 'string') return
+
+      let parsed: unknown
+      try {
+        parsed = JSON.parse(content)
+      } catch {
+        alert('Invalid JSON file. Please check the file format.')
+        return
+      }
+
+      const { weights, error } = validateImportedWeights(parsed)
+      if (error) {
+        alert(error)
+        return
+      }
+
+      const newWeights: Weight[] = weights.map((w) => ({
+        id: incrementor++,
+        name: w.name,
+        imageUrl: w.imageUrl,
+        profileWeights: [],
+        _new: true
+      }))
+
+      onRubricChange?.({
+        ...rubric,
+        weights: newWeights
+      })
+    }
+    reader.readAsText(file)
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
 
   const handleRubricChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const field = e.target.name
@@ -231,6 +332,17 @@ const RubricForm = ({
                 <span>Add Weight</span>
                 <i className="ms-2 bi bi-plus-circle-fill"></i>
               </button>
+              <button className='btn btn-secondary ms-2' type='button' onClick={handleImportClick}>
+                <span>Import Weights</span>
+                <i className="ms-2 bi bi-upload"></i>
+              </button>
+              <input
+                ref={fileInputRef}
+                type='file'
+                accept='.json,application/json'
+                onChange={handleFileChange}
+                className='d-none'
+              />
             </div>
           </div>
           <div className='row mb-3'>

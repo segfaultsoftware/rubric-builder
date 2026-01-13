@@ -279,13 +279,10 @@ describe('RubricForm', () => {
     it('validates presence of name', async () => {
       rubric.name = ''
 
-      const { user, findAllByRole } = render()
+      const { user, findByText } = render()
       const alertMock = jest.spyOn(window, 'alert').mockImplementation()
 
-      const buttons = await findAllByRole('button')
-      expect(buttons.length).toEqual(2)
-
-      const submitButton = buttons[1]
+      const submitButton = await findByText(/Save Rubric/)
       await user.click(submitButton)
       expect(alertMock).toHaveBeenCalledTimes(1)
     })
@@ -293,13 +290,10 @@ describe('RubricForm', () => {
     it('validates presence of descriptor', async () => {
       rubric.descriptor = ''
 
-      const { user, findAllByRole } = render()
+      const { user, findByText } = render()
       const alertMock = jest.spyOn(window, 'alert').mockImplementation()
 
-      const buttons = await findAllByRole('button')
-      expect(buttons.length).toEqual(2)
-
-      const submitButton = buttons[1]
+      const submitButton = await findByText(/Save Rubric/)
       await user.click(submitButton)
       expect(alertMock).toHaveBeenCalledTimes(1)
     })
@@ -312,11 +306,9 @@ describe('RubricForm', () => {
         _new: true
       })
 
-      const { user, findAllByRole } = render()
-      const buttons = await findAllByRole('button')
-      expect(buttons.length).toEqual(2)
+      const { user, findByText } = render()
 
-      const submitButton = buttons[1]
+      const submitButton = await findByText(/Save Rubric/)
       await user.click(submitButton)
       expect(onSubmit).toHaveBeenCalledWith({
         ...rubric,

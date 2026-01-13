@@ -79,7 +79,7 @@ describe('RubricNew', () => {
 
     describe('on submit', () => {
       it('redirects to the new edit page', async () => {
-        const { user, findAllByRole, findByLabelText, findByText, findByPlaceholderText } = render()
+        const { user, findByLabelText, findByText, findByPlaceholderText } = render()
 
         const nameInput = await findByLabelText('Name')
         await user.type(nameInput, 'My New Rubric')
@@ -106,8 +106,8 @@ describe('RubricNew', () => {
           }
         })
 
-        const buttons = await findAllByRole('button')
-        await user.click(buttons[1])
+        const saveButton = await findByText(/Save Rubric/)
+        await user.click(saveButton)
 
         expect(await findByText('Edit This')).toBeInTheDocument()
 
