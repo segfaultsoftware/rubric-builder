@@ -4,9 +4,11 @@ import rubricReducer from '../features/rubric/rubricSlice'
 import scoreReducer from '../features/scores/scoreSlice'
 import invitationsReducer from '../features/invites/invitationsSlice'
 import browserReducer from '../features/browser/browserSlice'
+import calibrationResultsReducer from '../features/calibrationResults/calibrationResultsSlice'
 
 const rootReducer = combineReducers({
   browser: browserReducer,
+  calibrationResults: calibrationResultsReducer,
   invitations: invitationsReducer,
   profile: profileReducer,
   rubric: rubricReducer,
