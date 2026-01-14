@@ -86,10 +86,15 @@ class Rubric < ApplicationRecord
     weight_ids = ProfileWeight.joins(:weight).where(profile:, weight: { rubric_id: id }).pluck(:weight_id)
     calibrations_matrix = {}
 
+    # Batch load all calibrations at once to avoid N^2 queries
+    calibrations_by_pair = Calibration
+                           .where(rubric: self, profile:)
+                           .index_by { |c| [c.from_weight_id, c.to_weight_id] }
+
     weight_ids.each do |from_weight_id|
       weight_ids.each do |to_weight_id|
         row = calibrations_matrix[from_weight_id] ||= Hash.new(1.0)
-        calibration = Calibration.find_by(rubric: self, profile:, from_weight_id:, to_weight_id:)
+        calibration = calibrations_by_pair[[from_weight_id, to_weight_id]]
         row[to_weight_id] = calibration.present? ? calibration.rating : 1.0
       end
     end
@@ -173,7 +178,8 @@ class Rubric < ApplicationRecord
   end
 
   def stale_calibrations_for_profile(profile)
-    all_combinations = weights.map(&:id).combination(2).to_a
+    # Use pluck to avoid loading full Weight objects into memory
+    all_combinations = weights.pluck(:id).combination(2).to_a
     max_iteration = Calibration.where(rubric: self, profile:).maximum(:iteration)
     current_calibrations = Calibration
                            .where(rubric: self, profile:, iteration: max_iteration)
