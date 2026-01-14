@@ -55,6 +55,14 @@ RSpec.describe Rubric do
     let(:weight2) { build(:weight) }
     let(:weight3) { build(:weight) }
 
+    it 'uses pluck instead of loading full Weight objects' do
+      weight_select_queries = count_queries { rubric.reload.generate_pairings_for_profile!(profile1) }
+      weight_select_queries = weight_select_queries.grep(/SELECT.*weights/)
+
+      # Should only select id column, not all columns (SELECT "weights".* would be inefficient)
+      weight_select_queries.each { |sql| expect(sql).not_to match(/SELECT "weights"\.\*/) }
+    end
+
     context 'without calibrations' do
       it 'generates all pairwise combinations of existing weights' do
         rubric.generate_pairings_for_profile!(profile1)
@@ -272,6 +280,17 @@ RSpec.describe Rubric do
       expect(author.profile_weights.find_by(weight_id: weight3.id).value).to be_within(0.0000001).of(0.1856975553)
     end
     # rubocop:enable RSpec/MultipleExpectations
+
+    it 'batch loads calibrations instead of N+1 queries' do
+      # With 3 weights, N^2 would be 9 individual Calibration queries
+      # The fix should use a single batch query instead
+      calibration_queries = count_queries_matching(/SELECT.*calibrations/) do
+        rubric.update_profile_weights_for_profile!(author)
+      end
+
+      # Should be 1 batch query, not 9 individual queries
+      expect(calibration_queries).to eq(1)
+    end
   end
 
   describe '#remove_member' do
