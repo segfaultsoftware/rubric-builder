@@ -134,6 +134,15 @@ RSpec.describe Profile do
           expect(rubric.reload.profiles.map(&:display_name)).to match_array([email, inviter_profile.display_name])
         end
 
+        it 'generates pairings for the invited profile' do
+          create(:weight, rubric:)
+          create(:weight, rubric:)
+
+          invite
+
+          expect(rubric.reload.pairings_for_profile(target_profile)).not_to be_empty
+        end
+
         context 'when the user was already part of the rubric' do
           before do
             rubric.profiles << target_profile
