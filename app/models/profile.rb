@@ -27,6 +27,7 @@ class Profile < ApplicationRecord
     invited_profile = invite_to_platform(email)
     rubric.profiles << invited_profile unless rubric.profiles.include?(invited_profile)
     rubric.initialize_profile_weights!
+    rubric.generate_pairings_for_profile!(invited_profile)
   end
 
   def find_and_invite_user_by_email(email)
